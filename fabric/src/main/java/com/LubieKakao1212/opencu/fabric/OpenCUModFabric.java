@@ -38,7 +38,6 @@ public class OpenCUModFabric implements ModInitializer {
         APILookupRebornEnergy.register();
         APILookupIFramedDevice.init();
 
-        TooltipHandler.init();
         UseHandler.init();
 
 
