@@ -1,10 +1,12 @@
 package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.block.entity.DeviceBlockEntity;
 import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.state.ArrayControllerDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.random.RandomEx;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +17,7 @@ public class ArrayControllerDevice implements IFramedDevice {
     private final RandomEx randomEx = new RandomEx();
 
     /**
-     * @param frame
+     * @param container
      * @param state
      * @param world
      * @param pos
@@ -23,13 +25,17 @@ public class ArrayControllerDevice implements IFramedDevice {
      * @param ctx   used to fetch ammo, use energy, and add leftovers
      */
     @Override
-    public void activate(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
-        frame.getEventDistributor().handleEvent(new ActivateEvent());
+    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+        if(container instanceof BlockEntityModularFrame frame) {
+            frame.getEventDistributor().handleEvent(new ActivateEvent());
+        }
     }
 
     @Override
-    public void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
-        frame.aimAt(randomEx.nextOnSphere(1));
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+        if(container instanceof BlockEntityModularFrame frame) {
+            frame.aimAt(randomEx.nextOnSphere(1));
+        }
     }
 
     @Override

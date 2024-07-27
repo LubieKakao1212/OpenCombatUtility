@@ -72,7 +72,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if(slot == 0)
                 {
-                    return PlatformUtil.getDispenser(stack) != null;
+                    return PlatformUtil.getDeviceFrom(stack) != null;
                 }
                 return true;
             }

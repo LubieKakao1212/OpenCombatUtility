@@ -7,6 +7,6 @@ import net.minecraft.item.ItemStack;
 public class PlatformUtil {
 
     @ExpectPlatform
-    public static IFramedDevice getDispenser(ItemStack stack) { return null; }
+    public static IFramedDevice getDeviceFrom(ItemStack stack) { return null; }
 
 }

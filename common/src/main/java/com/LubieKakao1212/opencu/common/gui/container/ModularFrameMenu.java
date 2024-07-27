@@ -3,9 +3,7 @@ package com.LubieKakao1212.opencu.common.gui.container;
 import com.LubieKakao1212.opencu.PlatformUtil;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
-import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlocks;
-import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -97,7 +95,7 @@ public class ModularFrameMenu extends ScreenHandler {
                 else //Is in player inventory
                 {
                     var flag = false;
-                    if(PlatformUtil.getDispenser(stackCpy) != null) {
+                    if(PlatformUtil.getDeviceFrom(stackCpy) != null) {
                         var deviceSlotSlot = slots.get(deviceSlot);
                         var currentDevice = deviceSlotSlot.getStack();
                         if(currentDevice.isEmpty()) {

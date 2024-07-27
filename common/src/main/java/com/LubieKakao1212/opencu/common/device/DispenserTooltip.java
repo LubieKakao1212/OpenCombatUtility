@@ -23,7 +23,7 @@ public class DispenserTooltip {
 
     public static void addTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip) {
 
-        var dis = PlatformUtil.getDispenser(stack);
+        var dis = PlatformUtil.getDeviceFrom(stack);
 
         if(dis == null) {
             return;

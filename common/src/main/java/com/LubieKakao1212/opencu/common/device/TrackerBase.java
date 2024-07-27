@@ -5,6 +5,7 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.TrackerDeviceState;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.common.util.EndBoolean;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.lubiekakao1212.qulib.math.Aim;
@@ -43,12 +44,16 @@ public class TrackerBase implements IFramedDevice {
     }
 
     @Override
-    public void activate(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
 
     }
 
     @Override
-    public void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+        if(!(container instanceof BlockEntityModularFrame frame)) {
+            return;
+        }
+
         var trackerState = (TrackerDeviceState) state;
 
         var rsPulser = trackerState.rsPulseTimer;
@@ -171,7 +176,7 @@ public class TrackerBase implements IFramedDevice {
         return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick);
     }
 
-    private boolean drainEnergy(BlockEntityModularFrame.ModularFrameContext ctx, TrackerDeviceState state, double amount) {
+    private boolean drainEnergy(DeviceActivationContext ctx, TrackerDeviceState state, double amount) {
         state.energyLeftover += amount;
 
         var energyToUse = (long) state.energyLeftover;

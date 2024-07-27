@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.common.device;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
@@ -27,7 +28,7 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void activate(BlockEntityModularFrame frame, IDeviceState stateIn, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void activate(IDeviceContainer container, IDeviceState stateIn, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
         var shotItem = ctx.ammo().useAmmoFirst(ctx.ctx());
 
         //TODO proper empty item handling
@@ -67,7 +68,7 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
 
     }
 

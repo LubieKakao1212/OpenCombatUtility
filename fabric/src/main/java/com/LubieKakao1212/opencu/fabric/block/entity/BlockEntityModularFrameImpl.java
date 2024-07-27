@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.fabric.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.fabric.inventory.SlottedInventory;
 import com.LubieKakao1212.opencu.fabric.transaction.AmmoContext;
 import com.LubieKakao1212.opencu.fabric.transaction.RebornEnergyContext;
@@ -79,8 +80,8 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
-    protected ModularFrameContext getNewContext() {
-        return new ModularFrameContext(
+    protected DeviceActivationContext getNewContext() {
+        return new DeviceActivationContext(
                 new ScopedContext(),
                 new RebornEnergyContext(energyStorage),
                 new AmmoContext(ammoStorage),
