@@ -2,10 +2,12 @@ package com.LubieKakao1212.opencu.registry.fabric;
 
 import com.LubieKakao1212.opencu.fabric.block.BlockModularFrame;
 import com.LubieKakao1212.opencu.fabric.block.BlockRepulsor;
+import io.wispforest.owo.itemgroup.OwoItemSettings;
 import io.wispforest.owo.registration.reflect.BlockRegistryContainer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.item.BlockItem;
 import org.jetbrains.annotations.NotNull;
 
 public class CUBlocksImpl implements BlockRegistryContainer {
@@ -21,5 +23,10 @@ public class CUBlocksImpl implements BlockRegistryContainer {
     @NotNull
     public static Block modularFrame() {
         return MODULAR_FRAME;
+    }
+
+    @Override
+    public BlockItem createBlockItem(Block block, String identifier) {
+        return new BlockItem(block, new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
     }
 }
