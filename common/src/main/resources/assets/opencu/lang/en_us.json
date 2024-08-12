@@ -13,6 +13,8 @@
   "item.opencu.dispenser_tier2": "§eDispenser(Tier2)",
   "item.opencu.dispenser_tier3": "§bDispenser(Tier3)",
 
+  "itemGroup.opencu.ocu-main": "Open Combat Utility",
+
   "info.opencu.generic.dt": "%s°/t",
   "info.opencu.generic.instant": "§aInstant",
 

@@ -31,6 +31,8 @@ public class OpenCUModFabric implements ModInitializer {
         FieldRegistrationHandler.register(CUMenuImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUItems.class, OpenCUModCommon.MODID, false);
 
+        CUItemGroups.init();
+
         if(FabricLoader.getInstance().isModLoaded("computercraft")) {
             APILookupPeripheral.register();
         }
