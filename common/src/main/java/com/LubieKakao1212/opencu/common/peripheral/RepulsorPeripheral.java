@@ -1,3 +1,4 @@
+/*
 package com.LubieKakao1212.opencu.common.peripheral;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
@@ -24,19 +25,22 @@ public class RepulsorPeripheral implements IPeripheral {
         this.target = repulsor;
     }
 
-    /**
+    */
+/**
      * Should return a string that uniquely identifies this type of peripheral.
      * This can be queried from lua by calling {@code peripheral.getType()}
      *
      * @return A string identifying the type of peripheral.
-     */
+     *//*
+
     @NotNull
     @Override
     public String getType() {
         return TYPE;
     }
 
-    /**
+    */
+/**
      * Determine whether this peripheral is equivalent to another one.
      * <p>
      * The minimal example should at least check whether they are the same object. However, you may wish to check if
@@ -44,7 +48,8 @@ public class RepulsorPeripheral implements IPeripheral {
      *
      * @param other The peripheral to compare against. This may be {@code null}.
      * @return Whether these peripherals are equivalent.
-     */
+     *//*
+
     @Override
     public boolean equals(@Nullable IPeripheral other) {
         if(other instanceof RepulsorPeripheral) {
@@ -54,12 +59,14 @@ public class RepulsorPeripheral implements IPeripheral {
         return false;
     }
 
-    /**
+    */
+/**
      * Get the object that this peripheral provides methods for. This will generally be the tile entity
      * or block, but may be an inventory, entity, etc...
      *
      * @return The object this peripheral targets
-     */
+     *//*
+
     @Nullable
     @Override
     public Object getTarget() {
@@ -101,9 +108,11 @@ public class RepulsorPeripheral implements IPeripheral {
     public final MethodResult getConfig() {
         //TODO do stuff
         Map<String, Object> result = new HashMap<>();
-        /*if(OpenCUMod.hasValkyrienSkies()) {
+        */
+/*if(OpenCUMod.hasValkyrienSkies()) {
             result.put("canPushShips", OpenCUConfigCommon.REPULSOR.getAffectsVSShips());
-        }*/
+        }*//*
+
         return MethodResult.of(result);
     }
 
@@ -134,3 +143,4 @@ public class RepulsorPeripheral implements IPeripheral {
         }
     }
 }
+*/

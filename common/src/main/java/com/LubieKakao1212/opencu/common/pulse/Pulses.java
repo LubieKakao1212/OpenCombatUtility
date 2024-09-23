@@ -1,7 +1,10 @@
 package com.LubieKakao1212.opencu.common.pulse;
 
+import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.common.util.EntityUtil;
+import com.lubiekakao1212.qulib.math.extensions.AABBExtensionsKt;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
+import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import org.joml.Vector3d;
 
 import static java.lang.Math.*;
@@ -14,35 +17,35 @@ public class Pulses {
     private static final float epsilon = 0.0001f;
     private static final float epsilonSqr = epsilon * epsilon;
 
-    public static void repulsorPulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {
-        List<Entity> entityList = PulseUtil.getAffectedEntities(level, pos, radius);
+    public static void repulsorPulse(World world, Vector3d pos, Vector3d direction, double radius, double force) {
+        List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
-            position = VSGameUtilsKt.toWorldCoordinates(level, position);
+            position = VSGameUtilsKt.toWorldCoordinates(world, position);
         }*/
 
         force = PulseUtil.getScaledForce(force);
 
         for(Entity e : entityList) {
-            double dX = e.getX() - pos.x;
-            double dY = e.getY() - pos.y;
-            double dZ = e.getZ() - pos.z;
+            var delta = new Vector3m(e.getBoundingBox().getCenter())
+                    .sub(pos);
 
-            double distanceSqr = dX*dX + dY*dY + dZ*dZ;
+            var dstSq = delta.lengthSquared();
 
             //if we have a very small delta we consider it to have an up direction to avoid floating point precision errors
-            if(distanceSqr < epsilonSqr) {
+            if(dstSq < epsilonSqr) {
                 EntityUtil.addVelocity(e, 0, force, 0);
                 continue;
             }
 
-            double distance = Math.sqrt(distanceSqr);
+            double distance = Math.sqrt(dstSq);
 
-            double vX = dX/distance * force;
-            double vY = dY/distance * force;
-            double vZ = dZ/distance * force;
+            var deltaV =
+                    new Vector3m(e.getBoundingBox().getCenter())
+                            .sub(pos)
+                            .mul(force / distance);
 
-            EntityUtil.addVelocity(e, vX, vY, vZ);
+            EntityUtil.addVelocity(e, deltaV);
         }
     }
 
@@ -82,6 +85,4 @@ public class Pulses {
             EntityUtil.scaleVelocity(e, stasisFactor);
         }
     }
-
-
 }

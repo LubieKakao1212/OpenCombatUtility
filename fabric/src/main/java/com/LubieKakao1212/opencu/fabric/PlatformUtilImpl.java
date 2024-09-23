@@ -6,6 +6,6 @@ import net.minecraft.item.ItemStack;
 
 public class PlatformUtilImpl {
     public static IFramedDevice getDeviceFrom(ItemStack stack) {
-        return APILookupIFramedDevice.DISPENSER.find(stack, null);
+        return APILookupIFramedDevice.FRAMED_DEVICES.find(stack, null);
     }
 }

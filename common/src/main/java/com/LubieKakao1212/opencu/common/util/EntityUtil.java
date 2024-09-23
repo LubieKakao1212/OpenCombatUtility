@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.common.util;
 
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
+import com.lubiekakao1212.qulib.raycast.RaycastUtilKt;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -16,6 +18,19 @@ public class EntityUtil {
     public static void addVelocity(Entity e, double vX, double vY, double vZ) {
         if(e instanceof PersistentProjectileEntity arrow) {
             if(arrow.inGround) {
+                var pos = new Vector3m(arrow.getPos());
+
+                //TODO test modified logic
+                var world = e.world;
+                var dir = safeNormalize(new Vector3d(vX, vY, vZ));
+
+                var wall = RaycastUtilKt.raycastBlocksAll(world, pos, dir, 0.1);
+                for (var w : wall) {
+                    var blockStatePos = w.getTarget();
+                    if(!blockStatePos.getState().getCollisionShape(world, blockStatePos.getPos()).isEmpty()) {
+                        return;
+                    }
+                }
                 arrow.inGround = false;
                 arrow.setVelocity(0, 0, 0);
             }
@@ -62,4 +77,16 @@ public class EntityUtil {
         throw new RuntimeException();
     }
 
+    public static Vector3d safeNormalize(Vector3d vec) {
+        var l = vec.length();
+
+        if(l > 1f / 64f) {
+            vec.normalize();
+        }
+        else {
+            vec.set(0, 1, 0);
+        }
+
+        return vec;
+    }
 }

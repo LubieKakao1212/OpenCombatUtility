@@ -5,14 +5,13 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
 import com.LubieKakao1212.opencu.fabric.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.fabric.block.entity.BlockEntityRepulsorImpl;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -21,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockRepulsor extends Block implements BlockEntityProvider {
+public class BlockRepulsor extends FacingBlock implements BlockEntityProvider {
 
     public BlockRepulsor(Settings settings) {
         super(settings);
@@ -40,6 +39,17 @@ public class BlockRepulsor extends Block implements BlockEntityProvider {
         return ActionResult.SUCCESS;
     }
 
+    /**
+     * Appends block state properties to this block. To use this, override and call {@link
+     * StateManager.Builder#add} inside the method. See {@link
+     * Properties} for the list of pre-defined properties.
+     *
+     * @param builder
+     */
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
 
     @Nullable
     @Override

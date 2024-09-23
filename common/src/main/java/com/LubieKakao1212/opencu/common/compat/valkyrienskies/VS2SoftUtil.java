@@ -1,8 +1,12 @@
 package com.LubieKakao1212.opencu.common.compat.valkyrienskies;
 
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 //import org.valkyrienskies.mod.common.VSGameUtilsKt;
+
+import static com.lubiekakao1212.qulib.math.extensions.AABBExtensionsKt.sqrDistanceTo;
+
 
 public class VS2SoftUtil {
 
@@ -16,8 +20,21 @@ public class VS2SoftUtil {
         return p1.distanceSquared(p2);
     }
 
+    public static double getDistanceSqr(World level, Box box, Vector3d p2) {
+        //TODO Apparently VS2 for 1.19.4 does not exist
+        /*if(OpenCUMod.hasValkyrienSkies()) {
+            return VSGameUtilsKt.squaredDistanceBetweenInclShips(level,
+                    p1.x(), p1.y(), p1.z(),
+                    p2.x(), p2.y(), p2.z());
+        }*/
+        return sqrDistanceTo(box, p2);
+    }
+
     public static double getDistance(World level, Vector3d p1, Vector3d p2) {
         return Math.sqrt(getDistanceSqr(level, p1, p2));
     }
 
+    public static double getDistance(World level, Box box, Vector3d p2) {
+        return Math.sqrt(getDistanceSqr(level, box, p2));
+    }
 }

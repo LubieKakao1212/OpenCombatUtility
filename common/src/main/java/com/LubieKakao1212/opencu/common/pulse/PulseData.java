@@ -6,25 +6,50 @@ import net.minecraft.nbt.NbtElement;
 import org.joml.Vector3d;
 
 public class PulseData {
-    public Vector3d direction;
     public double radius;
     public double force;
 
     public PulseData() {
-        this.direction = new Vector3d();
+    }
+
+    public PulseData(PulseData source) {
+        this.force = source.force;
+        this.radius = source.radius;
     }
 
     public NbtCompound serialize() {
-        NbtCompound tag = new NbtCompound();
-        tag.put("direction", Vector3dExtensionsKt.serializeNBT(direction));
-        tag.putDouble("radius", radius);
-        tag.putDouble("force", force);
-        return tag;
+        NbtCompound nbt = new NbtCompound();
+        nbt.putDouble("radius", radius);
+        nbt.putDouble("force", force);
+        return nbt;
     }
 
-    public void deserialize(NbtCompound compoundTag) {
-        direction = Vector3dExtensionsKt.deserializeNBT(new Vector3d(), compoundTag.getList("direction", NbtElement.DOUBLE_TYPE));
-        radius = compoundTag.getDouble("radius");
-        force = compoundTag.getDouble("force");
+    public void deserialize(NbtCompound nbt) {
+        radius = nbt.getDouble("radius");
+        force = nbt.getDouble("force");
+    }
+
+    public static class Directional extends PulseData {
+        public Vector3d direction;
+
+        public Directional(PulseData source, Vector3d direction) {
+            super(source);
+            this.direction = direction;
+        }
+
+        @Override
+        public NbtCompound serialize() {
+            var nbt = super.serialize();
+
+            nbt.put("direction", Vector3dExtensionsKt.serializeNBT(direction));
+            return nbt;
+        }
+
+        @Override
+        public void deserialize(NbtCompound nbt) {
+            super.deserialize(nbt);
+            direction = Vector3dExtensionsKt.deserializeNBT(new Vector3d(), nbt.getList("direction", NbtElement.DOUBLE_TYPE));
+
+        }
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+
 public class PulseUtil {
 
     public static List<Entity> getAffectedEntities(World level, Vector3d pos, double radius) {
@@ -20,11 +21,11 @@ public class PulseUtil {
                 new Box(0,0,0,0,0,0)
                         .offset(new Vec3d(pos.x, pos.y, pos.z))
                         .expand(radius)
-                ).stream().filter(entity ->
-                VS2SoftUtil.getDistanceSqr(level,
-                        pos,
-                        new Vector3d(entity.getX(), entity.getY(), entity.getZ())
-                ) < radiusSqr).collect(Collectors.toList());
+                , entity ->
+                        VS2SoftUtil.getDistanceSqr(level,
+                                entity.getBoundingBox(),
+                                pos
+                        ) < radiusSqr);
     }
 
     public static double getScaledForce(double baseForce) {

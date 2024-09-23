@@ -1,7 +1,9 @@
 package com.LubieKakao1212.opencu.common.pulse;
 
+import com.LubieKakao1212.opencu.registry.CUPulse;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class EntityPulseType {
         this.pulsePasses = pulsePasses;
     }
 
-    public void executePulse(World level, Vector3d pos, PulseData pulseData) {
+    public void executePulse(World level, Vector3d pos, PulseData.Directional pulseData) {
         executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.radius, pulseData.force);
     }
 
@@ -49,6 +51,15 @@ public class EntityPulseType {
             return;
         }
         this.registryKey = registryKey;
+    }
+
+    @NotNull
+    public static EntityPulseType getOrThrow(Identifier id) {
+        EntityPulseType type = CUPulse.get(id);
+        if(type == null) {
+            throw new RuntimeException("Invalid pulse type id" + id.toString());
+        }
+        return type;
     }
 
     public static class Builder {

@@ -33,7 +33,7 @@ public class RendererRepulsor implements BlockEntityRenderer<BlockEntityRepulsor
     public void render(BlockEntityRepulsor repulsor, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay) {
         bufferSource.getBuffer(RenderLayer.getSolid());
 
-        float animProgress = (repulsor.pulseTicksLeft - partialTick) / BlockEntityRepulsor.pulseTicks;
+        float animProgress = (repulsor.pulseTicksLeft - partialTick) / repulsor.pulseTicks;
 
         if(animProgress < 0)
         {

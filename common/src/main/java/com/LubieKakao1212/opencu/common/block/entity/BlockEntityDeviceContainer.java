@@ -23,7 +23,6 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     public static final int autoShootInterval = 10;
 
-
     private final AtomicInteger actionsToPerform = new AtomicInteger(0);
 
     private RedstoneControlType redstoneControlType;
