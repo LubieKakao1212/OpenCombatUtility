@@ -1,6 +1,5 @@
 package com.LubieKakao1212.opencu.common.device;
 
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;

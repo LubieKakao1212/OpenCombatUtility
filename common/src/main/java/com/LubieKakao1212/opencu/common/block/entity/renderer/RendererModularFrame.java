@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.common.block.entity.renderer;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.device.IFramedDevice;
+import com.LubieKakao1212.opencu.registry.CUDeviceRanderers;
 import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -11,6 +13,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
+
+import java.util.Optional;
 
 public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModularFrame> {
 
@@ -29,6 +33,9 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
     @Override
     public void render(BlockEntityModularFrame blockEntity, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay) {
         //super.render(te, x, y, z, partialTicks, destroyStage, alpha);
+
+        var device = blockEntity.getDevice();
+        var renderer = CUDeviceRanderers.getRenderer(device);
 
         ItemStack displayStack = blockEntity.getCurrentDeviceItem();
         if(displayStack != null && !displayStack.isEmpty()) {
@@ -58,9 +65,9 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.multiply(y180);
             poseStack.multiply(new Quaternionf().set(partial.toQuaternion()));
-            MinecraftClient.getInstance().getItemRenderer().renderItem(displayStack, ModelTransformationMode.FIXED, packedLight, packedOverlay, poseStack, bufferSource, blockEntity.getWorld(), 0);
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+            renderer.render(blockEntity.getWorld(), blockEntity,device, blockEntity.getState(), displayStack, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
             poseStack.pop();
         }
     }
-
 }

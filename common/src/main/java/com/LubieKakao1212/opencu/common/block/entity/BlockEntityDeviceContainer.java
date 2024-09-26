@@ -1,8 +1,10 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
+import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientUpdateActivationTimestamp;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.lubiekakao1212.qulib.math.Aim;
@@ -11,6 +13,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +34,11 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     private IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
+
+    //region Client
+    //TODO move to repulsor state
+    private long lastActiveTimestamp;
+    //end Region
 
     public BlockEntityDeviceContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -125,6 +133,8 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         if(currentDevice != null) {
             try(DeviceActivationContext ctx = getNewContext()) {
                 currentDevice.activate(this, currentDeviceState, world, pos, currentAim(), ctx);
+                //TODO move to repulsor state
+                NetworkUtil.sendToAllTracking(new PacketClientUpdateActivationTimestamp(getPos(), world.getTime()), (ServerWorld) world, getPos());
             }
         }
     }
@@ -164,4 +174,23 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
             currentDeviceState = null;
         }
     }
+
+    //region Client Methods
+
+    /**
+     * Client Method
+     */
+    @Override
+    public long getLastActiveTimestamp() {
+        return lastActiveTimestamp;
+    }
+
+    /**
+     * Client Method
+     */
+    public void setLastActiveTimestamp(long lastActiveTimestamp) {
+        this.lastActiveTimestamp = lastActiveTimestamp;
+    }
+
+    //endregion
 }

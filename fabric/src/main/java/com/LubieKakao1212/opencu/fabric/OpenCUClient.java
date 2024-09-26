@@ -4,9 +4,11 @@ import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererModularFra
 import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererRepulsor;
 import com.LubieKakao1212.opencu.common.gui.ModularFrameScreen;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
+import com.LubieKakao1212.opencu.fabric.model.CUModelLoadPlugin;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
@@ -24,6 +26,8 @@ public class OpenCUClient implements ClientModInitializer {
 
         HandledScreens.register(CUMenu.modularFrame(), ModularFrameScreen::new);
 
+
+        ModelLoadingPlugin.register(new CUModelLoadPlugin());
 
         TooltipHandler.init();
     }

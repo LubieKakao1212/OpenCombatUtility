@@ -17,7 +17,7 @@ public class RepulsorDevice implements IFramedDevice {
 
 
     /**
-     * @param ctx       used to fetch ammo, use energy, and add leftovers
+     * @param ctx used to fetch ammo, use energy, and add leftovers
      */
     @Override
     public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
