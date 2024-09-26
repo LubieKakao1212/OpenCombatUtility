@@ -1,8 +1,9 @@
 package com.LubieKakao1212.opencu.common.gui;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.gui.container.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameScreenHandler;
 import com.LubieKakao1212.opencu.common.gui.widget.FillableBarWidget;
 import com.LubieKakao1212.opencu.common.gui.widget.ResponsiveToggleWidget;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
@@ -17,14 +18,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
+public class ModularFrameScreen extends HandledScreen<ModularFrameScreenHandler> {
 
     private static final String energyBarTooltipKey = "info.opencu.frame.gui.energy";
     private static final Identifier mainTexture = new Identifier(OpenCUModCommon.MODID, "textures/gui/omnidispenser_gui.png");
 
     private FillableBarWidget energyWidget;
 
-    public ModularFrameScreen(ModularFrameMenu container, PlayerInventory inv, Text titleIn) {
+    public ModularFrameScreen(ModularFrameScreenHandler container, PlayerInventory inv, Text titleIn) {
         super(container, inv, titleIn);
         this.backgroundWidth = 176;
         this.backgroundHeight = 166;

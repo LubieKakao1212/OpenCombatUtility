@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.common.network.packet;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
@@ -10,7 +11,6 @@ import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.world.World;
 
@@ -61,16 +61,17 @@ public class PacketHandlersClient {
         }
     }
 
-    public static void handle(PacketClientRepulsorPulse packet) {
+    public static void handle(PacketClientUpdateActivationTimestamp packet) {
         var world = MinecraftClient.getInstance().world;
         assert world != null;
 
         var be = world.getBlockEntity(packet.position());
-        if(!(be instanceof BlockEntityRepulsor)) {
-            OpenCUModCommon.LOGGER.warn("No repulsor found at: " + packet.position());
-            return;
+        if(be instanceof IDeviceContainer container) {
+            container.setLastActiveTimestamp(packet.timestamp());
         }
-        ((BlockEntityRepulsor) be).setPulseTimer();
+        else {
+            OpenCUModCommon.LOGGER.warn("No device container found at: " + packet.position());
+        }
     }
 
 }

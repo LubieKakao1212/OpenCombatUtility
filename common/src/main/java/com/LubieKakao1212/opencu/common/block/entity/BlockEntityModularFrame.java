@@ -8,7 +8,8 @@ import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
-import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.gui.container.DeviceContainerScreenHandler;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameScreenHandler;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
@@ -366,7 +367,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     @Override
     public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
         assert world != null;
-        return new ModularFrameMenu(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
+        return new ModularFrameScreenHandler(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
     }
 
     public ItemStack getCurrentDeviceItem() {

@@ -3,18 +3,24 @@ package com.LubieKakao1212.opencu.common.device;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.IEventNode;
+import com.LubieKakao1212.opencu.common.device.renderer.IDeviceRenderer;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
+import java.util.Spliterator;
 
 public interface IFramedDevice {
 
     /**
      * @param ctx used to fetch ammo, use energy, and add leftovers
+     * @return Was activation successful
      */
-    void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx);
+    boolean activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx);
 
     void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx);
 

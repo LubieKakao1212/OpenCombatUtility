@@ -1,9 +1,7 @@
 package com.LubieKakao1212.opencu.common.device.vanilla;
 
-import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.device.ShotEntry;
 import com.LubieKakao1212.opencu.common.device.ShotMappings;
-import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.projectile.ArrowEntity;

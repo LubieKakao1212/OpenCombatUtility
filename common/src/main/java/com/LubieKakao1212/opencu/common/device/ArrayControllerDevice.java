@@ -25,10 +25,13 @@ public class ArrayControllerDevice implements IFramedDevice {
      * @param ctx   used to fetch ammo, use energy, and add leftovers
      */
     @Override
-    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public boolean activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+        var flag = false;
         if(container instanceof BlockEntityModularFrame frame) {
+            flag = true;
             frame.getEventDistributor().handleEvent(new ActivateEvent());
         }
+        return flag;
     }
 
     @Override

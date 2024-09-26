@@ -32,6 +32,10 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     private IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
 
+    //region Client
+    private long lastActiveTimestamp;
+    //end Region
+
     public BlockEntityDeviceContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         redstoneControlType = RedstoneControlType.PULSE;
@@ -124,7 +128,9 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         assert world != null;
         if(currentDevice != null) {
             try(DeviceActivationContext ctx = getNewContext()) {
-                currentDevice.activate(this, currentDeviceState, world, pos, currentAim(), ctx);
+                if(currentDevice.activate(this, currentDeviceState, world, pos, currentAim(), ctx)) {
+                    lastActiveTimestamp = world.getTime();
+                }
             }
         }
     }
@@ -164,4 +170,23 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
             currentDeviceState = null;
         }
     }
+
+    //region Client Methods
+
+    /**
+     * Client Method
+     */
+    @Override
+    public long getLastActiveTimestamp() {
+        return lastActiveTimestamp;
+    }
+
+    /**
+     * Client Method
+     */
+    public void setLastActiveTimestamp(long lastActiveTimestamp) {
+        this.lastActiveTimestamp = lastActiveTimestamp;
+    }
+
+    //endregion
 }
