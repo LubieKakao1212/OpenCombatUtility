@@ -115,6 +115,10 @@ public class BlockModularFrame extends BlockWithEntity {
             OpenCUModCommon.LOGGER.info("Neighbour Update: " + pos.toShortString());
         }*/
 
+        if(world.isClient) {
+           return;
+        }
+
         var frame = CUBlockEntities.modularFrame().get(world, pos);
 
         if(frame == null) {
