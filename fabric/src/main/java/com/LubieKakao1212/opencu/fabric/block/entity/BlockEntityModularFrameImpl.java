@@ -23,6 +23,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.InfiniteEnergyStorage;
 import team.reborn.energy.api.base.LimitingEnergyStorage;

@@ -5,17 +5,21 @@ import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.rendering.RenderingUtil;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BasicBakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class RepulsorDeviceRenderer implements IDeviceRenderer {
@@ -45,12 +49,12 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
     public static final int pulseTicks = 20;
 
     @Override
-    public void render(@NotNull World world, @NotNull IDeviceContainer container, @NotNull IFramedDevice device, @NotNull IDeviceState state, @Nullable ItemStack deviceItem, float partialTick, @NotNull MatrixStack matrixStack, @NotNull VertexConsumerProvider vertexConsumerSource, int packedLight, int packedOverlay) {
-        //super.render(world, container, device, state, deviceItem, partialTick, poseStack, vertexConsumerSource, packedLight, packedOverlay);
+    public void render(@NotNull ClientWorld world, @NotNull IDeviceContainer container, @NotNull IFramedDevice device, @NotNull IDeviceState state, @NotNull Context context, float partialTick, @NotNull MatrixStack matrixStack, @NotNull VertexConsumerProvider vertexConsumerSource, int packedLight, int packedOverlay) {
+        //TODO apply ambient occlusion
         var solid = vertexConsumerSource.getBuffer(RenderLayer.getSolid());
         matrixStack.push();
         matrixStack.translate(-0.5,-0.5,-0.5);
-        renderFrame(matrixStack, state, solid, packedLight, packedOverlay);
+        renderFrame(world, context.blockModelRenderer(), context.worldPos(), matrixStack, state, solid, packedLight, packedOverlay);
         renderLantern(world, container, matrixStack, state, partialTick, solid, packedOverlay);
         matrixStack.pop();
     }
@@ -70,27 +74,31 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
         matrixStack.translate(gap, gap, gap);
         matrixStack.scale(scale, scale, scale);
 
-        RenderingUtil.renderModel(model, vertexConsumer, matrixStack, finalColor, 511, packedOverlay);
+        RenderingUtil.renderModel(model, vertexConsumer, matrixStack, finalColor, LightmapTextureManager.MAX_LIGHT_COORDINATE, packedOverlay);
     }
 
-    public static void renderFrame(@NotNull MatrixStack matrixStack, @NotNull IDeviceState state, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay) {
+    public static void renderFrame(@NotNull ClientWorld world, @NotNull BlockModelRenderer renderer, @NotNull BlockPos pos,
+                                   @NotNull MatrixStack matrixStack, @NotNull IDeviceState state, @NotNull VertexConsumer vertexConsumer,
+                                   int packedLight, int packedOverlay) {
         BasicBakedModel model = (BasicBakedModel) MinecraftClient.getInstance().getBakedModelManager().getModel(frameLocation);
         RenderingUtil.renderModel(model, vertexConsumer, matrixStack, new Color(1f, 1f,1f, 1f), packedLight, packedOverlay);
 
         for(int i=0; i<back_models.length; i++) {
-            renderBackPart(matrixStack, back_models[i], vertexConsumer, back_offsets[i], -1, packedLight, packedOverlay);
+            renderBackPart(world, renderer, pos, matrixStack, back_models[i], vertexConsumer, back_offsets[i], -1, packedLight, packedOverlay);
         }
         //renderBackPart(matrixStack, frameLocation_back_bl, vertexConsumer, new Vector3f(v, v, 0), 1f, packedLight, packedOverlay);
     }
 
-    private static void renderBackPart(@NotNull MatrixStack matrixStack, @NotNull ModelIdentifier modelId, @NotNull VertexConsumer vertexConsumer, @NotNull Vector3f targetOffset, float offsetRatio, int packedLight, int packedOverlay) {
+    private static void renderBackPart(@NotNull ClientWorld world, @NotNull BlockModelRenderer renderer, @NotNull BlockPos pos,
+                                       @NotNull MatrixStack matrixStack, @NotNull ModelIdentifier modelId, @NotNull VertexConsumer vertexConsumer,
+                                       @NotNull Vector3f targetOffset, float offsetRatio, int packedLight, int packedOverlay) {
         matrixStack.push();
-
         var offset = new Vector3f(0).lerp(targetOffset, offsetRatio);
         matrixStack.translate(offset.x, offset.y, offset.z);
-        BasicBakedModel model = (BasicBakedModel) MinecraftClient.getInstance().getBakedModelManager().getModel(modelId);
+        var model = MinecraftClient.getInstance().getBakedModelManager().getModel(modelId);
         RenderingUtil.renderModel(model, vertexConsumer, matrixStack, new Color(1f, 1f,1f, 1f), packedLight, packedOverlay);
 
+        //renderer.render(world, model, Blocks.AIR.getDefaultState(), pos, matrixStack, vertexConsumer, false, world.random,0, packedOverlay);
         matrixStack.pop();
     }
 }

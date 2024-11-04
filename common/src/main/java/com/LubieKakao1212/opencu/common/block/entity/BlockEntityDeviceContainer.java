@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -111,12 +112,12 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     }
 
     @Override
-    public IFramedDevice getDevice() {
+    public @NotNull IFramedDevice getDevice() {
         return currentDevice;
     }
 
     @Override
-    public IDeviceState getState() {
+    public @NotNull IDeviceState getState() {
         return currentDeviceState;
     }
 

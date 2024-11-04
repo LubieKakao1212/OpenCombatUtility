@@ -8,7 +8,6 @@ import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
-import com.LubieKakao1212.opencu.common.gui.container.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameScreenHandler;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
@@ -16,7 +15,6 @@ import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerReq
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.PlatformUtil;
-import com.LubieKakao1212.opencu.registry.CUFramedDevices;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
@@ -130,7 +128,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     }
 
     protected void updateDispenser() {
-        ItemStack deviceStack = getCurrentDeviceItem();
+        ItemStack deviceStack = getDeviceItem();
 
         setCurrentDevice(PlatformUtil.getDeviceFrom(deviceStack));
 
@@ -356,7 +354,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     }
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getCurrentDeviceItem()), player);
+        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getDeviceItem()), player);
         NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAim, true), player);
     }
 
@@ -371,7 +369,8 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
         return new ModularFrameScreenHandler(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
     }
 
-    public ItemStack getCurrentDeviceItem() {
+    @Override
+    public ItemStack getDeviceItem() {
         assert this.world != null;
         if(this.world.isClient) {
             return currentDeviceItem;

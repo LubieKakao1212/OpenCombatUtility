@@ -4,13 +4,21 @@ import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FacingBlock;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceContainer {
 
-    public BlockEntityDeviceContainer6Dir(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    @Nullable
+    private final ItemStack displayModel;
+
+    public BlockEntityDeviceContainer6Dir(BlockEntityType<?> type, @Nullable ItemStack displayModel, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        this.displayModel = displayModel;
     }
 
     @Override
@@ -42,6 +50,18 @@ public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceCo
             default -> {
                 return null;
             }
+        }
+    }
+
+    @Override
+    public @Nullable ItemStack getDeviceItem() {
+        return displayModel;
+    }
+
+    public static <T extends BlockEntity> void tick(World world, BlockPos blockPos, BlockState blockState, T be) {
+        var be6Dir = (BlockEntityDeviceContainer6Dir) be;
+        if(!world.isClient) {
+            be6Dir.tickDeviceServer();
         }
     }
 }

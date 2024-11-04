@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.registry.fabric;
 
+import com.LubieKakao1212.opencu.common.block.BlockDevice6Dir;
 import com.LubieKakao1212.opencu.fabric.block.BlockModularFrame;
-import com.LubieKakao1212.opencu.fabric.block.BlockRepulsor;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import io.wispforest.owo.registration.reflect.BlockRegistryContainer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CUBlocksImpl implements BlockRegistryContainer {
 
-    public static Block REPULSOR = new BlockRepulsor(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque());
+    public static Block REPULSOR = new BlockDevice6Dir(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.REPULSOR);//new BlockRepulsor(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque());
     public static Block MODULAR_FRAME = new BlockModularFrame(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque());
 
     @NotNull

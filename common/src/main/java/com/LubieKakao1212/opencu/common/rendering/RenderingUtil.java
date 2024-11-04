@@ -9,7 +9,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RenderingUtil {
@@ -20,6 +19,7 @@ public class RenderingUtil {
         dirs.add(null);
     }
 
+    //TODO apply ambient occlusion
     public static void renderModel(@NotNull BakedModel model, @NotNull VertexConsumer vc, @NotNull MatrixStack matrixStack, @NotNull Color color, int packedLight, int packedOverlay) {
         for(Direction dir : dirs) {
             for(BakedQuad quad : model.getQuads(null, dir, null)) {

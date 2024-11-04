@@ -4,7 +4,6 @@ import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.peripheral.ModularFramePeripheral;
 import com.LubieKakao1212.opencu.common.peripheral.RepulsorPeripheral;
 import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
-import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
 import com.LubieKakao1212.opencu.forge.capability.provider.PeripheralCapabilityProvider;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.entity.BlockEntity;
@@ -22,10 +21,10 @@ public class CapabilityHandler {
     @SubscribeEvent
     public static void attachBlockCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
 
-        if(event.getObject() instanceof BlockEntityRepulsorImpl) {
-            BlockEntityRepulsorImpl repulsor = (BlockEntityRepulsorImpl) event.getObject();
-            event.addCapability(new Identifier(OpenCUModCommon.MODID, "peripheral"), new PeripheralCapabilityProvider(() -> new RepulsorPeripheral(repulsor)));
-        }
+//        if(event.getObject() instanceof BlockEntityRepulsorImpl) {
+//            BlockEntityRepulsorImpl repulsor = (BlockEntityRepulsorImpl) event.getObject();
+//            event.addCapability(new Identifier(OpenCUModCommon.MODID, "peripheral"), new PeripheralCapabilityProvider(() -> new RepulsorPeripheral(repulsor)));
+//        }
 
         if(event.getObject() instanceof BlockEntityModularFrameImpl) {
             BlockEntityModularFrameImpl dispenser = (BlockEntityModularFrameImpl) event.getObject();
