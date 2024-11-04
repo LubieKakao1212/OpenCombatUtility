@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.block;
 
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
 import com.LubieKakao1212.opencu.common.util.PlacementUtil;
 import net.minecraft.block.*;
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,5 +65,28 @@ public class BlockDevice6Dir extends FacingBlock implements BlockEntityProvider 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         return BlockEntityDeviceContainer6Dir::tick;
+    }
+
+
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        if(world.isClient) {
+            return;
+        }
+
+        var be6 = beType.get().get(world, pos);
+
+        if(be6 == null) {
+            OpenCUModCommon.LOGGER.warn("wrong BlockEntity at: " + pos);
+            return;
+        }
+
+        var delta = sourcePos.subtract(pos);
+        var dir = Direction.fromVector(delta);
+
+        var power = world.isEmittingRedstonePower(sourcePos, dir);
+
+        be6.pulseActivate(dir, power);
     }
 }

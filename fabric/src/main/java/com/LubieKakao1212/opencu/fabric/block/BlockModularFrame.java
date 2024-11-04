@@ -87,8 +87,6 @@ public class BlockModularFrame extends BlockWithEntity {
         return state.get(BlockProperties.EMITS_REDSTONE_SIGNAL) ? 15 : 0;
     }
 
-
-
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(BlockProperties.EMITS_REDSTONE_SIGNAL);
@@ -107,14 +105,6 @@ public class BlockModularFrame extends BlockWithEntity {
 
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        /*if(world.isClient) {
-            OpenCUModCommon.LOGGER.info("client");
-        } else {
-            OpenCUModCommon.LOGGER.info("server");
-
-            OpenCUModCommon.LOGGER.info("Neighbour Update: " + pos.toShortString());
-        }*/
-
         if(world.isClient) {
            return;
         }
@@ -123,6 +113,7 @@ public class BlockModularFrame extends BlockWithEntity {
 
         if(frame == null) {
             OpenCUModCommon.LOGGER.warn("wrong BlockEntity at: " + pos);
+            return;
         }
 
         var delta = sourcePos.subtract(pos);

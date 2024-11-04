@@ -14,16 +14,21 @@ public class RepulsorDeviceState extends DeviceStateBase {
     private EntityPulseType pulseType = CUPulse.defaultPulse();
     private final PulseData pulseData = new PulseData();
 
+    //region Client Fields
+    /**
+     * Client field
+     */
+    private long lastActivationTimestamp = 0;
+
     public RepulsorDeviceState() {
         pulseData.radius = 3.0;
         pulseData.force = 0.5;
     }
+    //endregion
 
     /**
      * Returns a cc api for this state instance.
      * Do not call unless CC:Tweaked is present
-     *
-     * @return
      */
     @Override
     public IDeviceApi getApi() {
@@ -68,4 +73,22 @@ public class RepulsorDeviceState extends DeviceStateBase {
     public PulseData getPulseData() {
         return pulseData;
     }
+
+    //region Client Methods
+
+    /**
+     * Client Method
+     */
+    public long getLastActivationTimestamp() {
+        return lastActivationTimestamp;
+    }
+
+    /**
+     * Client Method
+     */
+    public void setLastActivationTimestamp(long lastActivationTimestamp) {
+        this.lastActivationTimestamp = lastActivationTimestamp;
+    }
+
+    //endregion
 }

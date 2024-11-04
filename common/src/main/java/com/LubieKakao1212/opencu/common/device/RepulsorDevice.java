@@ -1,14 +1,17 @@
 package com.LubieKakao1212.opencu.common.device;
 
+import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorActivationTimestamp;
 import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
@@ -44,6 +47,10 @@ public class RepulsorDevice implements IFramedDevice {
         if(ctx.energy().useEnergy(energyUsage, ctx.ctx()) == energyUsage) {
             var dir = aim.toQuaternion().transform(Vector3dExtensions.INSTANCE.getNORTH());
             pulseType.executePulse(world, pulseOrigin, new PulseData.Directional(pulseData, dir));
+
+            //Update visuals
+            NetworkUtil.sendToAllTracking(new PacketClientRepulsorActivationTimestamp(pos, world.getTime()), (ServerWorld) world, pos);
+
             ctx.ctx().commit();
         }
     }

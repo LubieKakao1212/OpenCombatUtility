@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientUpdateActivationTimestamp;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorActivationTimestamp;
 import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
@@ -27,7 +27,7 @@ public class NetworkUtilImpl {
         CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenser.class);
         CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenserAim.class);
 
-        CHANNEL.registerClientboundDeferred(PacketClientUpdateActivationTimestamp.class);
+        CHANNEL.registerClientboundDeferred(PacketClientRepulsorActivationTimestamp.class);
 
         CHANNEL.registerServerbound(PacketServerRequestDispenserUpdate.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketServerToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
@@ -40,7 +40,7 @@ public class NetworkUtilImpl {
         CHANNEL.registerClientbound(PacketClientUpdateDispenser.class, (pkt, acc) -> handle(pkt));
         CHANNEL.registerClientbound(PacketClientUpdateDispenserAim.class, (pkt, acc) -> handle(pkt));
 
-        CHANNEL.registerClientbound(PacketClientUpdateActivationTimestamp.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketClientRepulsorActivationTimestamp.class, (pkt, acc) -> handle(pkt));
     }
 
     public static <T extends Record> void sendToAllTracking(T packet, ServerWorld world, BlockPos pos) {

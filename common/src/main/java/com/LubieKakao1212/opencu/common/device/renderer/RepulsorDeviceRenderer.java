@@ -4,9 +4,8 @@ import com.LubieKakao1212.opencu.common.block.entity.renderer.Color;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
+import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
 import com.LubieKakao1212.opencu.common.rendering.RenderingUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -55,12 +54,13 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
         matrixStack.push();
         matrixStack.translate(-0.5,-0.5,-0.5);
         renderFrame(world, context.blockModelRenderer(), context.worldPos(), matrixStack, state, solid, packedLight, packedOverlay);
-        renderLantern(world, container, matrixStack, state, partialTick, solid, packedOverlay);
+        renderLantern(world, matrixStack, state, partialTick, solid, packedOverlay);
         matrixStack.pop();
     }
 
-    public static void renderLantern(@NotNull World world, @NotNull IDeviceContainer container, @NotNull MatrixStack matrixStack, @NotNull IDeviceState state, float partialTick, @NotNull VertexConsumer vertexConsumer, int packedOverlay) {
-        var animTicks = world.getTime() - container.getLastActiveTimestamp();
+    public static void renderLantern(@NotNull World world, @NotNull MatrixStack matrixStack, @NotNull IDeviceState state, float partialTick, @NotNull VertexConsumer vertexConsumer, int packedOverlay) {
+        var repulsorState = (RepulsorDeviceState) state;
+        var animTicks = world.getTime() - repulsorState.getLastActivationTimestamp();
         var animTicksLeft = Math.max(pulseTicks - animTicks, 0);
         var animProgress = Math.max((animTicksLeft - partialTick), 0) / (float)pulseTicks;
 

@@ -22,16 +22,4 @@ public interface IDeviceContainer extends IRedstoneControlled {
 
     boolean isSameAs(IDeviceContainer deviceContainer);
 
-    /**
-     * Client Method
-     */
-    long getLastActiveTimestamp();
-
-    /**
-     * Client Method
-     */
-    void setLastActiveTimestamp(long lastActiveTimestamp);
-
-
-
 }
