@@ -38,11 +38,11 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
             new ModelIdentifier("opencu","repulsor_frame_tr", "")
     };
 
-    public static final Vector3f[] back_offsets = new Vector3f[] {
-            new Vector3f(offset, offset, 0),
-            new Vector3f(-offset, offset, 0),
-            new Vector3f(offset, -offset, 0),
-            new Vector3f(-offset, -offset, 0),
+    private static final Vector3f[] back_offsets = new Vector3f[] {
+            new Vector3f(-offset, -offset, offset),
+            new Vector3f(offset, -offset, offset),
+            new Vector3f(-offset, offset, offset),
+            new Vector3f(offset, offset, offset),
     };
 
     public static final int pulseTicks = 20;
@@ -53,7 +53,7 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
         var solid = vertexConsumerSource.getBuffer(RenderLayer.getSolid());
         matrixStack.push();
         matrixStack.translate(-0.5,-0.5,-0.5);
-        renderFrame(world, context.blockModelRenderer(), context.worldPos(), matrixStack, state, solid, packedLight, packedOverlay);
+        renderFrame(world, context.blockModelRenderer(), context.worldPos(), matrixStack, (RepulsorDeviceState) state, solid, packedLight, packedOverlay);
         renderLantern(world, matrixStack, state, partialTick, solid, packedOverlay);
         matrixStack.pop();
     }
@@ -78,13 +78,15 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
     }
 
     public static void renderFrame(@NotNull ClientWorld world, @NotNull BlockModelRenderer renderer, @NotNull BlockPos pos,
-                                   @NotNull MatrixStack matrixStack, @NotNull IDeviceState state, @NotNull VertexConsumer vertexConsumer,
+                                   @NotNull MatrixStack matrixStack, @NotNull RepulsorDeviceState state, @NotNull VertexConsumer vertexConsumer,
                                    int packedLight, int packedOverlay) {
         BasicBakedModel model = (BasicBakedModel) MinecraftClient.getInstance().getBakedModelManager().getModel(frameLocation);
         RenderingUtil.renderModel(model, vertexConsumer, matrixStack, new Color(1f, 1f,1f, 1f), packedLight, packedOverlay);
 
+        var offsetRatio = (float) state.getDirectionBlend();
+
         for(int i=0; i<back_models.length; i++) {
-            renderBackPart(world, renderer, pos, matrixStack, back_models[i], vertexConsumer, back_offsets[i], -1, packedLight, packedOverlay);
+            renderBackPart(world, renderer, pos, matrixStack, back_models[i], vertexConsumer, back_offsets[i], offsetRatio, packedLight, packedOverlay);
         }
         //renderBackPart(matrixStack, frameLocation_back_bl, vertexConsumer, new Vector3f(v, v, 0), 1f, packedLight, packedOverlay);
     }

@@ -1,9 +1,9 @@
 package com.LubieKakao1212.opencu.forge.packet;
 
 import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import net.minecraft.network.PacketByteBuf;
 

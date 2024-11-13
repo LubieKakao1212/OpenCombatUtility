@@ -1,12 +1,11 @@
 package com.LubieKakao1212.opencu.common.gui;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.common.gui.container.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameScreenHandler;
 import com.LubieKakao1212.opencu.common.gui.widget.FillableBarWidget;
 import com.LubieKakao1212.opencu.common.gui.widget.ResponsiveToggleWidget;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerToggleRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.mojang.blaze3d.systems.RenderSystem;

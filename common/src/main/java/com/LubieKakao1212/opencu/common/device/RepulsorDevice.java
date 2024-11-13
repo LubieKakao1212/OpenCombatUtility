@@ -4,8 +4,7 @@ import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorActivationTimestamp;
-import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientRepulsorActivationTimestamp;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
@@ -28,21 +27,13 @@ public class RepulsorDevice implements IFramedDevice {
 
         //TODO remove distance cost from config and registry
 
-        double maxRadius = config.maxRadius();
-
         Vector3d pulseOrigin = new Vector3m(pos.toCenterPos());
 
         var repState = (RepulsorDeviceState)state;
         var pulseData = repState.getPulseData();
         var pulseType = repState.getPulseType();
 
-        double radius = pulseData.radius;
-        double volumeRatio = (radius * radius * radius) / (maxRadius * maxRadius * maxRadius);
-        double forceRatio = Math.abs(pulseData.force);
-
-        EntityPulseType.EnergyUsage energyUsageMul = pulseType.getEnergyUsage();
-        int energyUsage = (int)Math.floor(
-                volumeRatio * forceRatio * config.powerCost() * energyUsageMul.fromPower);
+        var energyUsage = repState.getEnergyUsage();
 
         if(ctx.energy().useEnergy(energyUsage, ctx.ctx()) == energyUsage) {
             var dir = aim.toQuaternion().transform(Vector3dExtensions.INSTANCE.getNORTH());
@@ -57,7 +48,8 @@ public class RepulsorDevice implements IFramedDevice {
 
     @Override
     public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
-        //empty
+        //server only
+        ((RepulsorDeviceState) state).sync(world, pos);
     }
 
     @Override
@@ -72,6 +64,7 @@ public class RepulsorDevice implements IFramedDevice {
 
     @Override
     public IDeviceState getNewState() {
-        return new RepulsorDeviceState();
+        //TODO fetch config
+        return new RepulsorDeviceState(OpenCUConfigCommon.repulsorDevice());
     }
 }

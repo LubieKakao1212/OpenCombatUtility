@@ -4,8 +4,10 @@ import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientRepulsorActivationTimestamp;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateRepulsorBlend;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.block.entity.BlockEntity;
@@ -74,8 +76,25 @@ public class PacketHandlersClient {
             //container.setLastActiveTimestamp(packet.timestamp());
         }
         else {
-            OpenCUModCommon.LOGGER.warn("No device container found at: " + packet.position());
+            OpenCUModCommon.LOGGER.warn("No device container with Repulsor device found at: " + packet.position());
         }
     }
+
+    public static void handle(PacketClientUpdateRepulsorBlend packet) {
+        var world = MinecraftClient.getInstance().world;
+        assert world != null;
+
+        var be = world.getBlockEntity(packet.position());
+        if(be instanceof IDeviceContainer container) {
+            var state = container.getState();
+            if(state instanceof RepulsorDeviceState) {
+                ((RepulsorDeviceState) state).setDirectionBlend(packet.value());
+            }
+        }
+        else {
+            OpenCUModCommon.LOGGER.warn("No device container with Repulsor device found at: " + packet.position());
+        }
+    }
+
 
 }

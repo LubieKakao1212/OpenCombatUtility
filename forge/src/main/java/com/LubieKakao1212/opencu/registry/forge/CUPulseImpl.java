@@ -23,10 +23,10 @@ public class CUPulseImpl {
         registry = PULSES.makeRegistry(
                 () -> new RegistryBuilder<EntityPulseType>().onAdd(CUPulseImpl::onAdd));
 
-        REPULSOR = PULSES.register(CUIds.Str.REPULSOR, () -> new EntityPulseType.Builder(Pulses::repulsorPulse)
-                .build());
-        PULSES.register(CUIds.Str.VECTOR, () -> new EntityPulseType.Builder(Pulses::vectorPulse)
-                .build());
+//        REPULSOR = PULSES.register(CUIds.Str.REPULSOR, () -> new EntityPulseType.Builder(Pulses::repulsorPulse)
+//                .build());
+//        PULSES.register(CUIds.Str.VECTOR, () -> new EntityPulseType.Builder(Pulses::vectorPulse)
+//                .build());
         PULSES.register(CUIds.Str.STASIS, () -> new EntityPulseType.Builder(Pulses::stasisPulse)
                 .build());
 
