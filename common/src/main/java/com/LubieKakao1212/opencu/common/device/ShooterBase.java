@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.device;
 
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
@@ -83,6 +84,11 @@ public abstract class ShooterBase implements IFramedDevice {
 
     protected ShotMappings getMappings() {
         return this.mappings;
+    }
+
+    @Override
+    public boolean ammoEnabled() {
+        return true;
     }
 }
 

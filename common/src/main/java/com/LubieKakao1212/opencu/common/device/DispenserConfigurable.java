@@ -24,4 +24,10 @@ public class DispenserConfigurable extends ShooterBase {
         return new ShooterDeviceState(maxForce, minSpread, baseEnergy, -1.0);
     }
 
+
+    @Override
+    public boolean energyEnabled() {
+        return true;
+    }
+
 }

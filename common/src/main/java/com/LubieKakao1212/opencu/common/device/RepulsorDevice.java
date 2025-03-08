@@ -67,4 +67,14 @@ public class RepulsorDevice implements IFramedDevice {
         //TODO fetch config
         return new RepulsorDeviceState(OpenCUConfigCommon.repulsorDevice());
     }
+
+    @Override
+    public boolean ammoEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean energyEnabled() {
+        return OpenCUConfigCommon.repulsorDevice().energy().isEnergyEnabled();
+    }
 }

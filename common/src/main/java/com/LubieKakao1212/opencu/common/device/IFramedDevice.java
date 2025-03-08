@@ -17,18 +17,6 @@ public interface IFramedDevice {
 
     void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx);
 
-    /*
-     * @param spread spread value that would be set
-     * @return error message or null if successful
-    String trySetSpread(double spread);
-
-    /*
-     *
-     *  @param force force value that would be set
-     * @return error message or null if successful
-
-    String trySetForce(double force);*/
-
     //Deg angle per tick
     double getPitchAlignmentSpeed();
 
@@ -38,4 +26,8 @@ public interface IFramedDevice {
     IDeviceState getNewState();
 
     default void handleEvent(BlockEntityModularFrame frame, IDeviceState state, IEventData data) { }
+
+    boolean ammoEnabled();
+
+    boolean energyEnabled();
 }

@@ -175,6 +175,17 @@ public class TrackerBase implements IFramedDevice {
         return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick);
     }
 
+    @Override
+    public boolean ammoEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean energyEnabled() {
+        //Temporary
+        return true;
+    }
+
     private boolean drainEnergy(DeviceActivationContext ctx, TrackerDeviceState state, double amount) {
         state.energyLeftover += amount;
 
@@ -195,5 +206,4 @@ public class TrackerBase implements IFramedDevice {
             return true;
         }
     }
-
 }

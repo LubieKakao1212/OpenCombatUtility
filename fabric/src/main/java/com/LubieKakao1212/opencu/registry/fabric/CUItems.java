@@ -14,9 +14,9 @@ public class CUItems implements ItemRegistryContainer {
 
     public static final Item LINK_TOOL = new ItemLinkTool(new OwoItemSettings().maxCount(1).group(CUItemGroups.OCU_MAIN));
 
-    public static final Item DISPENSER_GOLD = new Item(new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
-    public static final Item DISPENSER_DIAMOND = new Item(new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
-    public static final Item DISPENSER_NETHERITE = new Item(new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
+//    public static final Item DISPENSER_GOLD = new Item(new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
+//    public static final Item DISPENSER_DIAMOND = new Item(new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
+//    public static final Item DISPENSER_NETHERITE = new Item(new OwoItemSettings().group(CUItemGroups.OCU_MAIN));
 
 
 }

@@ -2,9 +2,9 @@
   "block.opencu.repulsor": "Repulsor",
   "block.opencu.modular_frame": "Modular Frame",
 
-  "item.opencu.dispenser_gold": "Golden Dispenser",
-  "item.opencu.dispenser_diamond": "Diamond Dispenser",
-  "item.opencu.dispenser_netherite": "Netherite Dispenser",
+  "block.opencu.dispenser_gold": "Golden Dispenser",
+  "block.opencu.dispenser_diamond": "Diamond Dispenser",
+  "block.opencu.dispenser_netherite": "Netherite Dispenser",
 
   "item.opencu.link_tool": "Linker",
   "item.opencu.aim_tool": "Aim Tool",

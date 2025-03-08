@@ -34,10 +34,10 @@ import java.util.Stack;
 
 public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
-    private static final int slotCount = 10;
-    private static final int ammoSlotCount = 9;
-    private static final int ammoSlotsStart = 1;
-    private static final int ammoSlotsEnd = 10;
+    public static final int slotCount = 10;
+    public static final int ammoSlotCount = 9;
+    public static final int ammoSlotsStart = 1;
+    public static final int ammoSlotsEnd = 10;
 
     private static final int dispenserSotCount = 1;
     private static final int dispenserSlotsStart = 0;

@@ -56,4 +56,14 @@ public class ArrayControllerDevice implements IFramedDevice {
     public void handleEvent(BlockEntityModularFrame frame, IDeviceState state, IEventData data) {
         frame.getEventDistributor().handleEvent(data);
     }
+
+    @Override
+    public boolean ammoEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean energyEnabled() {
+        return true;
+    }
 }

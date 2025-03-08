@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.fabric.apilookup.APILookupItemStorage;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIFramedDevice;
@@ -38,6 +39,7 @@ public class OpenCUModFabric implements ModInitializer {
         }
 
         APILookupRebornEnergy.register();
+        APILookupItemStorage.register();
         APILookupIFramedDevice.init();
 
         UseHandler.init();

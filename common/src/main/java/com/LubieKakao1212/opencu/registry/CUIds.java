@@ -11,6 +11,7 @@ public class CUIds {
 
     public static final Identifier MODULAR_FRAME = new Identifier(OpenCUModCommon.MODID, Str.MODULAR_FRAME);
     public static final Identifier REPULSOR = new Identifier(OpenCUModCommon.MODID, Str.REPULSOR);
+    public static final Identifier SHOOTER = new Identifier(OpenCUModCommon.MODID, Str.REPULSOR);
 
     public static final Identifier DISPENSER_MAPPINGS = new Identifier(OpenCUModCommon.MODID, Str.DISPENSER);
     public static final Identifier DROPPER_MAPPINGS = new Identifier(OpenCUModCommon.MODID, Str.DROPPER);
@@ -27,6 +28,7 @@ public class CUIds {
 
         public static final String MODULAR_FRAME = "modular_frame";
         public static final String REPULSOR = "repulsor";
+        public static final String SHOOTER = "shooter";
 
         public static final String DISPENSER = "dispenser";
         public static final String FRAMED_DEVICE_API = "framed_device";

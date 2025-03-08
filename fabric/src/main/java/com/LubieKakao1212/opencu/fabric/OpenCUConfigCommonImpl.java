@@ -190,6 +190,11 @@ public class OpenCUConfigCommonImpl {
             return CONFIG.power();
         }
 
+        @Override
+        public OpenCUConfigCommon.IEnergyToggle energy() {
+            return OpenCUConfigCommon.Defaults.ENERGY_TOGGLE_ENABLED; //TODO
+        }
+
         /**
          * Use only for configurable dispensers
          */

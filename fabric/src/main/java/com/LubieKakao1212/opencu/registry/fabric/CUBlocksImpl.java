@@ -12,8 +12,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class CUBlocksImpl implements BlockRegistryContainer {
 
-    public static Block REPULSOR = new BlockDevice6Dir(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.REPULSOR);//new BlockRepulsor(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque());
     public static Block MODULAR_FRAME = new BlockModularFrame(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque());
+
+    //region placed devices
+    public static Block REPULSOR = new BlockDevice6Dir(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.REPULSOR);
+
+    public static Block DISPENSER_GOLD = new BlockDevice6Dir(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.DISPENSER_GOLD);
+    public static Block DISPENSER_DIAMOND = new BlockDevice6Dir(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.DISPENSER_DIAMOND);
+    public static Block DISPENSER_NETHERITE = new BlockDevice6Dir(FabricBlockSettings.of(Material.METAL).strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.DISPENSER_NETHERITE);
+    //endregion
 
     @NotNull
     public static Block repulsor() {
