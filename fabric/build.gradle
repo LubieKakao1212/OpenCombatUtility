@@ -46,10 +46,14 @@ dependencies {
 }
 
 processResources {
-    inputs.property "version", project.version
+    var props = [
+            version: version,
+            qulib_version: qulib_version
+    ]
+    inputs.properties(props)
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand props + [project: project]
     }
     exclude "opencu-common.accesswidener"
 }

@@ -53,10 +53,14 @@ dependencies {
 }
 
 processResources {
-    inputs.property "version", project.version
+    var props = [
+            version: version,
+            qulib_version: qulib_version
+    ]
+    inputs.properties(props)
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand props + [project: project]
     }
 }
 

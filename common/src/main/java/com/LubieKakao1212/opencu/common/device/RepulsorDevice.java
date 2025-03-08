@@ -22,7 +22,7 @@ public class RepulsorDevice implements IFramedDevice {
      * @param ctx used to fetch ammo, use energy, and add leftovers
      */
     @Override
-    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
         OpenCUConfigCommon.RepulsorDeviceConfig config = OpenCUConfigCommon.repulsorDevice();
 
         //TODO remove distance cost from config and registry
@@ -36,7 +36,7 @@ public class RepulsorDevice implements IFramedDevice {
         var energyUsage = repState.getEnergyUsage();
 
         if(ctx.energy().useEnergy(energyUsage, ctx.ctx()) == energyUsage) {
-            var dir = aim.toQuaternion().transform(Vector3dExtensions.INSTANCE.getNORTH());
+            var dir = aimForward;
             pulseType.executePulse(world, pulseOrigin, new PulseData.Directional(pulseData, dir));
 
             //Update visuals
@@ -47,7 +47,7 @@ public class RepulsorDevice implements IFramedDevice {
     }
 
     @Override
-    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
         //server only
         ((RepulsorDeviceState) state).sync(world, pos);
     }

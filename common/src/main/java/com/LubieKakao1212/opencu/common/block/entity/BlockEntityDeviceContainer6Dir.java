@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.lubiekakao1212.qulib.math.Aim;
+import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
+import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FacingBlock;
@@ -10,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceContainer {
 
@@ -22,7 +25,7 @@ public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceCo
     }
 
     @Override
-    protected Aim currentAim() {
+    protected Vector3d currentAim() {
         assert world != null;
 
         //TODO replace with vector
@@ -30,22 +33,22 @@ public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceCo
 
         switch (direciton) {
             case DOWN -> {
-                return new Aim(- Math.PI / 2, 0);
+                return Vector3dExtensions.INSTANCE.getDOWN();
             }
             case UP -> {
-                return new Aim(Math.PI / 2, 0);
+                return Vector3dExtensions.INSTANCE.getUP();
             }
             case NORTH -> {
-                return new Aim(0, 0);
+                return Vector3dExtensions.INSTANCE.getNORTH();
             }
             case SOUTH -> {
-                return new Aim(0, Math.PI);
+                return Vector3dExtensions.INSTANCE.getSOUTH();
             }
             case WEST -> {
-                return new Aim(0, Math.PI / 2);
+                return Vector3dExtensions.INSTANCE.getWEST();
             }
             case EAST -> {
-                return new Aim(0, -Math.PI / 2);
+                return Vector3dExtensions.INSTANCE.getEAST();
             }
             default -> {
                 return null;

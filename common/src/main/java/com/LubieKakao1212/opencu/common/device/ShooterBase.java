@@ -28,7 +28,7 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void activate(IDeviceContainer container, IDeviceState stateIn, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public void activate(IDeviceContainer container, IDeviceState stateIn, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
         var shotItem = ctx.ammo().useAmmoFirst(ctx.ctx());
 
         //TODO proper empty item handling
@@ -45,7 +45,7 @@ public abstract class ShooterBase implements IFramedDevice {
             //region Shooting
             Entity entity = entry.getEntity(shotItem, world, state);
 
-            Vector3d forward = AimUtilKt.randomSpread(random, aim.toQuaternion(Direction.EAST, Direction.UP), (state.getSpread() * entry.getSpreadMultiplier() * Constants.degToRad), Vector3dExtensions.INSTANCE.getSOUTH());
+            Vector3d forward = AimUtilKt.randomSpread(random, aimForward, (state.getSpread() * entry.getSpreadMultiplier() * Constants.degToRad));
 
             entity.setPosition(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z);
             entity.setPitch(0f);
@@ -68,7 +68,7 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
 
     }
 

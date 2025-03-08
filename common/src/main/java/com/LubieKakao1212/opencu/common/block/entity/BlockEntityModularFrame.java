@@ -18,6 +18,7 @@ import com.LubieKakao1212.opencu.PlatformUtil;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
+import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -273,8 +274,8 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     }
 
     @Override
-    protected Aim currentAim() {
-        return currentAim;
+    protected Vector3d currentAim() {
+        return currentAim.toQuaternion().transform(Vector3dExtensions.INSTANCE.getNORTH());
     }
 
     /**

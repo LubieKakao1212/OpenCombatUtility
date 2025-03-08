@@ -10,6 +10,7 @@ import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.random.RandomEx;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.joml.Vector3d;
 
 public class ArrayControllerDevice implements IFramedDevice {
 
@@ -20,18 +21,18 @@ public class ArrayControllerDevice implements IFramedDevice {
      * @param state
      * @param world
      * @param pos
-     * @param aim
+     * @param aimForward
      * @param ctx       used to fetch ammo, use energy, and add leftovers
      */
     @Override
-    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
         if(container instanceof BlockEntityModularFrame frame) {
             frame.getEventDistributor().handleEvent(new ActivateEvent());
         }
     }
 
     @Override
-    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Aim aim, DeviceActivationContext ctx) {
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
         if(container instanceof BlockEntityModularFrame frame) {
             frame.aimAt(randomEx.nextOnSphere(1));
         }

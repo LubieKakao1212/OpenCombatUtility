@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -130,7 +131,7 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         }
     }
 
-    protected abstract Aim currentAim();
+    protected abstract Vector3d currentAim();
 
     protected abstract DeviceActivationContext getNewContext();
 

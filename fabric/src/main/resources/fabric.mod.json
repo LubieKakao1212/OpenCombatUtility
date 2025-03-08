@@ -28,7 +28,7 @@
     "fabricloader": ">=0.15.6",
     "minecraft": "~1.19.4",
     "java": ">=17",
-    "qulib": ">=2.1.0"
+    "qulib": ">=${qulib_version}"
   },
   "suggests": {
   }
