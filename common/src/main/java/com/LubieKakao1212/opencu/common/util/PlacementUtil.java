@@ -25,7 +25,7 @@ public class PlacementUtil {
 
     public static Optional<Direction> getVerticalDirection(float pitch, float deadZone) {
         return Math.abs(pitch) < deadZone ? Optional.empty() :
-                (pitch < 0) ? Optional.of(Direction.DOWN) : Optional.of(Direction.UP);
+                (pitch < 0) ? Optional.of(Direction.UP) : Optional.of(Direction.DOWN); // negative is UP apparently
     }
 
 }
