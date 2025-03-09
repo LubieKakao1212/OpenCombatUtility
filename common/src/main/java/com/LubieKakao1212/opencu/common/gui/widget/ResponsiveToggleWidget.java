@@ -1,10 +1,12 @@
 package com.LubieKakao1212.opencu.common.gui.widget;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -23,10 +25,12 @@ public class ResponsiveToggleWidget extends ClickableWidget {
     private final Tooltip[] stateTooltips;
     private final Tooltip defaultTooltip;
 
+    private final Identifier texture;
+
     //private final Tooltip defaultTooltip;
 
-    public static ResponsiveToggleWidget dualState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
-        return new ResponsiveToggleWidget(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+    public static ResponsiveToggleWidget dualState(Identifier texture, int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
+        return new ResponsiveToggleWidget(texture, x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
                 Text.empty(),
                 () -> state.get() ? 1 : 0,
                 (s) -> onPressed.accept(s > 0),
@@ -35,8 +39,8 @@ public class ResponsiveToggleWidget extends ClickableWidget {
                 Tooltip.of(Text.translatable(tooltipKey + activeSuffix)));
     }
 
-    public static ResponsiveToggleWidget multiState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
-        return new ResponsiveToggleWidget(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+    public static ResponsiveToggleWidget multiState(Identifier texture, int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
+        return new ResponsiveToggleWidget(texture, x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
                 Text.empty(),
                 state,
                 onPressed,
@@ -44,7 +48,7 @@ public class ResponsiveToggleWidget extends ClickableWidget {
                 tooltips);
     }
 
-    private ResponsiveToggleWidget(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Text message, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
+    private ResponsiveToggleWidget(Identifier texture, int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Text message, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
         super(x, y, width, height, message);
         this.state = state;
         this.onPressed = onPressed;
@@ -55,6 +59,7 @@ public class ResponsiveToggleWidget extends ClickableWidget {
 
         this.defaultTooltip = defaultTooltip;
         this.stateTooltips = tooltips;
+        this.texture = texture;
     }
 
     @Override
@@ -63,7 +68,7 @@ public class ResponsiveToggleWidget extends ClickableWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
         var u = spriteU;
         var v = spriteV;
 
@@ -75,7 +80,7 @@ public class ResponsiveToggleWidget extends ClickableWidget {
             v += hoverOffsetV;
         }
 
-        drawTexture(matrices, getX(), getY(), u, v, getWidth(), getHeight());
+        context.drawTexture(texture, getX(), getY(), u, v, getWidth(), getHeight());
 
         var tooltip = defaultTooltip;
 

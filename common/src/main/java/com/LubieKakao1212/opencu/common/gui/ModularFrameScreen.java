@@ -9,6 +9,7 @@ import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerToggle
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.render.GameRenderer;
@@ -36,7 +37,7 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameScreenHandler>
         //var aimLockToggle = new ToggleButtonWidget(161, 7, 10, 10, false);
         //aimLockToggle.setTextureUV(178, 69, 12,12, mainTexture);
         //aimLockToggle.onClick();
-        var lockButton = ResponsiveToggleWidget.dualState(
+        var lockButton = ResponsiveToggleWidget.dualState(mainTexture,
                 x + 149, y + 6,
                 10, 10,
                 188, 68,
@@ -46,7 +47,7 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameScreenHandler>
                 "info.opencu.frame.gui.lock");
         addDrawableChild(lockButton);
 
-        var redstoneControlButton = ResponsiveToggleWidget.multiState(
+        var redstoneControlButton = ResponsiveToggleWidget.multiState(mainTexture,
                 x + 160, y + 6,
                 10, 10,
                 177, 90,
@@ -62,7 +63,8 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameScreenHandler>
 
         addDrawableChild(redstoneControlButton);
 
-        energyWidget = new FillableBarWidget(x + 15, y + 33,
+        energyWidget = new FillableBarWidget(mainTexture,
+                x + 15, y + 33,
                 13,16,
                 226, 58,
                 FillableBarWidget.FillDirection.DOWN,
@@ -71,22 +73,22 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameScreenHandler>
     }
 
     @Override
-    public void render(MatrixStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack);
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(context);
 
         energyWidget.setTooltip(Tooltip.of(Text.translatable(energyBarTooltipKey, handler.getEnergy(), handler.getMaxEnergy())));
 
         //this.drawBackground(poseStack, partialTick, mouseX, mouseY);
-        super.render(poseStack, mouseX, mouseY, partialTick);
-        this.drawMouseoverTooltip(poseStack, mouseX, mouseY);
+        super.render(context, mouseX, mouseY, partialTick);
+        this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
 
     @Override
-    protected void drawBackground(MatrixStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, mainTexture);
+    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+//        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderTexture(0, mainTexture);
 
-        drawTexture(poseStack, x, y,0,0, backgroundWidth, backgroundHeight);
+        context.drawTexture(mainTexture, x, y,0,0, backgroundWidth, backgroundHeight);
     }
 }

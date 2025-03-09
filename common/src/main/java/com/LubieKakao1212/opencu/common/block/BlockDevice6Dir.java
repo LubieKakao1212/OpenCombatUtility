@@ -83,7 +83,7 @@ public class BlockDevice6Dir extends FacingBlock implements BlockEntityProvider 
         }
 
         var delta = sourcePos.subtract(pos);
-        var dir = Direction.fromVector(delta);
+        var dir = Direction.fromVector(delta.getX(), delta.getY(), delta.getZ());
 
         var power = world.isEmittingRedstonePower(sourcePos, dir);
 

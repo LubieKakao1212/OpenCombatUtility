@@ -68,7 +68,7 @@ public class PacketHandlersServer {
     }
 
     private static boolean validatePacket(ServerPlayerEntity player, BlockPos requestedPos) {
-        return VS2SoftUtil.getDistanceSqr(player.world, new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&
+        return VS2SoftUtil.getDistanceSqr(player.getWorld(), new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&
                 player.getWorld().isChunkLoaded(ChunkSectionPos.getSectionCoord(requestedPos.getX()),ChunkSectionPos.getSectionCoord(requestedPos.getZ()));
     }
 }

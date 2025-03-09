@@ -21,7 +21,7 @@ public class PacketHandlersClient {
     public static void handle(PacketClientUpdateFireball packetIn) {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
-        World level =  player.world;
+        World level = player.getWorld();
 
         Entity entity = level.getEntityById(packetIn.entityId());
 
@@ -36,7 +36,7 @@ public class PacketHandlersClient {
     public static void handle(PacketClientUpdateDispenser packet) {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
-        World level =  player.world;
+        World level =  player.getWorld();
 
         BlockEntity te = level.getBlockEntity(packet.position());
 

@@ -21,7 +21,7 @@ public class EntityUtil {
                 var pos = new Vector3m(arrow.getPos());
 
                 //TODO test modified logic
-                var world = e.world;
+                var world = e.getWorld();
                 var dir = safeNormalize(new Vector3d(vX, vY, vZ));
 
                 var wall = RaycastUtilKt.raycastBlocksAll(world, pos, dir, 0.1);

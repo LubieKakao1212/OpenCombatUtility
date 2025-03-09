@@ -35,6 +35,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
@@ -275,7 +276,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
 
     @Override
     protected Vector3d currentAim() {
-        return currentAim.toQuaternion().transform(Vector3dExtensions.INSTANCE.getNORTH());
+        return currentAim.toQuaternion(Direction.EAST, Direction.UP).transform(Vector3dExtensions.INSTANCE.getSOUTH());
     }
 
     /**
