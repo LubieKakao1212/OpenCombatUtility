@@ -16,4 +16,8 @@ public interface IDeviceState {
 
     void deserialize(NbtCompound nbt);
 
+    void invalidate();
+
+    boolean isValid();
+
 }

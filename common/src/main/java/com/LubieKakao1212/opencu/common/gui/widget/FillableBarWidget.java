@@ -1,18 +1,11 @@
 package com.LubieKakao1212.opencu.common.gui.widget;
 
-import com.LubieKakao1212.opencu.common.util.Direction2d;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralTextContent;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mutable;
+import net.minecraft.util.Identifier;
 
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class FillableBarWidget extends ClickableWidget {
@@ -22,8 +15,12 @@ public class FillableBarWidget extends ClickableWidget {
 
     private Supplier<Float> state;
 
-    public FillableBarWidget(int x, int y, int width, int height, int u, int v, FillDirection direction, Supplier<Float> state) {
+    private final Identifier texture;
+
+    public FillableBarWidget(Identifier texture, int x, int y, int width, int height, int u, int v, FillDirection direction, Supplier<Float> state) {
         super(x, y, width, height, Text.empty());
+
+        this.texture = texture;
 
         this.fillDirection = direction;
         this.u = u;
@@ -33,7 +30,7 @@ public class FillableBarWidget extends ClickableWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
         var progress = state.get();
 
         var w = getWidth();
@@ -51,7 +48,7 @@ public class FillableBarWidget extends ClickableWidget {
         var w1 = (int)Math.ceil(fillDirection.w.get(x, w, progress));
         var h1 = (int)Math.ceil(fillDirection.h.get(y, h, progress));
 
-        drawTexture(matrices, x1, y1, u1, v1, w1, h1);
+        context.drawTexture(texture, x1, y1, u1, v1, w1, h1);
     }
 
     @Override

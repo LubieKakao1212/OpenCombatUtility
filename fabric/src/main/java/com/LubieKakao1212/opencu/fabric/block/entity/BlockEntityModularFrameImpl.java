@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.fabric.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.fabric.inventory.SlottedInventory;
 import com.LubieKakao1212.opencu.fabric.transaction.AmmoContext;
 import com.LubieKakao1212.opencu.fabric.transaction.RebornEnergyContext;
@@ -22,6 +23,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.InfiniteEnergyStorage;
 import team.reborn.energy.api.base.LimitingEnergyStorage;
@@ -32,10 +34,10 @@ import java.util.Stack;
 
 public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
-    private static final int slotCount = 10;
-    private static final int ammoSlotCount = 9;
-    private static final int ammoSlotsStart = 1;
-    private static final int ammoSlotsEnd = 10;
+    public static final int slotCount = 10;
+    public static final int ammoSlotCount = 9;
+    public static final int ammoSlotsStart = 1;
+    public static final int ammoSlotsEnd = 10;
 
     private static final int dispenserSotCount = 1;
     private static final int dispenserSlotsStart = 0;
@@ -79,8 +81,8 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
-    protected ModularFrameContext getNewContext() {
-        return new ModularFrameContext(
+    protected DeviceActivationContext getNewContext() {
+        return new DeviceActivationContext(
                 new ScopedContext(),
                 new RebornEnergyContext(energyStorage),
                 new AmmoContext(ammoStorage),

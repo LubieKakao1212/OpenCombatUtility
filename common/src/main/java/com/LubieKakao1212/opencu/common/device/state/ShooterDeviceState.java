@@ -5,7 +5,7 @@ import com.LubieKakao1212.opencu.common.peripheral.device.ShooterDeviceApi;
 import com.LubieKakao1212.opencu.common.util.Lazy;
 import net.minecraft.nbt.NbtCompound;
 
-public class ShooterDeviceState implements IDeviceState {
+public class ShooterDeviceState extends DeviceStateBase {
 
     private final Lazy<ShooterDeviceApi> api;
 

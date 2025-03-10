@@ -16,8 +16,7 @@ public class CUPulseImpl implements AutoRegistryContainer<EntityPulseType> {
 
     public static final Registry<EntityPulseType> PULSE_TYPES = FabricRegistryBuilder.createSimple(RegistryKey.<EntityPulseType>ofRegistry(CUIds.PULSE_TYPE)).buildAndRegister();
 
-    public static final EntityPulseType REPULSOR = new EntityPulseType.Builder(Pulses::repulsorPulse).build();
-    public static final EntityPulseType VECTOR = new EntityPulseType.Builder(Pulses::vectorPulse).build();
+    public static final EntityPulseType REPULSOR = new EntityPulseType.Builder(Pulses::generalPulse).build();
     public static final EntityPulseType STASIS = new EntityPulseType.Builder(Pulses::stasisPulse).build();
 
 

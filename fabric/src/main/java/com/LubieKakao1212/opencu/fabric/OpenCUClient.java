@@ -1,12 +1,15 @@
 package com.LubieKakao1212.opencu.fabric;
 
+import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererDeviceContainer6Dir;
 import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererModularFrame;
-import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererRepulsor;
 import com.LubieKakao1212.opencu.common.gui.ModularFrameScreen;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
+import com.LubieKakao1212.opencu.fabric.model.CUModelLoadPlugin;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.registry.CUMenu;
+import com.LubieKakao1212.opencu.registry.fabric.CUBlockEntitiesImpl;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
@@ -19,11 +22,17 @@ public class OpenCUClient implements ClientModInitializer {
     }
 
     private void registerRenderers() {
-        BlockEntityRendererFactories.register(CUBlockEntities.repulsor(), RendererRepulsor::new);
         BlockEntityRendererFactories.register(CUBlockEntities.modularFrame(), RendererModularFrame::new);
+
+        BlockEntityRendererFactories.register(CUBlockEntities.repulsor(), RendererDeviceContainer6Dir::new);
+        BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_GOLD, RendererDeviceContainer6Dir::new);
+        BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_DIAMOND, RendererDeviceContainer6Dir::new);
+        BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_NETHERITE, RendererDeviceContainer6Dir::new);
 
         HandledScreens.register(CUMenu.modularFrame(), ModularFrameScreen::new);
 
+
+        ModelLoadingPlugin.register(new CUModelLoadPlugin());
 
         TooltipHandler.init();
     }

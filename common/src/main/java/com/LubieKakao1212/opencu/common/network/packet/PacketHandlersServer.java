@@ -4,14 +4,15 @@ import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.block.entity.IRedstoneControlled;
 import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerToggleRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
-import org.joml.Vector3d;
 
 public class PacketHandlersServer {
 
@@ -20,7 +21,7 @@ public class PacketHandlersServer {
 
         var position = packetIn.position();
 
-        if(VS2SoftUtil.getDistanceSqr(world, new Vector3m(sender.getPos()), new Vector3m(position)) < (64 * 64)) {
+        if(validatePacket(sender, position)) {
             BlockEntity be = world.getBlockEntity(position);
 
             if(be instanceof BlockEntityModularFrame) {
@@ -37,7 +38,7 @@ public class PacketHandlersServer {
 
         var position = packetIn.position();
 
-        if(VS2SoftUtil.getDistanceSqr(world, new Vector3m(sender.getPos()), new Vector3m(position)) < (64 * 64)) {
+        if(validatePacket(sender, position)) {
             BlockEntity be = world.getBlockEntity(position);
 
             if(be instanceof BlockEntityModularFrame frame) {
@@ -54,7 +55,7 @@ public class PacketHandlersServer {
 
         var position = packetIn.position();
 
-        if(VS2SoftUtil.getDistanceSqr(world, new Vector3m(sender.getPos()), new Vector3m(position)) < (64 * 64)) {
+        if(validatePacket(sender, position)) {
             BlockEntity be = world.getBlockEntity(position);
 
             if(be instanceof IRedstoneControlled rsControlled) {
@@ -64,5 +65,10 @@ public class PacketHandlersServer {
         else {
             OpenCUModCommon.LOGGER.warn("Potentially malicious packet received, skipping");
         }
+    }
+
+    private static boolean validatePacket(ServerPlayerEntity player, BlockPos requestedPos) {
+        return VS2SoftUtil.getDistanceSqr(player.getWorld(), new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&
+                player.getWorld().isChunkLoaded(ChunkSectionPos.getSectionCoord(requestedPos.getX()),ChunkSectionPos.getSectionCoord(requestedPos.getZ()));
     }
 }

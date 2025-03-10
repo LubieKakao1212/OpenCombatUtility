@@ -5,6 +5,7 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.TrackerDeviceState;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.common.util.EndBoolean;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.lubiekakao1212.qulib.math.Aim;
@@ -19,10 +20,10 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.joml.Vector3d;
 
 import java.util.stream.Collectors;
 
@@ -43,12 +44,16 @@ public class TrackerBase implements IFramedDevice {
     }
 
     @Override
-    public void activate(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
 
     }
 
     @Override
-    public void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
+        if(!(container instanceof BlockEntityModularFrame frame)) {
+            return;
+        }
+
         var trackerState = (TrackerDeviceState) state;
 
         var rsPulser = trackerState.rsPulseTimer;
@@ -171,7 +176,18 @@ public class TrackerBase implements IFramedDevice {
         return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick);
     }
 
-    private boolean drainEnergy(BlockEntityModularFrame.ModularFrameContext ctx, TrackerDeviceState state, double amount) {
+    @Override
+    public boolean ammoEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean energyEnabled() {
+        //Temporary
+        return true;
+    }
+
+    private boolean drainEnergy(DeviceActivationContext ctx, TrackerDeviceState state, double amount) {
         state.energyLeftover += amount;
 
         var energyToUse = (long) state.energyLeftover;
@@ -191,5 +207,4 @@ public class TrackerBase implements IFramedDevice {
             return true;
         }
     }
-
 }

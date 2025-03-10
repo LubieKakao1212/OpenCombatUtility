@@ -1,11 +1,7 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
+import com.LubieKakao1212.opencu.common.network.packet.device.*;
 import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import com.LubieKakao1212.opencu.registry.CUIds;
@@ -26,8 +22,9 @@ public class NetworkUtilImpl {
 
         CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenser.class);
         CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenserAim.class);
+        CHANNEL.registerClientboundDeferred(PacketClientUpdateRepulsorBlend.class);
 
-        CHANNEL.registerClientboundDeferred(PacketClientRepulsorPulse.class);
+        CHANNEL.registerClientboundDeferred(PacketClientRepulsorActivationTimestamp.class);
 
         CHANNEL.registerServerbound(PacketServerRequestDispenserUpdate.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketServerToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
@@ -40,7 +37,9 @@ public class NetworkUtilImpl {
         CHANNEL.registerClientbound(PacketClientUpdateDispenser.class, (pkt, acc) -> handle(pkt));
         CHANNEL.registerClientbound(PacketClientUpdateDispenserAim.class, (pkt, acc) -> handle(pkt));
 
-        CHANNEL.registerClientbound(PacketClientRepulsorPulse.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketClientRepulsorActivationTimestamp.class, (pkt, acc) -> handle(pkt));
+
+        CHANNEL.registerClientbound(PacketClientUpdateRepulsorBlend.class, (pkt, acc) -> handle(pkt));
     }
 
     public static <T extends Record> void sendToAllTracking(T packet, ServerWorld world, BlockPos pos) {

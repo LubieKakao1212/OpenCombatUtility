@@ -2,31 +2,25 @@ package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.common.device.IFramedDevice;
+import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.event.*;
 import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
-import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
-import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
-import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
-import com.LubieKakao1212.opencu.common.transaction.IAmmoContext;
-import com.LubieKakao1212.opencu.common.transaction.IEnergyContext;
-import com.LubieKakao1212.opencu.common.transaction.ILeftoverItemContext;
-import com.LubieKakao1212.opencu.common.transaction.IScopedContext;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameScreenHandler;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.PlatformUtil;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
+import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -47,11 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory, IRedstoneControlled, IEventNode {
+public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer implements NamedScreenHandlerFactory, IRedstoneControlled, IEventNode {
 
     public static final int screenPropertyCount = 7;
     public static final int xPropertyIndex = 0;
@@ -63,15 +53,9 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public static final int maxEnergyPropertyIndex = 6;
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
-    public static final int autoShootInterval = 10;
-
     private static final long lateInitServerDelay = 3;
 
-    private final AtomicInteger actionsToPerform = new AtomicInteger(0);
     private boolean requiresLock;
-    private RedstoneControlType redstoneControlType;
-    private long redstoneActivationTimer = 0;
-    private final Set<Direction> rsState = EnumSet.noneOf(Direction.class);
 
     //region Events
     private final DistributingWorldEventNode eventDistributor;
@@ -86,8 +70,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     //endregion
 
     //region Device
-    private IFramedDevice currentDevice;
-    private IDeviceState currentDeviceState;
     //Client
     private ItemStack currentDeviceItem = null;
     //endregion
@@ -117,7 +99,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
         targetAim = new Aim(0 ,0);
         requiresLock = false;
-        redstoneControlType = RedstoneControlType.PULSE;
 
         eventDistributor = new DistributingWorldEventNode(pos);
 
@@ -149,17 +130,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     protected void updateDispenser() {
-        ItemStack dispenserStack = getCurrentDeviceItem();
-        currentDevice = PlatformUtil.getDispenser(dispenserStack);
-        if(currentDevice != null) {
-            currentDeviceState = currentDevice.getNewState();
-        } else {
-            currentDeviceState = null;
-        }
+        ItemStack deviceStack = getDeviceItem();
+
+        setCurrentDevice(PlatformUtil.getDeviceFrom(deviceStack));
 
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
-            NetworkUtil.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), (ServerWorld) world, pos);
+            NetworkUtil.sendToAllTracking(new PacketClientUpdateDispenser(pos, deviceStack), (ServerWorld) world, pos);
         } else {
             //TODO Mark for update
         }
@@ -179,9 +156,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
             be.eventDistributor.validateRecipients();
 
-            if(be.currentDevice != null) {
-                var device = be.currentDevice;
-                var deviceState = be.currentDeviceState;
+            var device = be.getDevice();
+            if(device != null) {
                 var currentAim = be.currentAim;
                 var targetAim = be.targetAim;
                 if(!currentAim.equals(targetAim, aimIdenticalityEpsilon)) {
@@ -201,31 +177,9 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                         be.lockedOn = true;
                     }
                 }
-
-                try(var ctx = be.getNewContext()) {
-                    device.tick(be, deviceState, world, pos, currentAim, ctx);
-                }
             }
 
-            if(++be.redstoneActivationTimer % autoShootInterval == 0) {
-                var power = world.isReceivingRedstonePower(pos);
-                var rsct = be.getRedstoneControlType();
-                if(power && rsct == RedstoneControlType.HIGH) {
-                    be.actionsToPerform.getAndIncrement();
-                }
-                else if(!power && rsct == RedstoneControlType.LOW) {
-                    be.actionsToPerform.getAndIncrement();
-                }
-            }
-
-            var atp = be.actionsToPerform.get();
-            be.actionsToPerform.set(0);
-            if(!(be.requiresLock && !be.isAligned())) {
-                while (atp > 0) {
-                    atp--;
-                    be.shoot(be.currentAim);
-                }
-            }
+            be.tickDeviceServer();
         }else
         {
             be.doInit(be::initClient);
@@ -281,37 +235,18 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
             }
         }
         else if(data instanceof ActivateEvent event) {
-            activate();
+            scheduleActivation();
         }
 
-        if(currentDevice != null)
+        var device = getDevice();
+        if(device != null)
         {
-            currentDevice.handleEvent(this, currentDeviceState, data);
+            device.handleEvent(this, getState(), data);
         }
     }
 
     public DistributingWorldEventNode getEventDistributor() {
         return eventDistributor;
-    }
-
-
-    public void activate() {
-        actionsToPerform.getAndIncrement();
-    }
-
-    public void pulseActivate(Direction direction, boolean state) {
-        var lastState = rsState.contains(direction);
-
-        if(state) {
-            rsState.add(direction);
-        }
-        else {
-            rsState.remove(direction);
-        }
-
-        if(getRedstoneControlType() == RedstoneControlType.PULSE && !lastState && state) {
-            activate();
-        }
     }
 
     public void aim(double pitch, double yaw) {
@@ -339,16 +274,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         markDirty();
     }
 
-    private void shoot(Aim aim) {
-        assert world != null;
-        if(currentDevice != null) {
-            try(ModularFrameContext ctx = getNewContext()) {
-                currentDevice.activate(this, currentDeviceState, world, pos, aim, ctx);
-            }
-        }
+    @Override
+    protected Vector3d currentAim() {
+        return currentAim.toQuaternion(Direction.EAST, Direction.UP).transform(Vector3dExtensions.INSTANCE.getSOUTH());
     }
-
-    protected abstract ModularFrameContext getNewContext();
 
     /**
      * Creates a slot for gui
@@ -361,6 +290,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
     }
 
+    @Override
+    protected boolean canActivate() {
+        return !(requiresLock && !isAligned());
+    }
+
     public boolean isRequiresLock() {
         return requiresLock;
     }
@@ -371,20 +305,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     //region redstone
     public RedstoneControlType getRedstoneControlType() {
-        return isEmittingRedstone() ? RedstoneControlType.DISABLED : redstoneControlType;
+        return isEmittingRedstone() ? RedstoneControlType.DISABLED : getRedstoneControlTypeRaw();
     }
 
     public RedstoneControlType getRedstoneControlTypeRaw() {
-        return redstoneControlType;
-    }
-
-    @Override
-    public void cycleRedstoneControl() {
-        redstoneControlType = redstoneControlType.cycleNext();
-    }
-
-    public void setRedstoneControlType(RedstoneControlType type) {
-        this.redstoneControlType = type;
+        return super.getRedstoneControlType();
     }
 
     public boolean isEmittingRedstone() {
@@ -407,11 +332,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         compound.putDouble("targetPitch", targetAim.getPitch());
         compound.putDouble("targetYaw", targetAim.getYaw());
         compound.putBoolean("requiresLock", requiresLock);
-        compound.putInt("redstoneControl", redstoneControlType.order);
 
         compound.put("distributor", eventDistributor.serialize());
-
-        compound.put("dispenser", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
 
         super.writeNbt(compound);
     }
@@ -428,18 +350,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         setTargetAim(new Aim(targetPitch, targetYaw));
         currentAim = new Aim(pitch, yaw);
 
-        redstoneControlType = RedstoneControlType.fromIndex(compound.getInt("redstoneControl"));
         requiresLock = compound.getBoolean("requiresLock");
 
         eventDistributor.deserialize(compound.getList("distributor", NbtElement.COMPOUND_TYPE));
-
-        if(currentDevice != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
-            currentDevice.getNewState().deserialize(compound.getCompound("dispenser"));
-        }
     }
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getCurrentDeviceItem()), player);
+        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getDeviceItem()), player);
         NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAim, true), player);
     }
 
@@ -451,10 +368,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     @Override
     public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
         assert world != null;
-        return new ModularFrameMenu(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
+        return new ModularFrameScreenHandler(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
     }
 
-    public ItemStack getCurrentDeviceItem() {
+    @Override
+    public ItemStack getDeviceItem() {
         assert this.world != null;
         if(this.world.isClient) {
             return currentDeviceItem;
@@ -462,13 +380,14 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return getCurrentDeviceItemServer();
     }
 
-    public IDeviceApi getCurrentDeviceApi() {
-        return currentDevice.getNewState().getApi();
-    }
-
     protected abstract ItemStack getCurrentDeviceItemServer();
 
     protected abstract int getCurrentEnergy();
+
+    @Override
+    public boolean isSameAs(IDeviceContainer deviceContainer) {
+        return deviceContainer instanceof BlockEntityModularFrame frame && this.getPos().equals(frame.pos);
+    }
 
     //region Clinet Methods
 
@@ -510,6 +429,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
      */
     public void setCurrentDeviceItem(ItemStack currentDeviceItem) {
         this.currentDeviceItem = currentDeviceItem;
+        setCurrentDevice(PlatformUtil.getDeviceFrom(currentDeviceItem));
     }
 
     /**
@@ -519,13 +439,4 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
     }
     //endregion
-
-    public record ModularFrameContext(IScopedContext ctx, IEnergyContext energy, IAmmoContext ammo, ILeftoverItemContext leftover) implements AutoCloseable {
-
-        @Override
-        public void close() {
-            ctx.close();
-            leftover.close();
-        }
-    }
 }

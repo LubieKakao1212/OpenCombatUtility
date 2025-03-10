@@ -3,10 +3,9 @@ package com.LubieKakao1212.opencu.common.gui.container;
 import com.LubieKakao1212.opencu.PlatformUtil;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
-import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlocks;
-import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.CUMenu;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -17,35 +16,47 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 
-public class ModularFrameMenu extends ScreenHandler {
+public abstract class DeviceContainerScreenHandler extends ScreenHandler {
 
-    private static final int deviceSlot = 0;
-    private static final int ammoSlotStart = 1;
-    private static final int ammoSlotCount = 9;
-    private static final int ammoSlotEnd = ammoSlotStart + ammoSlotCount;
+    protected static final int deviceSlot = 0;
+    protected static final int ammoSlotCount = 9;
 
-    private static final int dispenserSlotsStart = 0;
-    private static final int dispenserSlotCount = 10;
-    private static final int dispenserSlotsEnd = dispenserSlotsStart + dispenserSlotCount;
+    protected static final int blockSlotsStart = 0;
+    protected static final int blockSlotCount = 10;
+    protected static final int dispenserSlotsEnd = blockSlotsStart + blockSlotCount;
 
-    private static final int playerSlotsStart = dispenserSlotsEnd;
-    private static final int playerSlotCount = 36;
-    private static final int playerSlotsEnd = playerSlotsStart + playerSlotCount;
+    //private static final int playerSlotsStart = dispenserSlotsEnd;
+    protected static final int playerSlotCount = 36;
+    //private static final int playerSlotsEnd = playerSlotsStart + playerSlotCount;
 
-    private static final int slotSize = 18;
-    private final int slotCount;
+    protected static final int slotSize = 18;
+    protected final int slotCount;
 
     private final ScreenHandlerContext context;
     private final PropertyDelegate properties;
 
-    public ModularFrameMenu(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, SlotProvider.dummy(dispenserSlotCount), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(BlockEntityModularFrame.screenPropertyCount));
-    }
+    private final int playerSlotsStart;
+    private final int ammoSlotStart;
+    private final boolean hasDevice;
 
-    public ModularFrameMenu(int id, PlayerInventory playerInventory, SlotProvider modularFrameSlots, ScreenHandlerContext context, PropertyDelegate properties) {
+    private final Block validBlock;
+
+    /*public DeviceContainerScreenHandler(int id, PlayerInventory playerInventory) {
+        this(id, playerInventory, SlotProvider.dummy(blockSlotCount), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(BlockEntityModularFrame.screenPropertyCount));
+    }*/
+
+    public DeviceContainerScreenHandler(Block validBlock, int id, PlayerInventory playerInventory, SlotProvider deviceContainerSlots, ScreenHandlerContext context, PropertyDelegate properties, boolean useDeviceSlot) {
         super(CUMenu.modularFrame(), id);
 
-        this.addSlot(modularFrameSlots.createSlot( 0, 43, 33));
+        this.validBlock = validBlock;
+
+        var slotsCount = 0;
+
+        if(useDeviceSlot) {
+            this.addSlot(deviceContainerSlots.createSlot( 0, 43, 33));
+            slotsCount += 1;
+        }
+        hasDevice = useDeviceSlot;
 
         this.context = context;
 
@@ -53,7 +64,11 @@ public class ModularFrameMenu extends ScreenHandler {
         int startY = 15;
         final int[] index = {1};
 
-        AddSlotBlock(startX, startY, 3, 3, slotSize, (int x, int y) -> modularFrameSlots.createSlot(index[0]++, x, y));
+        AddSlotBlock(startX, startY, 3, 3, slotSize, (int x, int y) -> deviceContainerSlots.createSlot(index[0]++, x, y));
+        ammoSlotStart = slotsCount;
+        slotsCount += 9;
+
+        playerSlotsStart = slotsCount;
 
         index[0] = 0;
 
@@ -97,7 +112,7 @@ public class ModularFrameMenu extends ScreenHandler {
                 else //Is in player inventory
                 {
                     var flag = false;
-                    if(PlatformUtil.getDispenser(stackCpy) != null) {
+                    if(hasDevice && PlatformUtil.getDeviceFrom(stackCpy) != null) {
                         var deviceSlotSlot = slots.get(deviceSlot);
                         var currentDevice = deviceSlotSlot.getStack();
                         if(currentDevice.isEmpty()) {
@@ -105,7 +120,7 @@ public class ModularFrameMenu extends ScreenHandler {
                             flag = true;
                         }
                     }
-                    if(!this.insertItem(stackCpy, ammoSlotStart, ammoSlotEnd, false) && !flag) {
+                    if(!this.insertItem(stackCpy, ammoSlotStart, ammoSlotStart + ammoSlotCount, false) && !flag) {
                         return ItemStack.EMPTY;
                     }
                 }
@@ -133,7 +148,7 @@ public class ModularFrameMenu extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity pPlayer) {
-        return ScreenHandler.canUse(this.context, pPlayer, CUBlocks.modularFrame());
+        return ScreenHandler.canUse(this.context, pPlayer, validBlock);
     }
 
     public boolean isRequiresLock() {

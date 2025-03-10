@@ -1,13 +1,16 @@
 package com.LubieKakao1212.opencu.common.block.entity.renderer;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.device.renderer.IDeviceRenderer;
+import com.LubieKakao1212.opencu.registry.CUDeviceRanderers;
 import com.lubiekakao1212.qulib.math.Aim;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
@@ -22,15 +25,22 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
         miry = new Quaterniond().set(1, -1, 1, -1);
     }
 
-    public RendererModularFrame(BlockEntityRendererFactory.Context ctx) {
+    private final BlockModelRenderer blockModelRenderer;
+    private final ItemRenderer itemRenderer;
 
+    public RendererModularFrame(BlockEntityRendererFactory.Context ctx) {
+        this.blockModelRenderer = ctx.getRenderManager().getModelRenderer();
+        this.itemRenderer = ctx.getItemRenderer();
     }
 
     @Override
     public void render(BlockEntityModularFrame blockEntity, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay) {
         //super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
-        ItemStack displayStack = blockEntity.getCurrentDeviceItem();
+        var device = blockEntity.getDevice();
+        var renderer = CUDeviceRanderers.getRenderer(device);
+
+        ItemStack displayStack = blockEntity.getDeviceItem();
         if(displayStack != null && !displayStack.isEmpty()) {
 
             float step = partialTick;
@@ -51,16 +61,19 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
                 blockEntity.setLastAim(new Aim(0,0).set(partial));
             }
 
-            /*partial.y = -partial.y;
-            partial.w = -partial.w;*/
+            var world = (ClientWorld)blockEntity.getWorld();
+            assert world != null;
+
+            var pos = blockEntity.getPos();
+            var context = new IDeviceRenderer.Context(world.getBlockState(pos), pos, blockModelRenderer, itemRenderer);
 
             poseStack.push();
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.multiply(y180);
             poseStack.multiply(new Quaternionf().set(partial.toQuaternion()));
-            MinecraftClient.getInstance().getItemRenderer().renderItem(displayStack, ModelTransformationMode.FIXED, packedLight, packedOverlay, poseStack, bufferSource, blockEntity.getWorld(), 0);
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+            renderer.render(world, blockEntity,device, blockEntity.getState(), context, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
             poseStack.pop();
         }
     }
-
 }

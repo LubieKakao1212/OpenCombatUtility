@@ -3,7 +3,7 @@ package com.LubieKakao1212.opencu.common.device.state;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import net.minecraft.nbt.NbtCompound;
 
-public class ArrayControllerDeviceState implements IDeviceState {
+public class ArrayControllerDeviceState extends DeviceStateBase {
     /**
      * Returns a cc api for this state instance.
      * Do not call unless CC:Tweaked is present

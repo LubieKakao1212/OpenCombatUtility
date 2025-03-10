@@ -3,16 +3,8 @@ package com.LubieKakao1212.opencu.common.device.state;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.common.util.Pulser;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.math.BlockPos;
 
-import javax.sound.midi.Track;
-import java.util.HashSet;
-import java.util.Set;
-
-public class TrackerDeviceState implements IDeviceState {
+public class TrackerDeviceState extends DeviceStateBase {
 
     private double trackingRange;
     private double energyPerTick;

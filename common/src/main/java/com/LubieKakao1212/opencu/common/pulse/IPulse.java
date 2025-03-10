@@ -6,6 +6,15 @@ import org.joml.Vector3d;
 @FunctionalInterface
 public interface IPulse {
 
-    void doPulse(World level, Vector3d pos, Vector3d direction, double radius, double force);
+    /**
+     *
+     * @param level
+     * @param pos
+     * @param direction
+     * @param directionBlend how much should the direction affect the result
+     * @param radius
+     * @param force
+     */
+    void doPulse(World level, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force);
 
 }

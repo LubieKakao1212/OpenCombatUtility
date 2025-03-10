@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class PlatformUtilImpl {
 
-    public static IFramedDevice getDispenser(ItemStack stack) {
+    public static IFramedDevice getDeviceFrom(ItemStack stack) {
         return stack.getCapability(CUCapabilities.DISPENSER, null).resolve().orElse(null);
     }
 

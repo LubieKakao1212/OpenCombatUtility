@@ -87,8 +87,6 @@ public class BlockModularFrame extends BlockWithEntity {
         return state.get(BlockProperties.EMITS_REDSTONE_SIGNAL) ? 15 : 0;
     }
 
-
-
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(BlockProperties.EMITS_REDSTONE_SIGNAL);
@@ -107,22 +105,19 @@ public class BlockModularFrame extends BlockWithEntity {
 
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        /*if(world.isClient) {
-            OpenCUModCommon.LOGGER.info("client");
-        } else {
-            OpenCUModCommon.LOGGER.info("server");
-
-            OpenCUModCommon.LOGGER.info("Neighbour Update: " + pos.toShortString());
-        }*/
+        if(world.isClient) {
+           return;
+        }
 
         var frame = CUBlockEntities.modularFrame().get(world, pos);
 
         if(frame == null) {
             OpenCUModCommon.LOGGER.warn("wrong BlockEntity at: " + pos);
+            return;
         }
 
         var delta = sourcePos.subtract(pos);
-        var dir = Direction.fromVector(delta);
+        var dir = Direction.fromVector(delta.getX(), delta.getY(), delta.getZ());
 
         var power = world.isEmittingRedstonePower(sourcePos, dir);
 
