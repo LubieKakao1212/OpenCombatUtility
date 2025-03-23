@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.registry.forge;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.common.gui.container.DeviceContainerScreenHandler;
+import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.forge.proxy.Proxy;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import net.minecraft.screen.ScreenHandlerType;

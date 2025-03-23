@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.gui.widget;
+package com.LubieKakao1212.opencu.common.screen.widget;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;

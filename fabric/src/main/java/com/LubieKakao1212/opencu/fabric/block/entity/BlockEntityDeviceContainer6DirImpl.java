@@ -91,4 +91,19 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
         return deviceContainer instanceof BlockEntityDeviceContainer6Dir be && be.getType().equals(getType()) && be.getPos().equals(getPos());
     }
 
+    /**
+     * Client Method
+     */
+    @Override
+    public long getEnergy() {
+        return energyStorage.getAmount();
+    }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public long getMaxEnergy() {
+        return energyStorage.getCapacity();
+    }
 }

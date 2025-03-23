@@ -146,4 +146,20 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             inventory.readNbt(invTag);
         }
     }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public long getEnergy() {
+        return energyStorage.getAmount();
+    }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public long getMaxEnergy() {
+        return energyStorage.getCapacity();
+    }
 }

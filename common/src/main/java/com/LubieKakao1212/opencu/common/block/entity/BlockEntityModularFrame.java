@@ -1,20 +1,21 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.PlatformUtil;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
-import com.LubieKakao1212.opencu.common.device.event.*;
+import com.LubieKakao1212.opencu.common.device.event.DistributingWorldEventNode;
+import com.LubieKakao1212.opencu.common.device.event.IEventNode;
 import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
-import com.LubieKakao1212.opencu.common.gui.container.ModularFrameScreenHandler;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.PlatformUtil;
+import com.LubieKakao1212.opencu.registry.CUMenu;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
@@ -43,14 +44,14 @@ import org.joml.Vector3d;
 
 public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer implements NamedScreenHandlerFactory, IRedstoneControlled, IEventNode {
 
-    public static final int screenPropertyCount = 7;
+    public static final int screenPropertyCount = 3;
     public static final int xPropertyIndex = 0;
     public static final int yPropertyIndex = 1;
     public static final int zPropertyIndex = 2;
-    public static final int requiresLockPropertyIndex = 3;
-    public static final int redstoneControlPropertyIndex = 4;
-    public static final int energyPropertyIndex = 5;
-    public static final int maxEnergyPropertyIndex = 6;
+//    public static final int requiresLockPropertyIndex = 3;
+//    public static final int redstoneControlPropertyIndex = 4;
+//    public static final int energyPropertyIndex = 5;
+//    public static final int maxEnergyPropertyIndex = 6;
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
     private static final long lateInitServerDelay = 3;
@@ -109,10 +110,10 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
                     case xPropertyIndex -> pos.getX();
                     case yPropertyIndex -> pos.getY();
                     case zPropertyIndex -> pos.getZ();
-                    case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
-                    case redstoneControlPropertyIndex -> getRedstoneControlTypeRaw().order;
-                    case energyPropertyIndex -> getCurrentEnergy();
-                    case maxEnergyPropertyIndex -> OpenCUConfigCommon.modularFrame().energy().energyCapacity();
+//                    case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
+//                    case redstoneControlPropertyIndex -> getRedstoneControlTypeRaw().order;
+//                    case energyPropertyIndex -> getCurrentEnergy();
+//                    case maxEnergyPropertyIndex -> OpenCUConfigCommon.modularFrame().energy().energyCapacity();
                     default -> -1;
                 };
             }
@@ -368,7 +369,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     @Override
     public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
         assert world != null;
-        return new ModularFrameScreenHandler(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
+        return new DeviceContainerScreenHandler(CUMenu.deviceContainer(), containerId, inventory, this::createSlot, screenProperties);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.gui.container;
+package com.LubieKakao1212.opencu.common.screen.handler;
 
 import net.minecraft.screen.slot.Slot;
 

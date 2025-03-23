@@ -144,6 +144,25 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         }
     }
 
+    /**
+     * Client Method
+     */
+    public float getEnergyRatio() {
+        return (float) getEnergy() / (float) getMaxEnergy();
+    }
+
+    /**
+     * Client Method
+     */
+    public abstract long getEnergy();
+
+    /**
+     * Client Method
+     */
+    public abstract long getMaxEnergy();
+
+
+
     @Override
     protected void writeNbt(NbtCompound nbt) {
         nbt.put("device", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
