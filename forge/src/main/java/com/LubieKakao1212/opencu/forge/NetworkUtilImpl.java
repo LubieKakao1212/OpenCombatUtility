@@ -3,10 +3,10 @@ package com.LubieKakao1212.opencu.forge;
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.network.packet.*;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
 import com.LubieKakao1212.opencu.forge.packet.PacketSerialize;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -53,26 +53,26 @@ public class NetworkUtilImpl {
                 .add();
 
 
-        CHANNEL.messageBuilder(PacketClientUpdateFireball.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+        CHANNEL.messageBuilder(PacketS2CUpdateFireball.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ClientUpdateFireball::fromBytes)
                 .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
                 .add();
 
-        CHANNEL.messageBuilder(PacketServerRequestDispenserUpdate.class, id++, NetworkDirection.PLAY_TO_SERVER)
+        CHANNEL.messageBuilder(PacketC2SRequestDeviceUpdate.class, id++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ServerRequestDispenserUpdate::fromBytes)
                 .consumerMainThread((msg, ctx) -> PacketHandlersServer.handle(msg, Objects.requireNonNull(ctx.get().getSender())))
                 .add();
 
-        CHANNEL.messageBuilder(PacketClientUpdateDispenserAim.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+        CHANNEL.messageBuilder(PacketS2CUpdateFrameAim.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ClientUpdateDispenserAim::fromBytes)
                 .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
                 .add();
 
         //main dispenser update packet
-        CHANNEL.messageBuilder(PacketClientUpdateDispenser.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+        CHANNEL.messageBuilder(PacketS2CUpdateDevice.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ClientUpdateDispenser::fromBytes)
                 .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))

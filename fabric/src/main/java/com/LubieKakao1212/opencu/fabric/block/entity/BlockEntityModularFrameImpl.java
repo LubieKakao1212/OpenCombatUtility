@@ -77,6 +77,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             energyStorage = new InfiniteEnergyStorage();
             exposedEnegyStorage = null;
         }
+        setupEnergyObserver(energyStorage::getAmount);
         //endregion
     }
 
@@ -145,14 +146,6 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         if(!invTag.isEmpty()) {
             inventory.readNbt(invTag);
         }
-    }
-
-    /**
-     * Client Method
-     */
-    @Override
-    public long getEnergy() {
-        return energyStorage.getAmount();
     }
 
     /**

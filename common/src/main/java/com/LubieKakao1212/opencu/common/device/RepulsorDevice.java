@@ -4,15 +4,17 @@ import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientRepulsorActivationTimestamp;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CRepulsorActivationTimestamp;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
+import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
+import com.LubieKakao1212.opencu.common.screen.tabs.RepulsorTab;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
-import com.lubiekakao1212.qulib.math.Aim;
-import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public class RepulsorDevice implements IFramedDevice {
@@ -40,7 +42,7 @@ public class RepulsorDevice implements IFramedDevice {
             pulseType.executePulse(world, pulseOrigin, new PulseData.Directional(pulseData, dir));
 
             //Update visuals
-            NetworkUtil.sendToAllTracking(new PacketClientRepulsorActivationTimestamp(pos, world.getTime()), (ServerWorld) world, pos);
+            NetworkUtil.sendToAllTracking(new PacketS2CRepulsorActivationTimestamp(pos, world.getTime()), (ServerWorld) world, pos);
 
             ctx.ctx().commit();
         }
@@ -63,7 +65,7 @@ public class RepulsorDevice implements IFramedDevice {
     }
 
     @Override
-    public IDeviceState getNewState() {
+    public @NotNull IDeviceState getNewState() {
         //TODO fetch config
         return new RepulsorDeviceState(OpenCUConfigCommon.repulsorDevice());
     }
@@ -77,4 +79,14 @@ public class RepulsorDevice implements IFramedDevice {
     public boolean energyEnabled() {
         return OpenCUConfigCommon.repulsorDevice().energy().isEnergyEnabled();
     }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public @Nullable DeviceContainerScreenTab getScreenTab() {
+        return new RepulsorTab();
+    }
+
+
 }

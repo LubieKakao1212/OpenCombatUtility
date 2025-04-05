@@ -73,6 +73,7 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
                 }
             };
         }
+        setupEnergyObserver(energyStorage::getAmount);
         //endregion
     }
 
@@ -89,14 +90,6 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
     @Override
     public boolean isSameAs(IDeviceContainer deviceContainer) {
         return deviceContainer instanceof BlockEntityDeviceContainer6Dir be && be.getType().equals(getType()) && be.getPos().equals(getPos());
-    }
-
-    /**
-     * Client Method
-     */
-    @Override
-    public long getEnergy() {
-        return energyStorage.getAmount();
     }
 
     /**

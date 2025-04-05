@@ -38,6 +38,16 @@ public class ResponsiveToggleWidget extends ClickableWidget {
                 Tooltip.of(Text.translatable(tooltipKey + activeSuffix)));
     }
 
+    public static ResponsiveToggleWidget dualState(Identifier texture, int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, Text constantTooltip) {
+        return new ResponsiveToggleWidget(texture, x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+                Text.empty(),
+                () -> state.get() ? 1 : 0,
+                (s) -> onPressed.accept(s > 0),
+                Tooltip.of(Text.empty()),
+                Tooltip.of(constantTooltip),
+                Tooltip.of(constantTooltip));
+    }
+
     public static ResponsiveToggleWidget multiState(Identifier texture, int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
         return new ResponsiveToggleWidget(texture, x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
                 Text.empty(),

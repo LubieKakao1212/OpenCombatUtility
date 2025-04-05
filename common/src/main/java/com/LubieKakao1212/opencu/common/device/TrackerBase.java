@@ -5,6 +5,7 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.TrackerDeviceState;
+import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.common.util.EndBoolean;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
@@ -23,6 +24,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 import java.util.stream.Collectors;
@@ -172,7 +175,7 @@ public class TrackerBase implements IFramedDevice {
     }
 
     @Override
-    public IDeviceState getNewState() {
+    public @NotNull IDeviceState getNewState() {
         return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick);
     }
 
@@ -185,6 +188,14 @@ public class TrackerBase implements IFramedDevice {
     public boolean energyEnabled() {
         //Temporary
         return true;
+    }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public @Nullable DeviceContainerScreenTab getScreenTab() {
+        return null;
     }
 
     private boolean drainEnergy(DeviceActivationContext ctx, TrackerDeviceState state, double amount) {

@@ -100,7 +100,7 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
         var model = MinecraftClient.getInstance().getBakedModelManager().getModel(modelId);
         RenderingUtil.renderModel(model, vertexConsumer, matrixStack, new Color(1f, 1f,1f, 1f), packedLight, packedOverlay);
 
-        //renderer.render(world, model, Blocks.AIR.getDefaultState(), pos, matrixStack, vertexConsumer, false, world.random,0, packedOverlay);
+        //renderer.render(world, model, Blocks.AIR.getDefaultState(), position, matrixStack, vertexConsumer, false, world.random,0, packedOverlay);
         matrixStack.pop();
     }
 }

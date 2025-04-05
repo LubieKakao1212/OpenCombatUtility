@@ -17,19 +17,19 @@ import java.util.function.Function;
 
 public class DeviceContainerScreenHandler extends ScreenHandler {
 
-    protected static final int playerSlotCount = 36;
-    protected static final int playerSlotStart = 0;
-    protected static final int playerSlotEnd = playerSlotStart + playerSlotCount;
+    public static final int playerSlotCount = 36;
+    public static final int playerSlotStart = 0;
+    public static final int playerSlotEnd = playerSlotStart + playerSlotCount;
 
 //    protected static final int blockSlotsStart = 0;
 
-    protected static final int ammoSlotCount = 9;
-    protected static final int deviceSlot = playerSlotEnd;
+    public static final int ammoSlotCount = 9;
+    public static final int deviceSlot = playerSlotEnd;
 
-    protected static final int ammoSlotsStart = deviceSlot + 1;
-    protected static final int ammoSlotsEnd = ammoSlotsStart + ammoSlotCount;
+    public static final int ammoSlotsStart = deviceSlot + 1;
+    public static final int ammoSlotsEnd = ammoSlotsStart + ammoSlotCount;
 
-    protected static final int slotSize = 18;
+    public static final int slotSize = 18;
 //    protected final int slotCount;
 
 //    private final ScreenHandlerContext context;
@@ -113,7 +113,7 @@ public class DeviceContainerScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         //TODO
-        return true;//context.get((world, pos) -> !(world.getBlockEntity(pos) instanceof BlockEntityDeviceContainer) && player.squaredDistanceTo(pos.toCenterPos()) <= 64.0, true);
+        return true;//context.get((world, position) -> !(world.getBlockEntity(position) instanceof BlockEntityDeviceContainer) && player.squaredDistanceTo(position.toCenterPos()) <= 64.0, true);
     }
 
     /**

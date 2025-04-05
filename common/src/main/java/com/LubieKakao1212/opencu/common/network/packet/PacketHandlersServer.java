@@ -1,12 +1,14 @@
 package com.LubieKakao1212.opencu.common.network.packet;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.block.entity.IRedstoneControlled;
 import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerToggleRequiresLock;
-import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SToggleRequiresLock;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,7 +18,7 @@ import net.minecraft.world.World;
 
 public class PacketHandlersServer {
 
-    public static void handle(PacketServerRequestDispenserUpdate packetIn, ServerPlayerEntity sender) {
+    public static void handle(PacketC2SRequestDeviceUpdate packetIn, ServerPlayerEntity sender) {
         World world = sender.getWorld();
 
         var position = packetIn.position();
@@ -33,7 +35,7 @@ public class PacketHandlersServer {
         }
     }
 
-    public static void handle(PacketServerToggleRequiresLock packetIn, ServerPlayerEntity sender) {
+    public static void handle(PacketC2SToggleRequiresLock packetIn, ServerPlayerEntity sender) {
         var world = sender.getWorld();
 
         var position = packetIn.position();
@@ -50,7 +52,7 @@ public class PacketHandlersServer {
         }
     }
 
-    public static void handle(PacketServerCycleRedstoneControl packetIn, ServerPlayerEntity sender) {
+    public static void handle(PacketC2SCycleRedstoneControl packetIn, ServerPlayerEntity sender) {
         var world = sender.getWorld();
 
         var position = packetIn.position();
@@ -66,6 +68,24 @@ public class PacketHandlersServer {
             OpenCUModCommon.LOGGER.warn("Potentially malicious packet received, skipping");
         }
     }
+
+    public static void handle(PacketC2SRequestDCState packetIn, ServerPlayerEntity sender) {
+        var world = sender.getWorld();
+
+        var position = packetIn.position();
+
+        if(validatePacket(sender, position)) {
+            BlockEntity be = world.getBlockEntity(position);
+
+            if(be instanceof BlockEntityDeviceContainer dc) {
+                dc.sendStateTo(sender);
+            }
+        }
+        else {
+            OpenCUModCommon.LOGGER.warn("Potentially malicious packet received, skipping");
+        }
+    }
+
 
     private static boolean validatePacket(ServerPlayerEntity player, BlockPos requestedPos) {
         return VS2SoftUtil.getDistanceSqr(player.getWorld(), new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&

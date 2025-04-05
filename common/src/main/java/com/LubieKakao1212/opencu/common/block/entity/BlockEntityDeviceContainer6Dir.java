@@ -61,6 +61,7 @@ public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceCo
     public static <T extends BlockEntity> void tick(World world, BlockPos blockPos, BlockState blockState, T be) {
         var be6Dir = (BlockEntityDeviceContainer6Dir) be;
         if(!world.isClient) {
+            be6Dir.energyObserver.update();
             be6Dir.tickDeviceServer();
         }
     }

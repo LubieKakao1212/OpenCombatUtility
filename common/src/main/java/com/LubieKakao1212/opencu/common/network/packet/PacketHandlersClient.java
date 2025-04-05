@@ -1,14 +1,18 @@
 package com.LubieKakao1212.opencu.common.network.packet;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientRepulsorActivationTimestamp;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateRepulsorBlend;
-import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CRepulsorActivationTimestamp;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorBlend;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateRequiresLock;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
+import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
 import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -16,9 +20,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class PacketHandlersClient {
 
-    public static void handle(PacketClientUpdateFireball packetIn) {
+    public static void handle(PacketS2CUpdateFireball packetIn) {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
         World level = player.getWorld();
@@ -33,37 +42,38 @@ public class PacketHandlersClient {
         }
     }
 
-    public static void handle(PacketClientUpdateDispenser packet) {
-        var player = MinecraftClient.getInstance().player;
-        assert player != null;
-        World level =  player.getWorld();
-
-        BlockEntity te = level.getBlockEntity(packet.position());
-
-        if(te instanceof BlockEntityModularFrame) {
-            ((BlockEntityModularFrame) te).setCurrentDeviceItem(packet.newDispenser());
-        }
+    //region Device Containers
+    public static void handle(PacketS2CUpdateEnergy packetIn) {
+        handleForContainer(packetIn, (frame, packet) -> frame.setClientEnergy(packetIn.amount()));
     }
 
-    public static void handle(PacketClientUpdateDispenserAim packet) {
-        var player = MinecraftClient.getInstance().player;
-        assert player != null;
-        World world = player.getWorld();
+    public static void handle(PacketS2CUpdateRedstoneControl packetIn) {
+        handleForContainer(packetIn, (frame, packet) -> frame.setRedstoneControlType(packetIn.type()));
+    }
 
-        BlockEntity te = world.getBlockEntity(packet.position());
+    //region Modular Frame
+    public static void handle(PacketS2CUpdateRequiresLock packetIn) {
+        handleForFrame(packetIn, (frame, packet) -> frame.setRequiresLock(packet.state()));
+    }
 
-        var aim = new Aim(packet.pitch(), packet.yaw());
+    public static void handle(PacketS2CUpdateDevice packet) {
+        handleForFrame(packet, (frame, packetS2CUpdateDevice) -> frame.setCurrentDeviceItem(packet.newDispenser()));
+    }
 
-        if (te instanceof BlockEntityModularFrame) {
-            ((BlockEntityModularFrame) te).setCurrentAim(aim);
+    public static void handle(PacketS2CUpdateFrameAim packetIn) {
+        handleForFrame(packetIn, (frame, packet) -> {
+            var aim = new Aim(packet.pitch(), packet.yaw());
+            frame.setCurrentAim(aim);
             if(packet.hard()) {
-                //Sets last aim to aim
-                ((BlockEntityModularFrame) te).setCurrentAim(aim);
+                frame.setCurrentAim(aim);
             }
-        }
+        });
     }
+    //endregion
 
-    public static void handle(PacketClientRepulsorActivationTimestamp packet) {
+    //endregion
+
+    public static void handle(PacketS2CRepulsorActivationTimestamp packet) {
         var world = MinecraftClient.getInstance().world;
         assert world != null;
 
@@ -80,7 +90,7 @@ public class PacketHandlersClient {
         }
     }
 
-    public static void handle(PacketClientUpdateRepulsorBlend packet) {
+    public static void handle(PacketS2CUpdateRepulsorBlend packet) {
         var world = MinecraftClient.getInstance().world;
         assert world != null;
 
@@ -96,5 +106,36 @@ public class PacketHandlersClient {
         }
     }
 
+    //region private
 
+    private static <T extends IPositionPacket> void handleForFrame(T packetIn, BiConsumer<BlockEntityModularFrame, T> body) {
+        handleFor(packetIn, PacketHandlersClient::castMF, body);
+    }
+
+    private static <T extends IPositionPacket> void handleForContainer(T packetIn, BiConsumer<BlockEntityDeviceContainer, T> body) {
+        handleFor(packetIn, PacketHandlersClient::castDC, body);
+    }
+
+    private static <TPacket extends IPositionPacket, BE extends BlockEntity> void handleFor(TPacket packetIn, Function<BlockEntity, Optional<BE>> cast, BiConsumer<BE, TPacket> body) {
+        var player = MinecraftClient.getInstance().player;
+        assert player != null;
+        World level =  player.getWorld();
+
+        BlockEntity be = level.getBlockEntity(packetIn.position());
+
+        cast.apply(be).ifPresent(be1 -> body.accept(be1, packetIn));
+//        if(be instanceof BlockEntityModularFrame frame) {
+//            body.accept(frame, packetIn);
+//        }
+    }
+
+    private static Optional<BlockEntityModularFrame> castMF(BlockEntity be) {
+        return be instanceof BlockEntityModularFrame frame ? Optional.of(frame) : Optional.empty();
+    }
+
+    private static Optional<BlockEntityDeviceContainer> castDC(BlockEntity be) {
+        return be instanceof BlockEntityDeviceContainer frame ? Optional.of(frame) : Optional.empty();
+    }
+
+    //endregion
 }

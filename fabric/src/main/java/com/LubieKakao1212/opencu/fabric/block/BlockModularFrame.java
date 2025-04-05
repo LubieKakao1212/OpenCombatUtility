@@ -57,7 +57,7 @@ public class BlockModularFrame extends BlockWithEntity {
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 
-        //OpenCUModCommon.LOGGER.info("State Update: " + pos.toShortString());
+        //OpenCUModCommon.LOGGER.info("State Update: " + position.toShortString());
 
         if(!state.isOf(newState.getBlock())) {
             var blockEntity = (BlockEntityModularFrameImpl) CUBlockEntities.modularFrame().get(world, pos);

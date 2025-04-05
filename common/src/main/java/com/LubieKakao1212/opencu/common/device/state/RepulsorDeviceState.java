@@ -2,7 +2,7 @@ package com.LubieKakao1212.opencu.common.device.state;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateRepulsorBlend;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorBlend;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.common.peripheral.device.RepulsorDeviceApi;
 import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
@@ -80,7 +80,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
     public void sync(World world, BlockPos pos) {
         blendSync.sync(
             (value) -> {
-                NetworkUtil.sendToAllTracking(new PacketClientUpdateRepulsorBlend(pos, (float)value.doubleValue()), (ServerWorld) world, pos);
+                NetworkUtil.sendToAllTracking(new PacketS2CUpdateRepulsorBlend(pos, (float)value.doubleValue()), (ServerWorld) world, pos);
             }
         );
     }

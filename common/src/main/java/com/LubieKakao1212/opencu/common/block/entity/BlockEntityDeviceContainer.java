@@ -1,18 +1,28 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
+import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
+import com.LubieKakao1212.opencu.common.util.Observer;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.lubiekakao1212.qulib.math.Aim;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
@@ -20,6 +30,7 @@ import org.joml.Vector3d;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public abstract class BlockEntityDeviceContainer extends BlockEntity implements IDeviceContainer {
 
@@ -33,6 +44,12 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     private IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
+
+    protected Observer<Long> energyObserver;
+
+    //region Client Fields
+    private long clientEnergy;
+    //endregion
 
     public BlockEntityDeviceContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -92,11 +109,14 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     @Override
     public void cycleRedstoneControl() {
-        redstoneControlType = redstoneControlType.cycleNext();
+        setRedstoneControlType(redstoneControlType.cycleNext());
     }
 
     public void setRedstoneControlType(RedstoneControlType type) {
         this.redstoneControlType = type;
+        if(world instanceof ServerWorld serverWorld) {
+            NetworkUtil.sendToAllTracking(new PacketS2CUpdateRedstoneControl(pos, type), serverWorld, pos);
+        }
     }
 
     @Override
@@ -131,19 +151,37 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         }
     }
 
+    protected void setupEnergyObserver(Supplier<Long> energyValueSupplier) {
+        energyObserver = new Observer<>(energyValueSupplier,
+                (a, b) -> !a.equals(b),
+                value -> NetworkUtil.sendToAllTracking(
+                        new PacketS2CUpdateEnergy(pos, value), (ServerWorld) world, pos)
+        );
+    }
+
     protected abstract Vector3d currentAim();
 
     protected abstract DeviceActivationContext getNewContext();
 
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        redstoneControlType = RedstoneControlType.fromIndex(nbt.getInt("redstoneControl"));
+    protected boolean canActivate() {
+        return true;
+    }
 
-        if(currentDevice != null && nbt.contains("device", NbtElement.COMPOUND_TYPE)) {
-            currentDevice.getNewState().deserialize(nbt.getCompound("device"));
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+
+        if(world.isClient) {
+            NetworkUtil.sendToServer(new PacketC2SRequestDCState(pos));
         }
     }
 
+    public void sendStateTo(ServerPlayerEntity player) {
+        energyObserver.forceMarkDirty();
+        NetworkUtil.sendToPlayer(new PacketS2CUpdateRedstoneControl(pos, redstoneControlType), player);
+    }
+
+    //region Client Methods
     /**
      * Client Method
      */
@@ -154,23 +192,32 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     /**
      * Client Method
      */
-    public abstract long getEnergy();
+    public final long getEnergy() { return clientEnergy; }
 
     /**
      * Client Method
      */
     public abstract long getMaxEnergy();
 
+    /**
+     * Client Method
+     */
+    public void setClientEnergy(long amount) { clientEnergy = amount; }
+    //endregion
 
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        setRedstoneControlType(RedstoneControlType.fromIndex(nbt.getInt("redstoneControl")));
+
+        if(currentDevice != null && nbt.contains("device", NbtElement.COMPOUND_TYPE)) {
+            currentDevice.getNewState().deserialize(nbt.getCompound("device"));
+        }
+    }
 
     @Override
     protected void writeNbt(NbtCompound nbt) {
         nbt.put("device", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
         nbt.putInt("redstoneControl", redstoneControlType.order);
-    }
-
-    protected boolean canActivate() {
-        return true;
     }
 
     protected void setCurrentDevice(@Nullable IFramedDevice newDevice) {

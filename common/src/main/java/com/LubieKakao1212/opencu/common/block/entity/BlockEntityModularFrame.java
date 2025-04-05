@@ -9,9 +9,10 @@ import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.device.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateRequiresLock;
 import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
@@ -30,7 +31,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -137,7 +137,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
 
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
-            NetworkUtil.sendToAllTracking(new PacketClientUpdateDispenser(pos, deviceStack), (ServerWorld) world, pos);
+            NetworkUtil.sendToAllTracking(new PacketS2CUpdateDevice(pos, deviceStack), (ServerWorld) world, pos);
         } else {
             //TODO Mark for update
         }
@@ -145,7 +145,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
 
     private void sendDispenserAimUpdate() {
         NetworkUtil.sendToAllTracking(
-                PacketClientUpdateDispenserAim.create(pos, currentAim, false),
+                PacketS2CUpdateFrameAim.create(pos, currentAim, false),
                 (ServerWorld) world, pos);
     }
 
@@ -180,6 +180,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
                 }
             }
 
+            be.energyObserver.update();
             be.tickDeviceServer();
         }else
         {
@@ -357,8 +358,14 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     }
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getDeviceItem()), player);
-        NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAim, true), player);
+        NetworkUtil.sendToPlayer(new PacketS2CUpdateDevice(pos, getDeviceItem()), player);
+        NetworkUtil.sendToPlayer(PacketS2CUpdateFrameAim.create(pos, currentAim, true), player);
+    }
+
+    @Override
+    public void sendStateTo(ServerPlayerEntity player) {
+        super.sendStateTo(player);
+        NetworkUtil.sendToPlayer(new PacketS2CUpdateRequiresLock(pos, isRequiresLock()), player);
     }
 
     @Override
@@ -437,7 +444,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
      * Client method
      */
     public void requestDispenserUpdate() {
-        NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
+        NetworkUtil.sendToServer(new PacketC2SRequestDeviceUpdate(pos));
     }
     //endregion
 }
