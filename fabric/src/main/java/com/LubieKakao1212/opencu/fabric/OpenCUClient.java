@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererDeviceContainer6Dir;
 import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererModularFrame;
+import com.LubieKakao1212.opencu.common.screen.DeviceContainerScreen;
 import com.LubieKakao1212.opencu.common.screen.ModularFrameScreen;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
 import com.LubieKakao1212.opencu.fabric.model.CUModelLoadPlugin;
@@ -31,6 +32,7 @@ public class OpenCUClient implements ClientModInitializer {
         BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_NETHERITE, RendererDeviceContainer6Dir::new);
 
         HandledScreens.register(CUMenuImpl.MODULAR_FRAME, ModularFrameScreen::new);
+        HandledScreens.register(CUMenuImpl.DEVICE_CONTAINER, DeviceContainerScreen::new);
 
 
         ModelLoadingPlugin.register(new CUModelLoadPlugin());

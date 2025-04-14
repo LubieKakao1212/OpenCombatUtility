@@ -7,17 +7,22 @@ import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
+import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.common.util.Observer;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
-import com.lubiekakao1212.qulib.math.Aim;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.PropertyDelegate;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +37,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-public abstract class BlockEntityDeviceContainer extends BlockEntity implements IDeviceContainer {
+public abstract class BlockEntityDeviceContainer extends BlockEntity implements NamedScreenHandlerFactory, IDeviceContainer {
+
+    public static final int screenPropertyCount = 3;
+    public static final int xPropertyIndex = 0;
+    public static final int yPropertyIndex = 1;
+    public static final int zPropertyIndex = 2;
 
     public static final int autoShootInterval = 10;
 
@@ -47,6 +57,8 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     protected Observer<Long> energyObserver;
 
+    private final PropertyDelegate screenProperties;
+
     //region Client Fields
     private long clientEnergy;
     //endregion
@@ -54,6 +66,28 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     public BlockEntityDeviceContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         redstoneControlType = RedstoneControlType.PULSE;
+
+        screenProperties = new PropertyDelegate() {
+            @Override
+            public int get(int index) {
+                return switch (index) {
+                    case xPropertyIndex -> pos.getX();
+                    case yPropertyIndex -> pos.getY();
+                    case zPropertyIndex -> pos.getZ();
+                    default -> -1;
+                };
+            }
+
+            @Override
+            public void set(int index, int value) {
+
+            }
+
+            @Override
+            public int size() {
+                return screenPropertyCount;
+            }
+        };
     }
 
     protected void tickDeviceServer() {
@@ -163,6 +197,9 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     protected abstract DeviceActivationContext getNewContext();
 
+    public abstract void scatterInventory();
+
+
     protected boolean canActivate() {
         return true;
     }
@@ -180,6 +217,20 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         energyObserver.forceMarkDirty();
         NetworkUtil.sendToPlayer(new PacketS2CUpdateRedstoneControl(pos, redstoneControlType), player);
     }
+
+    /**
+     * Creates a slot for gui
+     * @param idx slot index 0 => device; 1-9 => ammo
+     */
+    public abstract Slot createSlot(int idx, int x, int y);
+
+    @Override
+    public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
+        assert world != null;
+        return new DeviceContainerScreenHandler(getScreenHandlerType(), containerId, inventory, this::createSlot, screenProperties);
+    }
+
+    public abstract ScreenHandlerType<?> getScreenHandlerType();
 
     //region Client Methods
     /**

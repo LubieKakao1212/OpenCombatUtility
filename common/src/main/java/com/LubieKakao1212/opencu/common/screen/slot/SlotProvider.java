@@ -13,7 +13,7 @@ public interface SlotProvider {
     Slot createSlot(int idx, int x, int y);
 
     static SlotProvider of(Inventory inv) {
-        return (idx, x, y) -> new Slot(inv, idx, x, y);
+        return (idx, x, y) -> new ToggleableSlot(inv, idx, x, y);
     }
 
     static SlotProvider dummy(int slotCount) {
@@ -21,7 +21,7 @@ public interface SlotProvider {
     }
 
     static SlotProvider constant(Supplier<ItemStack>[] stacks) {
-        return (idx, x, y) -> new ConstSlot(stacks[idx].get(), idx, x, y);
+        return (idx, x, y) -> new ConstSlot(stacks[idx].get(), x, y);
     }
 
     static SlotProvider concat(SlotProvider first, int firstCount, SlotProvider second) {

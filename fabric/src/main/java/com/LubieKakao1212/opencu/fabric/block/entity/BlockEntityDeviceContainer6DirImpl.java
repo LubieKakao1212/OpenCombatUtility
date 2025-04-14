@@ -4,6 +4,7 @@ import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
+import com.LubieKakao1212.opencu.common.screen.slot.ConstSlot;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.fabric.inventory.SlottedInventory;
 import com.LubieKakao1212.opencu.fabric.transaction.AmmoContext;
@@ -17,6 +18,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.InfiniteEnergyStorage;
@@ -85,6 +88,25 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
                 new AmmoContext(exposedAmmoStorage),
                 new SimpleLeftoverContext(exposedAmmoStorage, world, pos)
         );
+    }
+
+    public void scatterInventory() {
+        ItemScatterer.spawn(world, pos, ammoInventory);
+    }
+
+    /**
+     * Creates a slot for gui
+     *
+     * @param idx slot index 0 => device; 1-9 => ammo
+     * @param x
+     * @param y
+     */
+    @Override
+    public Slot createSlot(int idx, int x, int y) {
+        if(idx == 0) {
+            return new ConstSlot(getDeviceItem(), x, y);
+        }
+        return new Slot(ammoInventory, idx - 1, x, y);
     }
 
     @Override

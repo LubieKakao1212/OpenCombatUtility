@@ -9,6 +9,7 @@ import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2C
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.screen.PacketC2SRequestAmmoSlotToggle;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import io.wispforest.owo.network.OwoNetChannel;
 import net.minecraft.entity.Entity;
@@ -39,6 +40,7 @@ public class NetworkUtilImpl {
         CHANNEL.registerServerbound(PacketC2SToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SCycleRedstoneControl.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SRequestDCState.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SRequestAmmoSlotToggle.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
     }
 
     public static void clientInit() {

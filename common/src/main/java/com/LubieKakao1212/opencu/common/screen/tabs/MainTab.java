@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 
 public class MainTab extends DeviceContainerScreenTab {
 
-    public static final String energyBarTooltipKey = "info.opencu.dc.gui.energy";
+    public static final String energyBarTooltipKey = "info.opencu.gui.dc.energy";
 
     private FillableBarWidget energyWidget;
 

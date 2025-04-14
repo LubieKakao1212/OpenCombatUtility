@@ -31,7 +31,7 @@
   "info.opencu.gui.frame.lock.inactive": "Shoot only when aligned: §cOff",
 
   "info.opencu.gui.dc.energy": "%s/%s",
-  "info.opencu.gui.dc.tab.ammo_energy": "Ammo/Energy",
+  "info.opencu.gui.dc.tab.inventory": "Inventory",
   "info.opencu.gui.dc.tab.dispenser": "Dispenser Settings",
   "info.opencu.gui.dc.tab.repulsor": "Repulsor Settings",
 

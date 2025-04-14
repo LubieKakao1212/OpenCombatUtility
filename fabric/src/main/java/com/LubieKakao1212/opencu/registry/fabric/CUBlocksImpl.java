@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.registry.fabric;
 
 import com.LubieKakao1212.opencu.common.block.BlockDevice6Dir;
-import com.LubieKakao1212.opencu.fabric.block.BlockModularFrame;
+import com.LubieKakao1212.opencu.common.block.BlockModularFrame;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import io.wispforest.owo.registration.reflect.BlockRegistryContainer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;

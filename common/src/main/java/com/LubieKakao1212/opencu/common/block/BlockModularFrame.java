@@ -1,9 +1,9 @@
-package com.LubieKakao1212.opencu.fabric.block;
+package com.LubieKakao1212.opencu.common.block;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.block.entity.BlockProperties;
-import com.LubieKakao1212.opencu.fabric.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -12,8 +12,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -21,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockModularFrame extends BlockWithEntity {
@@ -38,13 +37,6 @@ public class BlockModularFrame extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if(!world.isClient) {
-            //region debug
-            if(player.isSneaking()) {
-                var be = (BlockEntityModularFrameImpl)world.getBlockEntity(pos);
-                player.sendMessage(Text.of(be.exposedEnegyStorage.getAmount() + "/" + OpenCUConfigCommon.modularFrame().energy().energyCapacity()));
-            }
-            //endregion
-
             NamedScreenHandlerFactory factory = state.createScreenHandlerFactory(world, pos);
 
             if(factory != null) {
@@ -60,7 +52,7 @@ public class BlockModularFrame extends BlockWithEntity {
         //OpenCUModCommon.LOGGER.info("State Update: " + position.toShortString());
 
         if(!state.isOf(newState.getBlock())) {
-            var blockEntity = (BlockEntityModularFrameImpl) CUBlockEntities.modularFrame().get(world, pos);
+            var blockEntity = (BlockEntityDeviceContainer) CUBlockEntities.modularFrame().get(world, pos);
             if(blockEntity != null) {
                 blockEntity.scatterInventory();
             }
@@ -88,19 +80,19 @@ public class BlockModularFrame extends BlockWithEntity {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void appendProperties(StateManager.@NotNull Builder<Block, BlockState> builder) {
         builder.add(BlockProperties.EMITS_REDSTONE_SIGNAL);
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new BlockEntityModularFrameImpl(pos, state);
+        return CUBlockEntities.modularFrame().instantiate(pos, state);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return BlockEntityModularFrameImpl::tick;
+        return BlockEntityModularFrame::tick;
     }
 
     @Override

@@ -11,4 +11,9 @@ public class CUMenu {
         return null;
     }
 
+    @ExpectPlatform
+    public static ScreenHandlerType<DeviceContainerScreenHandler> modularFrame() {
+        return null;
+    }
+
 }

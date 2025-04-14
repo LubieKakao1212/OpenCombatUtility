@@ -16,8 +16,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TabButtonWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -85,7 +83,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
                 22, 0,
                 () -> currentTab == mainTab,
                 aBoolean -> switchToTab(null),
-                Text.translatable("info.opencu.gui.dc.tab.ammo_energy")
+                Text.translatable("info.opencu.gui.dc.tab.inventory")
         );
         addDrawableChild(mainTabButton);
 
@@ -131,9 +129,6 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
 
     @Override
     protected void drawBackground(DrawContext context, float partialTick, int mouseX, int mouseY) {
-//        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-//        RenderSystem.setShaderTexture(0, mainTexture);
         currentTab.renderTabBackground(this, context, mouseX, mouseY, partialTick);
     }
 
@@ -143,6 +138,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
 
     private void setTab(DeviceContainerScreenTab newTab) {
         currentTab = newTab;
+        handler.requestAmmoSlotsVisibility(newTab == mainTab);
         clearAndInit();
     }
 

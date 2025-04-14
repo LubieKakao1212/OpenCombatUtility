@@ -9,12 +9,15 @@ import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2S
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SToggleRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
+import com.LubieKakao1212.opencu.common.network.packet.screen.PacketC2SRequestAmmoSlotToggle;
+import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
+import oshi.jna.platform.windows.NtDll;
 
 public class PacketHandlersServer {
 
@@ -86,6 +89,12 @@ public class PacketHandlersServer {
         }
     }
 
+    public static void handle(PacketC2SRequestAmmoSlotToggle packetIn, ServerPlayerEntity sender) {
+        if(sender.currentScreenHandler != null && sender.currentScreenHandler.syncId == packetIn.syncId()) {
+            var handler = (DeviceContainerScreenHandler) sender.currentScreenHandler;
+            handler.setAmmoSlotVisibilityServer(packetIn.visible());
+        }
+    }
 
     private static boolean validatePacket(ServerPlayerEntity player, BlockPos requestedPos) {
         return VS2SoftUtil.getDistanceSqr(player.getWorld(), new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&

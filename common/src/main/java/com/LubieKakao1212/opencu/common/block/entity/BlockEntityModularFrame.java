@@ -9,11 +9,10 @@ import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
-import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateRequiresLock;
-import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.registry.CUMenu;
@@ -24,14 +23,10 @@ import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -42,12 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer implements NamedScreenHandlerFactory, IRedstoneControlled, IEventNode {
+public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer implements IRedstoneControlled, IEventNode {
 
-    public static final int screenPropertyCount = 3;
-    public static final int xPropertyIndex = 0;
-    public static final int yPropertyIndex = 1;
-    public static final int zPropertyIndex = 2;
 //    public static final int requiresLockPropertyIndex = 3;
 //    public static final int redstoneControlPropertyIndex = 4;
 //    public static final int energyPropertyIndex = 5;
@@ -91,7 +82,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     public double deltaAngleYaw;
     //endregion
 
-    private final PropertyDelegate screenProperties;
+
 
     public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
@@ -102,32 +93,6 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
         requiresLock = false;
 
         eventDistributor = new DistributingWorldEventNode(pos);
-
-        screenProperties = new PropertyDelegate() {
-            @Override
-            public int get(int index) {
-                return switch (index) {
-                    case xPropertyIndex -> pos.getX();
-                    case yPropertyIndex -> pos.getY();
-                    case zPropertyIndex -> pos.getZ();
-//                    case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
-//                    case redstoneControlPropertyIndex -> getRedstoneControlTypeRaw().order;
-//                    case energyPropertyIndex -> getCurrentEnergy();
-//                    case maxEnergyPropertyIndex -> OpenCUConfigCommon.modularFrame().energy().energyCapacity();
-                    default -> -1;
-                };
-            }
-
-            @Override
-            public void set(int index, int value) {
-
-            }
-
-            @Override
-            public int size() {
-                return screenPropertyCount;
-            }
-        };
     }
 
     protected void updateDispenser() {
@@ -281,12 +246,6 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
         return currentAim.toQuaternion(Direction.EAST, Direction.UP).transform(Vector3dExtensions.INSTANCE.getSOUTH());
     }
 
-    /**
-     * Creates a slot for gui
-     * @param idx slot index 0 => device; 1-9 => ammo
-     */
-    public abstract Slot createSlot(int idx, int x, int y);
-
     public boolean isUsableBy(PlayerEntity player) {
         assert world != null;
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
@@ -303,6 +262,9 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
 
     public void setRequiresLock(boolean requiresLock) {
         this.requiresLock = requiresLock;
+        if(world instanceof ServerWorld sWorld) {
+            NetworkUtil.sendToAllTracking(new PacketS2CUpdateRequiresLock(pos, requiresLock), sWorld, pos);
+        }
     }
 
     //region redstone
@@ -374,12 +336,6 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     }
 
     @Override
-    public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
-        assert world != null;
-        return new DeviceContainerScreenHandler(CUMenu.deviceContainer(), containerId, inventory, this::createSlot, screenProperties);
-    }
-
-    @Override
     public ItemStack getDeviceItem() {
         assert this.world != null;
         if(this.world.isClient) {
@@ -395,6 +351,11 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     @Override
     public boolean isSameAs(IDeviceContainer deviceContainer) {
         return deviceContainer instanceof BlockEntityModularFrame frame && this.getPos().equals(frame.pos);
+    }
+
+    @Override
+    public ScreenHandlerType<?> getScreenHandlerType() {
+        return CUMenu.modularFrame();
     }
 
     //region Clinet Methods

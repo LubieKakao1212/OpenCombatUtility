@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.registry.fabric;
 
 import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
+import com.LubieKakao1212.opencu.common.screen.slot.LockedSlot;
 import com.LubieKakao1212.opencu.common.screen.slot.SlotProvider;
 import io.wispforest.owo.registration.reflect.AutoRegistryContainer;
 import net.minecraft.item.ItemStack;
@@ -13,21 +14,28 @@ import java.util.function.Supplier;
 
 public class CUMenuImpl implements AutoRegistryContainer<ScreenHandlerType<?>> {
 
-    public static final ScreenHandlerType<DeviceContainerScreenHandler> MODULAR_FRAME = new ScreenHandlerType<>(
+    public static final ScreenHandlerType<DeviceContainerScreenHandler> DEVICE_CONTAINER = new ScreenHandlerType<>(
             clientFactory(
-                    () -> CUMenuImpl.MODULAR_FRAME,
+                    () -> CUMenuImpl.DEVICE_CONTAINER,
                     SlotProvider.concat(
-                            SlotProvider.dummy(9),
-                            9,
-                            SlotProvider.constant(new Supplier[] {
-                                    () -> new ItemStack(CUBlocksImpl.DISPENSER_NETHERITE)
-                            })
+                            (idx, x, y) -> new LockedSlot(x, y),
+                            1,
+                            SlotProvider.dummy(9)
                     )
             ),
             FeatureFlags.VANILLA_FEATURES);
-//    private static ScreenHandlerType<DeviceContainerScreenHandler> DISPENSER = new ScreenHandlerType<>(DeviceContainerScreenHandler::new, FeatureFlags.VANILLA_FEATURES);
+    public static final ScreenHandlerType<DeviceContainerScreenHandler> MODULAR_FRAME = new ScreenHandlerType<>(
+            clientFactory(
+                    () -> CUMenuImpl.MODULAR_FRAME,
+                    SlotProvider.dummy(10)
+            ),
+            FeatureFlags.VANILLA_FEATURES);
 
     public static ScreenHandlerType<DeviceContainerScreenHandler> deviceContainer() {
+        return DEVICE_CONTAINER;
+    }
+
+    public static ScreenHandlerType<DeviceContainerScreenHandler> modularFrame() {
         return MODULAR_FRAME;
     }
 
