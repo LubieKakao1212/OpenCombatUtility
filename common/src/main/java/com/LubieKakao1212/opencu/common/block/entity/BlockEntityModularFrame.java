@@ -328,6 +328,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
     public void sendStateTo(ServerPlayerEntity player) {
         super.sendStateTo(player);
         NetworkUtil.sendToPlayer(new PacketS2CUpdateRequiresLock(pos, isRequiresLock()), player);
+        sendDispenserUpdateTo(player);
     }
 
     @Override

@@ -22,6 +22,7 @@
     ]
   },
   "mixins": [
+    "opencu.mixins.json"
   ],
   "accessWidener": "opencu.accesswidener",
   "depends": {

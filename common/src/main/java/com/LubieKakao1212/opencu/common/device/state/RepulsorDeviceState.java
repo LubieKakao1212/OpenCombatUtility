@@ -2,13 +2,13 @@ package com.LubieKakao1212.opencu.common.device.state;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorBlend;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.common.peripheral.device.RepulsorDeviceApi;
 import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
 import com.LubieKakao1212.opencu.common.util.Lazy;
-import com.LubieKakao1212.opencu.common.util.SyncDouble;
+import com.LubieKakao1212.opencu.common.util.Observer;
 import com.LubieKakao1212.opencu.registry.CUPulse;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -23,7 +23,9 @@ public class RepulsorDeviceState extends DeviceStateBase {
     private EntityPulseType pulseType = CUPulse.defaultPulse();
     private final PulseData pulseData = new PulseData();
     private final OpenCUConfigCommon.RepulsorDeviceConfig config;
-    private final SyncDouble blendSync;
+    private final Observer<Double> blendObserver;
+    private final Observer<Double> forceObserver;
+    private final Observer<Double> radiusObserver;
 
     //region Client Fields
     /**
@@ -39,7 +41,9 @@ public class RepulsorDeviceState extends DeviceStateBase {
         pulseData.force = 0.5;
         pulseData.directionBlend = 0.5f;
         api = new Lazy<>(() -> new RepulsorDeviceApi(this));
-        this.blendSync = new SyncDouble(-100, 1f / 256f, () -> pulseData.directionBlend);
+        blendObserver = Observer.numeric(this::getDirectionBlend, 1f / 256f);
+        forceObserver = Observer.numeric(this::getForce, 1f / 256f);
+        radiusObserver = Observer.numeric(this::getRadius, 1f / 256f);
     }
 
     /**
@@ -78,11 +82,9 @@ public class RepulsorDeviceState extends DeviceStateBase {
     }
 
     public void sync(World world, BlockPos pos) {
-        blendSync.sync(
-            (value) -> {
-                NetworkUtil.sendToAllTracking(new PacketS2CUpdateRepulsorBlend(pos, (float)value.doubleValue()), (ServerWorld) world, pos);
-            }
-        );
+        blendObserver.update((value) -> sendProperty(world, pos, Property.DirectionBlend));
+        forceObserver.update((value) -> sendProperty(world, pos, Property.Force));
+        radiusObserver.update((value) -> sendProperty(world, pos, Property.Radius));
     }
 
     public void setPulseType(EntityPulseType pulseType) {
@@ -153,6 +155,39 @@ public class RepulsorDeviceState extends DeviceStateBase {
         return pulseData.directionBlend;
     }
 
+    public void setProperty(Property property, double value) {
+        switch (property) {
+            case Force -> setForce(value);
+            case Radius -> setRadius(value);
+            case DirectionBlend -> setDirectionBlend(value);
+        }
+    }
+
+    public double getProperty(Property property) {
+        return switch (property) {
+            case Force -> getForce();
+            case Radius -> getRadius();
+            case DirectionBlend -> getDirectionBlend();
+        };
+    }
+
+    public void setPropertyNormal(Property property, double valueNorm) {
+        setProperty(property, switch (property) {
+            case Force -> (valueNorm * 2.) - 1.;
+            case Radius -> valueNorm * getMaxRadius();
+            case DirectionBlend -> valueNorm;
+        });
+    }
+
+    public double getPropertyNormal(Property property) {
+        var prop = getProperty(property);
+        return switch (property) {
+            case Force -> (prop + 1.) / 2.;
+            case Radius -> prop / getMaxRadius();
+            case DirectionBlend -> prop;
+        };
+    }
+
     //region Client Methods
 
     /**
@@ -170,4 +205,14 @@ public class RepulsorDeviceState extends DeviceStateBase {
     }
 
     //endregion
+
+    private void sendProperty(World world, BlockPos pos, Property property) {
+        NetworkUtil.sendToAllTracking(new PacketS2CUpdateRepulsorProperty(pos, property,  (float)getPropertyNormal(property)), (ServerWorld) world, pos);
+    }
+
+    public enum Property {
+        Force,
+        Radius,
+        DirectionBlend
+    }
 }

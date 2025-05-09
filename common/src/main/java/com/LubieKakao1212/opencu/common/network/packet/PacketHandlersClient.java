@@ -9,7 +9,7 @@ import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2C
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
-import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorBlend;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PacketHandlersClient {
@@ -90,15 +89,15 @@ public class PacketHandlersClient {
         }
     }
 
-    public static void handle(PacketS2CUpdateRepulsorBlend packet) {
+    public static void handle(PacketS2CUpdateRepulsorProperty packet) {
         var world = MinecraftClient.getInstance().world;
         assert world != null;
 
         var be = world.getBlockEntity(packet.position());
         if(be instanceof IDeviceContainer container) {
             var state = container.getState();
-            if(state instanceof RepulsorDeviceState) {
-                ((RepulsorDeviceState) state).setDirectionBlend(packet.value());
+            if(state instanceof RepulsorDeviceState repState) {
+                repState.setPropertyNormal(packet.property(), packet.value());
             }
         }
         else {

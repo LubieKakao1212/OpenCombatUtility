@@ -49,6 +49,8 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
                 (stack1, stack2) -> !stack1.equals(stack2),
                 this::deviceChanged
         );
+
+        setTab(mainTab);
     }
 
     @Override
@@ -101,6 +103,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
 
             addDrawableChild(deviceTabButton);
         }
+        setInitialFocus(redstoneControlButton);
     }
 
     @Override
@@ -130,6 +133,25 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
     @Override
     protected void drawBackground(DrawContext context, float partialTick, int mouseX, int mouseY) {
         currentTab.renderTabBackground(this, context, mouseX, mouseY, partialTick);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        return (getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) || super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean flag = false;
+        if(getFocused() != null && button == 0) {
+            if(isDragging()) {
+                if(getFocused().mouseReleased(mouseX, mouseY, button)) {
+                    flag = true;
+                }
+            }
+            setFocused(null);
+        }
+        return flag || super.mouseReleased(mouseX, mouseY, button);
     }
 
     private void switchToTab(DeviceContainerScreenTab tab) {
@@ -186,6 +208,5 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
     public int getBgHeight() {
         return backgroundHeight;
     }
-
     //endregion
 }

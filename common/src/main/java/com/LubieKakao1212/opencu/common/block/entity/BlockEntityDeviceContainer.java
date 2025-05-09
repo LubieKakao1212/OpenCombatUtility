@@ -52,7 +52,7 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     private long redstoneActivationTimer = 0;
     private final Set<Direction> rsState = EnumSet.noneOf(Direction.class);
 
-    private IFramedDevice currentDevice;
+    private @Nullable IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
 
     protected Observer<Long> energyObserver;
@@ -160,7 +160,7 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     @Override
     public @NotNull IFramedDevice getDevice() {
-        return currentDevice;
+        return currentDevice != null ? currentDevice : null; // TODO add identity device
     }
 
     @Override
@@ -261,7 +261,7 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         setRedstoneControlType(RedstoneControlType.fromIndex(nbt.getInt("redstoneControl")));
 
         if(currentDevice != null && nbt.contains("device", NbtElement.COMPOUND_TYPE)) {
-            currentDevice.getNewState().deserialize(nbt.getCompound("device"));
+            getState().deserialize(nbt.getCompound("device"));
         }
     }
 

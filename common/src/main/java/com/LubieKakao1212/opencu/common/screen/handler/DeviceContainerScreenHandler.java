@@ -76,8 +76,6 @@ public class DeviceContainerScreenHandler extends ScreenHandler {
 
         ItemStack stack = ItemStack.EMPTY;
 
-        OpenCUModCommon.LOGGER.info("quickMove is on client: "+player.getWorld().isClient);
-
         if(slot.hasStack()) {
             ItemStack stackCpy = slot.getStack();
             if (!stackCpy.isEmpty()) {

@@ -7,6 +7,8 @@ import com.LubieKakao1212.opencu.common.device.renderer.IDeviceRenderer;
 import com.LubieKakao1212.opencu.common.device.renderer.RepulsorDeviceRenderer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +24,7 @@ public class CUDeviceRanderers {
         renderers.put(CUFramedDevices.REPULSOR, REPULSOR);
     }
 
-    public static IDeviceRenderer getRenderer(IFramedDevice device) {
+    public static IDeviceRenderer getRenderer(@Nullable IFramedDevice device) {
         return renderers.getOrDefault(device, FALLBACK);
     }
 
