@@ -269,6 +269,10 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
 
     //region redstone
     public RedstoneControlType getRedstoneControlType() {
+        assert world != null;
+        if(world.isClient) {
+            return getRedstoneControlTypeRaw();
+        }
         return isEmittingRedstone() ? RedstoneControlType.DISABLED : getRedstoneControlTypeRaw();
     }
 

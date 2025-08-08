@@ -52,8 +52,8 @@ public class ArrayControllerDevice implements IFramedDevice {
     }
 
     @Override
-    public @NotNull IDeviceState getNewState() {
-        return new ArrayControllerDeviceState();
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
+        return new ArrayControllerDeviceState(markDirtyDelegate);
     }
 
     @Override

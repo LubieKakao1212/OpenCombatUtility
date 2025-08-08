@@ -175,8 +175,8 @@ public class TrackerBase implements IFramedDevice {
     }
 
     @Override
-    public @NotNull IDeviceState getNewState() {
-        return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick);
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
+        return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick, markDirtyDelegate);
     }
 
     @Override

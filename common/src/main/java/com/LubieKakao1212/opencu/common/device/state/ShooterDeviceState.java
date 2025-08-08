@@ -1,9 +1,11 @@
 package com.LubieKakao1212.opencu.common.device.state;
 
+import com.LubieKakao1212.opencu.common.network.Sender;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.common.peripheral.device.ShooterDeviceApi;
 import com.LubieKakao1212.opencu.common.util.Lazy;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 
 public class ShooterDeviceState extends DeviceStateBase {
 
@@ -14,7 +16,8 @@ public class ShooterDeviceState extends DeviceStateBase {
     private double power;
     private double baseEnergyUsage;
 
-    public ShooterDeviceState(double force, double spread, double baseEnergyUsage, double power) {
+    public ShooterDeviceState(double force, double spread, double baseEnergyUsage, double power, Runnable markDirtyDelegate) {
+        super(markDirtyDelegate);
         api = new Lazy<>(() -> new ShooterDeviceApi(this));
         this.force = force;
         this.spread = spread;
@@ -57,5 +60,10 @@ public class ShooterDeviceState extends DeviceStateBase {
     @Override
     public void deserialize(NbtCompound nbt) {
 
+    }
+
+    @Override
+    public void forceSync(Sender packetSender, BlockPos pos) {
+        //TODO
     }
 }

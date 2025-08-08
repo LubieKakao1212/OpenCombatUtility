@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -159,12 +160,12 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     }
 
     @Override
-    public @NotNull IFramedDevice getDevice() {
+    public @Nullable IFramedDevice getDevice() {
         return currentDevice != null ? currentDevice : null; // TODO add identity device
     }
 
     @Override
-    public @NotNull IDeviceState getState() {
+    public @Nullable IDeviceState getState() {
         return currentDeviceState;
     }
 
@@ -216,6 +217,10 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
     public void sendStateTo(ServerPlayerEntity player) {
         energyObserver.forceMarkDirty();
         NetworkUtil.sendToPlayer(new PacketS2CUpdateRedstoneControl(pos, redstoneControlType), player);
+        if(getDevice() != null) {
+            assert getState() != null;
+            getState().forceSync(NetworkUtil.toPlayerSender(player), pos);
+        }
     }
 
     /**
@@ -261,13 +266,14 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         setRedstoneControlType(RedstoneControlType.fromIndex(nbt.getInt("redstoneControl")));
 
         if(currentDevice != null && nbt.contains("device", NbtElement.COMPOUND_TYPE)) {
+            assert getState() != null;
             getState().deserialize(nbt.getCompound("device"));
         }
     }
 
     @Override
     protected void writeNbt(NbtCompound nbt) {
-        nbt.put("device", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
+        nbt.put("device", currentDevice != null ? Objects.requireNonNull(getState()).serialize() : new NbtCompound());
         nbt.putInt("redstoneControl", redstoneControlType.order);
     }
 
@@ -278,7 +284,7 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         currentDevice = newDevice;
 
         if(newDevice != null) {
-            currentDeviceState = newDevice.getNewState();
+            currentDeviceState = newDevice.getNewState(this::markDirty);
         }else {
             currentDeviceState = null;
         }

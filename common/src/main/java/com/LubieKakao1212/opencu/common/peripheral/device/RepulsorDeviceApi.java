@@ -56,17 +56,7 @@ public class RepulsorDeviceApi extends DeviceApiBase {
         return state.getMaxRadius();
     }
 
-    @LuaFunction
-    public double setDirectionBlend(double blend) throws LuaException {
-        assertValid();
-        return state.setDirectionBlend(blend);
-    }
-
-    @LuaFunction
-    public double getDirectionBlend() throws LuaException {
-        assertValid();
-        return state.getDirectionBlend();
-    }
+    //TODO get and set pulseType
 
     @LuaFunction
     public int getEnergyUsage() throws LuaException {

@@ -2,6 +2,8 @@ package com.LubieKakao1212.opencu.common.device.state;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.network.Sender;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.common.peripheral.device.RepulsorDeviceApi;
@@ -23,7 +25,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
     private EntityPulseType pulseType = CUPulse.defaultPulse();
     private final PulseData pulseData = new PulseData();
     private final OpenCUConfigCommon.RepulsorDeviceConfig config;
-    private final Observer<Double> blendObserver;
+    private final Observer<Identifier> typeObserver;
     private final Observer<Double> forceObserver;
     private final Observer<Double> radiusObserver;
 
@@ -32,16 +34,18 @@ public class RepulsorDeviceState extends DeviceStateBase {
      * Client field
      */
     private long lastActivationTimestamp = 0;
+
+    public int selectedType;
     //endregion
 
-    public RepulsorDeviceState(OpenCUConfigCommon.RepulsorDeviceConfig config) {
+    public RepulsorDeviceState(OpenCUConfigCommon.RepulsorDeviceConfig config, Runnable markDirtyDelegate) {
+        super(markDirtyDelegate);
         this.config = config;
         //TODO set from config
         pulseData.radius = 3.0;
         pulseData.force = 0.5;
-        pulseData.directionBlend = 0.5f;
         api = new Lazy<>(() -> new RepulsorDeviceApi(this));
-        blendObserver = Observer.numeric(this::getDirectionBlend, 1f / 256f);
+        typeObserver = Observer.generic(() -> pulseType.getRegistryKey());
         forceObserver = Observer.numeric(this::getForce, 1f / 256f);
         radiusObserver = Observer.numeric(this::getRadius, 1f / 256f);
     }
@@ -81,14 +85,22 @@ public class RepulsorDeviceState extends DeviceStateBase {
         }
     }
 
-    public void sync(World world, BlockPos pos) {
-        blendObserver.update((value) -> sendProperty(world, pos, Property.DirectionBlend));
-        forceObserver.update((value) -> sendProperty(world, pos, Property.Force));
-        radiusObserver.update((value) -> sendProperty(world, pos, Property.Radius));
+    @Override
+    public void forceSync(Sender packetSender, BlockPos pos) {
+        sendTypeId(packetSender, pos);
+        sendProperty(packetSender, pos, Property.Force);
+        sendProperty(packetSender, pos, Property.Radius);
+    }
+
+    public void sync(Sender packetSender, BlockPos pos) {
+        typeObserver.update((value) -> sendTypeId(packetSender, pos));
+        forceObserver.update((value) -> sendProperty(packetSender, pos, Property.Force));
+        radiusObserver.update((value) -> sendProperty(packetSender, pos, Property.Radius));
     }
 
     public void setPulseType(EntityPulseType pulseType) {
         this.pulseType = pulseType;
+        markDirty();
     }
 
     public EntityPulseType getPulseType() {
@@ -116,6 +128,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
             force = Math.signum(force);
         }
         pulseData.force = force;
+        markDirty();
         return force;
     }
 
@@ -130,6 +143,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
             radius = config.maxRadius();
         }
         pulseData.radius = radius;
+        markDirty();
         return radius;
     }
 
@@ -141,25 +155,10 @@ public class RepulsorDeviceState extends DeviceStateBase {
         return config.maxRadius();
     }
 
-    public double setDirectionBlend(double blend) {
-        if(blend < 0) {
-            blend = 0;
-        }else if(blend > 1) {
-            blend = 1;
-        }
-        pulseData.directionBlend = blend;
-        return blend;
-    }
-
-    public double getDirectionBlend() {
-        return pulseData.directionBlend;
-    }
-
     public void setProperty(Property property, double value) {
         switch (property) {
             case Force -> setForce(value);
             case Radius -> setRadius(value);
-            case DirectionBlend -> setDirectionBlend(value);
         }
     }
 
@@ -167,7 +166,6 @@ public class RepulsorDeviceState extends DeviceStateBase {
         return switch (property) {
             case Force -> getForce();
             case Radius -> getRadius();
-            case DirectionBlend -> getDirectionBlend();
         };
     }
 
@@ -175,7 +173,6 @@ public class RepulsorDeviceState extends DeviceStateBase {
         setProperty(property, switch (property) {
             case Force -> (valueNorm * 2.) - 1.;
             case Radius -> valueNorm * getMaxRadius();
-            case DirectionBlend -> valueNorm;
         });
     }
 
@@ -184,7 +181,6 @@ public class RepulsorDeviceState extends DeviceStateBase {
         return switch (property) {
             case Force -> (prop + 1.) / 2.;
             case Radius -> prop / getMaxRadius();
-            case DirectionBlend -> prop;
         };
     }
 
@@ -206,13 +202,16 @@ public class RepulsorDeviceState extends DeviceStateBase {
 
     //endregion
 
-    private void sendProperty(World world, BlockPos pos, Property property) {
-        NetworkUtil.sendToAllTracking(new PacketS2CUpdateRepulsorProperty(pos, property,  (float)getPropertyNormal(property)), (ServerWorld) world, pos);
+    private void sendProperty(Sender packetSender, BlockPos pos, Property property) {
+        packetSender.send(new PacketS2CUpdateRepulsorProperty(pos, property, (float)getPropertyNormal(property)));
+    }
+
+    private void sendTypeId(Sender packetSender, BlockPos pos) {
+        packetSender.send(new PacketS2CUpdatePulseType(pos, config.pulseTypesOrdinal().indexOf(pulseType.getRegistryKey())));//TODO
     }
 
     public enum Property {
         Force,
-        Radius,
-        DirectionBlend
+        Radius
     }
 }

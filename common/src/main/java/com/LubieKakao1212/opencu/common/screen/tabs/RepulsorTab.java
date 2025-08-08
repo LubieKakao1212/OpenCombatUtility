@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.screen.DeviceContainerScreen;
 import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
+import com.LubieKakao1212.opencu.common.screen.widget.SlicedSprite;
 import com.LubieKakao1212.opencu.common.screen.widget.SliderWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -24,9 +25,16 @@ public class RepulsorTab extends DeviceContainerScreenTab {
     @Override
     public void init(DeviceContainerScreen screen) {
         var handler = screen.getScreenHandler();
-        addSlider(screen, handler, 10, 10, RepulsorDeviceState.Property.DirectionBlend);
-        addSlider(screen, handler, 40, 10, RepulsorDeviceState.Property.Force);
-        addSlider(screen, handler, 70, 10, RepulsorDeviceState.Property.Radius);
+//        addPropertySlider(screen, handler, 10, 10, RepulsorDeviceState.Property.DirectionBlend);
+        addPropertySlider(screen, handler, 40, 10, RepulsorDeviceState.Property.Force);
+        addPropertySlider(screen, handler, 70, 10, RepulsorDeviceState.Property.Radius);
+//        screen.addSlider(
+//                ,,
+//                15,
+//                3,
+//                SliderWidget.Axis.Horizontal,
+//
+//        );
     }
 
     @Override
@@ -46,21 +54,38 @@ public class RepulsorTab extends DeviceContainerScreenTab {
 
     //region private utils
 
-    private void addSlider(DeviceContainerScreen screen, DeviceContainerScreenHandler handler, int x, int y, RepulsorDeviceState.Property property) {
-        screen.addDrawableChild(
-                new SliderWidget(
-                        DeviceContainerScreen.mainTexture,
-                        screen.getX() + x, screen.getY() + y,
-                        10, 50,
-                        10, 6,
-                        200, 77,
-                        () -> forRepulsorState(handler, state -> { return state.getPropertyNormal(property); } ),
-                        value -> {
-                            forRepulsorState(handler, state -> { state.setPropertyNormal(property, value); });
-                            sendPropertyChange(handler, property, value);
-                        },
-                        4
-                ));
+    private void addPropertySlider(DeviceContainerScreen screen, DeviceContainerScreenHandler handler, int x, int y, RepulsorDeviceState.Property property) {
+        x += screen.getX();
+        y += screen.getY();
+
+        screen.addSlider(x, y, 40, 100, SliderWidget.Axis.Vertical,
+                () -> forRepulsorState(handler, state -> { return state.getPropertyNormal(property); }),
+                value -> {
+                    forRepulsorState(handler, state -> { state.setPropertyNormal(property, value); });
+                    sendPropertyChange(handler, property, value);
+                });
+
+//        screen.addDrawable(
+//                new SlicedSprite(
+//                        DeviceContainerScreen.mainTexture,
+//                        x + 4, y,
+//                        2, 50,
+//                        218, 77,
+//                        3, 3,
+//                        1, 1, 1,  1
+//                )
+//        );
+//        screen.addDrawableChild(
+//                new SliderWidget(
+//                        DeviceContainerScreen.mainTexture,
+//                         x, y,
+//                        10, 50,
+//                        10, 6,
+//                        200, 77,
+//                        ,
+//                        ,
+//                        4
+//                ));
     }
 
     private double forRepulsorState(DeviceContainerScreenHandler handler, Function<RepulsorDeviceState, Double> action) {

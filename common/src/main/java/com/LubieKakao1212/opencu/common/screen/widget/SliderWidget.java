@@ -11,19 +11,21 @@ import java.util.function.Supplier;
 
 public class SliderWidget extends ClickableWidget {
 
-    private Axis movementAxis = Axis.Vertical;
+    private final Axis movementAxis = Axis.Vertical;
 
     private int resolution = -1;
     private double value;
 
     private boolean noSync;
 
-    private Supplier<Double> valueSupplier;
+    private final Supplier<Double> valueSupplier;
 
-    private Consumer<Double> syncDelegate;
+    private final Consumer<Double> syncDelegate;
 
-    private int knobWidth, knobHeight;
-    private int u, v;
+    private final int knobWidth;
+    private final int knobHeight;
+    private final int u;
+    private final int v;
 
     private Identifier texture;
 
@@ -44,9 +46,11 @@ public class SliderWidget extends ClickableWidget {
         if(!noSync) {
             value = valueSupplier.get();
         }
+
         var size = movementAxis.get(width, height);
         var d = value * size - movementAxis.get(knobWidth, knobHeight) / 2.;
         context.drawTexture(texture, getX() + (int)movementAxis.x(d), getY() + (int)movementAxis.y(d), u, v, knobWidth, knobHeight);
+
     }
 
     @Override
@@ -88,7 +92,7 @@ public class SliderWidget extends ClickableWidget {
     }
 
     private static double quantise(double value, int resolution) {
-        return resolution > 0 ? (double) Math.round(value * resolution) / (double)resolution  : value;
+        return resolution > 0 ? (double) Math.round(value * resolution) / (double)resolution : value;
     }
 
     public enum Axis {

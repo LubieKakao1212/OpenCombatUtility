@@ -21,8 +21,8 @@ public class DispenserConfigurable extends ShooterBase {
 
     //TODO Not working
     @Override
-    public @NotNull IDeviceState getNewState() {
-        return new ShooterDeviceState(maxForce, minSpread, baseEnergy, -1.0);
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
+        return new ShooterDeviceState(maxForce, minSpread, baseEnergy, -1.0, markDirtyDelegate);
     }
 
 

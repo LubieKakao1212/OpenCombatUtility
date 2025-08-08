@@ -2,7 +2,10 @@ package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.fabric.OpenCUConfigFabric;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class OpenCUConfigCommonImpl {
 
@@ -148,6 +151,12 @@ public class OpenCUConfigCommonImpl {
         @Override
         public double distanceCost() {
             return CONFIG.distanceCost();
+        }
+
+        @Override
+        public List<Identifier> pulseTypesOrdinal() {
+            //TODO Return proper value from config
+            return List.of();
         }
 
         @Override

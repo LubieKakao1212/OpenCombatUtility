@@ -13,6 +13,7 @@ import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
@@ -51,7 +52,7 @@ public class RepulsorDevice implements IFramedDevice {
     @Override
     public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
         //server only
-        ((RepulsorDeviceState) state).sync(world, pos);
+        ((RepulsorDeviceState) state).sync(NetworkUtil.toAllTrackingSender((ServerWorld) world, pos), pos);
     }
 
     @Override
@@ -65,9 +66,9 @@ public class RepulsorDevice implements IFramedDevice {
     }
 
     @Override
-    public @NotNull IDeviceState getNewState() {
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
         //TODO fetch config
-        return new RepulsorDeviceState(OpenCUConfigCommon.repulsorDevice());
+        return new RepulsorDeviceState(OpenCUConfigCommon.repulsorDevice(), markDirtyDelegate);
     }
 
     @Override

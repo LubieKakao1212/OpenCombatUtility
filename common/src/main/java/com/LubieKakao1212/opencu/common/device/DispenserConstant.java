@@ -33,8 +33,8 @@ public class DispenserConstant extends ShooterBase {
 
 
     @Override
-    public @NotNull IDeviceState getNewState() {
-        return new ShooterDeviceState(constantForce, constantSpread, baseEnergy, basePower);
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
+        return new ShooterDeviceState(constantForce, constantSpread, baseEnergy, basePower, markDirtyDelegate);
     }
 
     @Override

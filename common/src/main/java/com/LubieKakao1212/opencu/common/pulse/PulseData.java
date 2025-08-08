@@ -3,12 +3,12 @@ package com.LubieKakao1212.opencu.common.pulse;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.Identifier;
 import org.joml.Vector3d;
 
 public class PulseData {
     public double radius;
     public double force;
-    public double directionBlend;
 
     public PulseData() {
     }
@@ -16,21 +16,18 @@ public class PulseData {
     public PulseData(PulseData source) {
         this.force = source.force;
         this.radius = source.radius;
-        this.directionBlend = source.directionBlend;
     }
 
     public NbtCompound serialize() {
         NbtCompound nbt = new NbtCompound();
         nbt.putDouble("radius", radius);
         nbt.putDouble("force", force);
-        nbt.putDouble("blend", directionBlend);
         return nbt;
     }
 
     public void deserialize(NbtCompound nbt) {
         radius = nbt.getDouble("radius");
         force = nbt.getDouble("force");
-        directionBlend = nbt.getDouble("blend");
     }
 
     public static class Directional extends PulseData {

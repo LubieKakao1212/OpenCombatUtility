@@ -8,6 +8,8 @@ import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHand
 import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
 import com.LubieKakao1212.opencu.common.screen.tabs.MainTab;
 import com.LubieKakao1212.opencu.common.screen.widget.ResponsiveToggleWidget;
+import com.LubieKakao1212.opencu.common.screen.widget.SlicedSprite;
+import com.LubieKakao1212.opencu.common.screen.widget.SliderWidget;
 import com.LubieKakao1212.opencu.common.util.Observer;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import net.minecraft.client.gui.DrawContext;
@@ -24,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHandler> {
 
@@ -103,12 +107,27 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
 
             addDrawableChild(deviceTabButton);
         }
+
+        addDrawable(new SlicedSprite(
+                mainTexture,
+                x + 15, y - 10,
+                3, 10,
+                224, 92,
+                17,15,
+                7, 9, 5, 9
+        ));
+
         setInitialFocus(redstoneControlButton);
     }
 
     @Override
     public <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement) {
         return super.addDrawableChild(drawableElement);
+    }
+
+    @Override
+    public <T extends Drawable> T addDrawable(T drawable) {
+        return super.addDrawable(drawable);
     }
 
     @Override
@@ -152,6 +171,58 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
             setFocused(null);
         }
         return flag || super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    public void addSlider(int x, int y, int length, int resolution, SliderWidget.Axis axis, Supplier<Double> valueProvider, Consumer<Double> valueReceiver) {
+        var xOffset = 0;
+        var yOffset = 0;
+
+        int u, v, w, h, totalW, totalH, bgW, bgH;
+
+        if(axis == SliderWidget.Axis.Vertical) {
+            xOffset = 4;
+            u = 200;
+            v = 77;
+            w = 10;
+            h = 6;
+            totalW = 10;
+            totalH = length;
+            bgW = 2;
+            bgH = length;
+        }
+        else {
+            yOffset = 4;
+            u = 211;
+            v = 77;
+            w = 6;
+            h = 10;
+            totalW = length;
+            totalH = 10;
+            bgW = length;
+            bgH = 2;
+        }
+
+        addDrawable(
+                new SlicedSprite(
+                        DeviceContainerScreen.mainTexture,
+                        x + xOffset, y + yOffset,
+                        bgW, bgH,
+                        218, 77,
+                        3, 3,
+                        1, 1, 1,  1
+                )
+        );
+        addDrawableChild(
+                new SliderWidget(
+                        DeviceContainerScreen.mainTexture,
+                        x, y,
+                        totalW, totalH,
+                        w, h,
+                        u, v,
+                        valueProvider,
+                        valueReceiver,
+                        resolution
+                ));
     }
 
     private void switchToTab(DeviceContainerScreenTab tab) {

@@ -27,7 +27,7 @@ public interface IFramedDevice {
     double getYawAlignmentSpeed();
 
     @NotNull
-    IDeviceState getNewState();
+    IDeviceState getNewState(Runnable markDirtyDelegate);
 
     default void handleEvent(BlockEntityModularFrame frame, IDeviceState state, IEventData data) { }
 
