@@ -32,6 +32,11 @@ public class RepulsorDeviceState extends DeviceStateBase {
     /**
      * Client field
      */
+    private Identifier pulseTypeId = pulseType.getRegistryKey();
+
+    /**
+     * Client field
+     */
     private long lastActivationTimestamp = 0;
 //    public int selectedType;
     //endregion
@@ -197,6 +202,20 @@ public class RepulsorDeviceState extends DeviceStateBase {
      */
     public void setLastActivationTimestamp(long lastActivationTimestamp) {
         this.lastActivationTimestamp = lastActivationTimestamp;
+    }
+
+    /**
+     * Client Method
+     */
+    public Identifier getPulseTypeId() {
+        return pulseTypeId;
+    }
+
+    /**
+     * Client Method
+     */
+    public void setPulseTypeId(Identifier pulseTypeId) {
+        this.pulseTypeId = pulseTypeId;
     }
 
     //endregion

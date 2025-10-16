@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CRepulsorActivationTimestamp;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
@@ -98,6 +99,22 @@ public class PacketHandlersClient {
             var state = container.getState();
             if(state instanceof RepulsorDeviceState repState) {
                 repState.setPropertyNormal(packet.property(), packet.value());
+            }
+        }
+        else {
+            OpenCUModCommon.LOGGER.warn("No device container with Repulsor device found at: " + packet.position());
+        }
+    }
+
+    public static void handle(PacketS2CUpdatePulseType packet) {
+        var world = MinecraftClient.getInstance().world;
+        assert world != null;
+
+        var be = world.getBlockEntity(packet.position());
+        if(be instanceof IDeviceContainer container) {
+            var state = container.getState();
+            if(state instanceof RepulsorDeviceState repState) {
+                repState.setPulseTypeId(packet.value());
             }
         }
         else {

@@ -1,13 +1,10 @@
 package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
-import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdatePulseType;
-import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdateRepulsorProperty;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.*;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.*;
-import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CRepulsorActivationTimestamp;
-import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
@@ -37,6 +34,7 @@ public class NetworkUtilImpl {
 
         CHANNEL.registerClientboundDeferred(PacketS2CUpdateRepulsorProperty.class);
         CHANNEL.registerClientboundDeferred(PacketS2CRepulsorActivationTimestamp.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdatePulseType.class);
 
         CHANNEL.registerServerbound(PacketC2SRequestDeviceUpdate.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
@@ -58,8 +56,8 @@ public class NetworkUtilImpl {
         CHANNEL.registerClientbound(PacketS2CUpdateFrameAim.class, (pkt, acc) -> handle(pkt));
 
         CHANNEL.registerClientbound(PacketS2CRepulsorActivationTimestamp.class, (pkt, acc) -> handle(pkt));
-
         CHANNEL.registerClientbound(PacketS2CUpdateRepulsorProperty.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdatePulseType.class, (pkt, acc) -> handle(pkt));
     }
 
     public static <T extends Record> void sendToAllTracking(T packet, ServerWorld world, BlockPos pos) {
