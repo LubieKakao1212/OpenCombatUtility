@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class SliderWidget extends ClickableWidget {
 
-    private final Axis movementAxis = Axis.Vertical;
+    private final Axis movementAxis;
 
     private int resolution = -1;
     private double value;
@@ -29,7 +29,7 @@ public class SliderWidget extends ClickableWidget {
 
     private Identifier texture;
 
-    public SliderWidget(Identifier texture, int x, int y, int width, int height, int knobWidth, int knobHeight, int u, int v, Supplier<Double> valueSupplier, Consumer<Double> syncDelegate, int resolution) {
+    public SliderWidget(Axis axis, Identifier texture, int x, int y, int width, int height, int knobWidth, int knobHeight, int u, int v, Supplier<Double> valueSupplier, Consumer<Double> syncDelegate, int resolution) {
         super(x, y, width, height, null);
         this.u = u;
         this.v = v;
@@ -39,6 +39,7 @@ public class SliderWidget extends ClickableWidget {
         this.resolution = resolution;
         this.knobWidth = knobWidth;
         this.knobHeight = knobHeight;
+        this.movementAxis = axis;
     }
 
     @Override

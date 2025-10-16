@@ -154,12 +154,6 @@ public class OpenCUConfigCommonImpl {
         }
 
         @Override
-        public List<Identifier> pulseTypesOrdinal() {
-            //TODO Return proper value from config
-            return List.of();
-        }
-
-        @Override
         public OpenCUConfigCommon.CapacitorConfig energy() {
             return CAPACITOR;
         }

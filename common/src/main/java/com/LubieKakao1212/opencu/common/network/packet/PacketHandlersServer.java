@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.block.entity.IRedstoneControlled;
 import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
@@ -13,6 +14,7 @@ import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.Pac
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.screen.PacketC2SRequestAmmoSlotToggle;
 import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
+import com.LubieKakao1212.opencu.registry.CUPulse;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -56,6 +58,21 @@ public class PacketHandlersServer {
             }
         });
     }
+
+    public static void handle(PacketC2SUpdatePulseType packetIn, ServerPlayerEntity sender) {
+        handleForContainer(packetIn, sender, dc -> {
+            var state = dc.getState();
+            if(state instanceof RepulsorDeviceState repState) {
+                var pulse = CUPulse.get(packetIn.type());
+                if(pulse == null) {
+                    OpenCUModCommon.LOGGER.warn("Invalid pulse type received from client");
+                    return;
+                }
+                repState.setPulseType(pulse);
+            }
+        });
+    }
+
 
     private static boolean validatePacket(ServerPlayerEntity player, BlockPos requestedPos) {
         return VS2SoftUtil.getDistanceSqr(player.getWorld(), new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&

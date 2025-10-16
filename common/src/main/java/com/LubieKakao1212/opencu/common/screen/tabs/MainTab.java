@@ -21,7 +21,7 @@ public class MainTab extends DeviceContainerScreenTab {
         energyWidget = new FillableBarWidget(DeviceContainerScreen.mainTexture,
                 screen.getX() + 15, screen.getY() + 33,
                 13, 16,
-                226, 58,
+                222, 58,
                 FillableBarWidget.FillDirection.DOWN,
                 () -> screen.getScreenHandler().getProperty(BlockEntityDeviceContainer::getEnergyRatio, 0.0f));
         screen.addDrawableChild(energyWidget);

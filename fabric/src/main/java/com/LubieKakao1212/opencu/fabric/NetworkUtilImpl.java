@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
@@ -43,6 +44,7 @@ public class NetworkUtilImpl {
         CHANNEL.registerServerbound(PacketC2SRequestDCState.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SRequestAmmoSlotToggle.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SUpdateRepulsorProperty.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SUpdatePulseType.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
     }
 
     public static void clientInit() {

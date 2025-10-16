@@ -108,15 +108,6 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
             addDrawableChild(deviceTabButton);
         }
 
-        addDrawable(new SlicedSprite(
-                mainTexture,
-                x + 15, y - 10,
-                3, 10,
-                224, 92,
-                17,15,
-                7, 9, 5, 9
-        ));
-
         setInitialFocus(redstoneControlButton);
     }
 
@@ -214,6 +205,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
         );
         addDrawableChild(
                 new SliderWidget(
+                        axis,
                         DeviceContainerScreen.mainTexture,
                         x, y,
                         totalW, totalH,
@@ -254,7 +246,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
         }
     }
 
-    //region SuperClass value Getters
+    //region SuperClass type Getters
 
     public int getX() {
         return x;

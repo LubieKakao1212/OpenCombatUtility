@@ -1,6 +1,5 @@
 package com.LubieKakao1212.opencu.common.device.state;
 
-import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.network.Sender;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdatePulseType;
@@ -14,14 +13,14 @@ import com.LubieKakao1212.opencu.common.util.Observer;
 import com.LubieKakao1212.opencu.registry.CUPulse;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class RepulsorDeviceState extends DeviceStateBase {
 
     private final Lazy<RepulsorDeviceApi> api;
+    @NotNull
     private EntityPulseType pulseType = CUPulse.defaultPulse();
     private final PulseData pulseData = new PulseData();
     private final OpenCUConfigCommon.RepulsorDeviceConfig config;
@@ -34,8 +33,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
      * Client field
      */
     private long lastActivationTimestamp = 0;
-
-    public int selectedType;
+//    public int selectedType;
     //endregion
 
     public RepulsorDeviceState(OpenCUConfigCommon.RepulsorDeviceConfig config, Runnable markDirtyDelegate) {
@@ -98,11 +96,12 @@ public class RepulsorDeviceState extends DeviceStateBase {
         radiusObserver.update((value) -> sendProperty(packetSender, pos, Property.Radius));
     }
 
-    public void setPulseType(EntityPulseType pulseType) {
+    public void setPulseType(@NotNull EntityPulseType pulseType) {
         this.pulseType = pulseType;
         markDirty();
     }
 
+    @NotNull
     public EntityPulseType getPulseType() {
         return pulseType;
     }
@@ -207,7 +206,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
     }
 
     private void sendTypeId(Sender packetSender, BlockPos pos) {
-        packetSender.send(new PacketS2CUpdatePulseType(pos, config.pulseTypesOrdinal().indexOf(pulseType.getRegistryKey())));//TODO
+        packetSender.send(new PacketS2CUpdatePulseType(pos, pulseType.getRegistryKey()));
     }
 
     public enum Property {

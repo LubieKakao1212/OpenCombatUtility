@@ -25,16 +25,8 @@ public class RepulsorTab extends DeviceContainerScreenTab {
     @Override
     public void init(DeviceContainerScreen screen) {
         var handler = screen.getScreenHandler();
-//        addPropertySlider(screen, handler, 10, 10, RepulsorDeviceState.Property.DirectionBlend);
-        addPropertySlider(screen, handler, 40, 10, RepulsorDeviceState.Property.Force);
-        addPropertySlider(screen, handler, 70, 10, RepulsorDeviceState.Property.Radius);
-//        screen.addSlider(
-//                ,,
-//                15,
-//                3,
-//                SliderWidget.Axis.Horizontal,
-//
-//        );
+        addPropertySlider(screen, handler, 42, 26, RepulsorDeviceState.Property.Force);
+        addPropertySlider(screen, handler, 42, 46, RepulsorDeviceState.Property.Radius);
     }
 
     @Override
@@ -58,34 +50,16 @@ public class RepulsorTab extends DeviceContainerScreenTab {
         x += screen.getX();
         y += screen.getY();
 
-        screen.addSlider(x, y, 40, 100, SliderWidget.Axis.Vertical,
+        screen.addSlider(x, y, 50, 50, SliderWidget.Axis.Horizontal,
                 () -> forRepulsorState(handler, state -> { return state.getPropertyNormal(property); }),
                 value -> {
                     forRepulsorState(handler, state -> { state.setPropertyNormal(property, value); });
                     sendPropertyChange(handler, property, value);
                 });
+    }
 
-//        screen.addDrawable(
-//                new SlicedSprite(
-//                        DeviceContainerScreen.mainTexture,
-//                        x + 4, y,
-//                        2, 50,
-//                        218, 77,
-//                        3, 3,
-//                        1, 1, 1,  1
-//                )
-//        );
-//        screen.addDrawableChild(
-//                new SliderWidget(
-//                        DeviceContainerScreen.mainTexture,
-//                         x, y,
-//                        10, 50,
-//                        10, 6,
-//                        200, 77,
-//                        ,
-//                        ,
-//                        4
-//                ));
+    private void addTypeToggle() {
+        
     }
 
     private double forRepulsorState(DeviceContainerScreenHandler handler, Function<RepulsorDeviceState, Double> action) {

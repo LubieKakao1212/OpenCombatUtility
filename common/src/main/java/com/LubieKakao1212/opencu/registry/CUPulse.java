@@ -14,7 +14,7 @@ public class CUPulse {
         return null;
     }
 
-    @NotNull
+
     @Nullable
     @ExpectPlatform
     public static EntityPulseType get(Identifier id) { return null; }
