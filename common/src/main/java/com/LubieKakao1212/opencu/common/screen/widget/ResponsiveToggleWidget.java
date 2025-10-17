@@ -26,6 +26,8 @@ public class ResponsiveToggleWidget extends ClickableWidget {
 
     private final Identifier texture;
 
+    private boolean useExternalTooltip = false;
+
     //private final Tooltip defaultTooltip;
 
     public static ResponsiveToggleWidget dualState(Identifier texture, int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
@@ -91,13 +93,15 @@ public class ResponsiveToggleWidget extends ClickableWidget {
 
         context.drawTexture(texture, getX(), getY(), u, v, getWidth(), getHeight());
 
-        var tooltip = defaultTooltip;
+        if(!useExternalTooltip) {
+            var tooltip = defaultTooltip;
 
-        if(state >= 0 && state < stateTooltips.length) {
-            tooltip = stateTooltips[state];
+            if (state >= 0 && state < stateTooltips.length) {
+                tooltip = stateTooltips[state];
+            }
+
+            setTooltip(tooltip);
         }
-
-        setTooltip(tooltip);
     }
 
     @Override
@@ -108,5 +112,10 @@ public class ResponsiveToggleWidget extends ClickableWidget {
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
+    }
+
+    public ResponsiveToggleWidget setUseExternalTooltip(boolean useExternalTooltip) {
+        this.useExternalTooltip = useExternalTooltip;
+        return this;
     }
 }

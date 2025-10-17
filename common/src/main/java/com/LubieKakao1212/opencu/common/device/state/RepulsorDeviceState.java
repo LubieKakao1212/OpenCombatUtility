@@ -123,7 +123,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
         double maxRadius = config.maxRadius();
 
         double radius = pulseData.radius;
-        double volumeRatio = (radius * radius * radius) / (maxRadius * maxRadius * maxRadius);
+        double volumeRatio = (radius) / (maxRadius);
         double forceRatio = Math.abs(pulseData.forceMagnitude);
 
         EntityPulseType.EnergyUsage energyUsageMul = pulseType.getEnergyUsage();
