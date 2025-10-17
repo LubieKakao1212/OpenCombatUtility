@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.block.entity.IRedstoneControlled;
 import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SToggleForceSign;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
@@ -50,6 +51,7 @@ public class PacketHandlersServer {
         }
     }
 
+    //region Repulsor
     public static void handle(PacketC2SUpdateRepulsorProperty packetIn, ServerPlayerEntity sender) {
         handleForContainer(packetIn, sender, dc -> {
             var state = dc.getState();
@@ -73,6 +75,15 @@ public class PacketHandlersServer {
         });
     }
 
+    public static void handle(PacketC2SToggleForceSign packetIn, ServerPlayerEntity sender) {
+        handleForContainer(packetIn, sender, dc -> {
+            var state = dc.getState();
+            if(state instanceof RepulsorDeviceState repState) {
+                repState.toggleForceSign();
+            }
+        });
+    }
+    //endregion
 
     private static boolean validatePacket(ServerPlayerEntity player, BlockPos requestedPos) {
         return VS2SoftUtil.getDistanceSqr(player.getWorld(), new Vector3m(player.getPos()), new Vector3m(requestedPos)) < (256 * 256) /* TODO Add values to config */ &&

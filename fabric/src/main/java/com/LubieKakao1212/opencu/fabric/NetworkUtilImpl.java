@@ -43,6 +43,7 @@ public class NetworkUtilImpl {
         CHANNEL.registerServerbound(PacketC2SRequestAmmoSlotToggle.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SUpdateRepulsorProperty.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
         CHANNEL.registerServerbound(PacketC2SUpdatePulseType.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SToggleForceSign.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
     }
 
     public static void clientInit() {

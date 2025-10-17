@@ -3,31 +3,38 @@ package com.LubieKakao1212.opencu.common.pulse;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.util.Identifier;
 import org.joml.Vector3d;
 
 public class PulseData {
     public double radius;
-    public double force;
+    public double forceMagnitude;
+    public double forceSign = 1.;
 
     public PulseData() {
     }
 
     public PulseData(PulseData source) {
-        this.force = source.force;
+        this.forceMagnitude = source.forceMagnitude;
         this.radius = source.radius;
+        this.forceSign = source.forceSign;
     }
 
     public NbtCompound serialize() {
         NbtCompound nbt = new NbtCompound();
         nbt.putDouble("radius", radius);
-        nbt.putDouble("force", force);
+        nbt.putDouble("force", forceMagnitude * forceSign);
         return nbt;
     }
 
     public void deserialize(NbtCompound nbt) {
         radius = nbt.getDouble("radius");
-        force = nbt.getDouble("force");
+        forceMagnitude = nbt.getDouble("force");
+        forceSign = Math.copySign(1., forceMagnitude);
+        forceMagnitude = Math.abs(forceMagnitude);
+    }
+
+    public double getForce() {
+        return forceMagnitude * forceSign;
     }
 
     public static class Directional extends PulseData {
@@ -50,7 +57,6 @@ public class PulseData {
         public void deserialize(NbtCompound nbt) {
             super.deserialize(nbt);
             direction = Vector3dExtensionsKt.deserializeNBT(new Vector3d(), nbt.getList("direction", NbtElement.DOUBLE_TYPE));
-
         }
     }
 }

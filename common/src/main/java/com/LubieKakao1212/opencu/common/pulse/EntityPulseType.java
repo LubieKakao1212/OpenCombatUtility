@@ -24,7 +24,7 @@ public class EntityPulseType {
     }
 
     public void executePulse(World level, Vector3d pos, PulseData.Directional pulseData) {
-        executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.radius, pulseData.force);
+        executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.radius, pulseData.getForce());
     }
 
     public void executePulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {

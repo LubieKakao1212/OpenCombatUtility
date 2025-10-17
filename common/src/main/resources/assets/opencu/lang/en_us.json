@@ -30,6 +30,8 @@
   "info.opencu.gui.repulsor.pulse.opencu:repulsor": "Point Pulse",
   "info.opencu.gui.repulsor.pulse.opencu:vector": "Vector Pulse",
   "info.opencu.gui.repulsor.pulse.opencu:stasis": "Stasis Pulse",
+  "info.opencu.gui.repulsor.force.sign.active": "Direction: §l+",
+  "info.opencu.gui.repulsor.force.sign.inactive": "Direction: §l-",
 
   "info.opencu.gui.frame.lock.active": "Shoot only when aligned: §aOn",
   "info.opencu.gui.frame.lock.inactive": "Shoot only when aligned: §cOff",

@@ -15,6 +15,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class RepulsorDeviceState extends DeviceStateBase {
@@ -25,7 +26,8 @@ public class RepulsorDeviceState extends DeviceStateBase {
     private final PulseData pulseData = new PulseData();
     private final OpenCUConfigCommon.RepulsorDeviceConfig config;
     private final Observer<Identifier> typeObserver;
-    private final Observer<Double> forceObserver;
+    private final Observer<Double> forceMagnitudeObserver;
+    private final Observer<Double> forceSignObserver;
     private final Observer<Double> radiusObserver;
 
     //region Client Fields
@@ -46,10 +48,11 @@ public class RepulsorDeviceState extends DeviceStateBase {
         this.config = config;
         //TODO set from config
         pulseData.radius = 3.0;
-        pulseData.force = 0.5;
+        pulseData.forceMagnitude = 0.5;
         api = new Lazy<>(() -> new RepulsorDeviceApi(this));
         typeObserver = Observer.generic(() -> pulseType.getRegistryKey());
-        forceObserver = Observer.numeric(this::getForce, 1f / 256f);
+        forceMagnitudeObserver = Observer.numeric(this::getForceMagnitude, 1f / 256f);
+        forceSignObserver = Observer.numeric(this::getForceSign, 1f);
         radiusObserver = Observer.numeric(this::getRadius, 1f / 256f);
     }
 
@@ -97,7 +100,8 @@ public class RepulsorDeviceState extends DeviceStateBase {
 
     public void sync(Sender packetSender, BlockPos pos) {
         typeObserver.update((value) -> sendTypeId(packetSender, pos));
-        forceObserver.update((value) -> sendProperty(packetSender, pos, Property.Force));
+        forceMagnitudeObserver.update((value) -> sendProperty(packetSender, pos, Property.ForceMagnitude));
+        forceSignObserver.update((value) -> sendProperty(packetSender, pos, Property.ForceSign));
         radiusObserver.update((value) -> sendProperty(packetSender, pos, Property.Radius));
     }
 
@@ -120,7 +124,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
 
         double radius = pulseData.radius;
         double volumeRatio = (radius * radius * radius) / (maxRadius * maxRadius * maxRadius);
-        double forceRatio = Math.abs(pulseData.force);
+        double forceRatio = Math.abs(pulseData.forceMagnitude);
 
         EntityPulseType.EnergyUsage energyUsageMul = pulseType.getEnergyUsage();
         return (int)Math.floor(
@@ -128,16 +132,37 @@ public class RepulsorDeviceState extends DeviceStateBase {
     }
 
     public double setForce(double force) {
-        if(Math.abs(force) > 1) {
-            force = Math.signum(force);
-        }
-        pulseData.force = force;
+        pulseData.forceMagnitude = MathHelper.clamp(Math.abs(force), 0., 1.);
+        pulseData.forceSign = Math.copySign(1., force);
         markDirty();
         return force;
     }
 
+    public void setForceMagnitude(double force) {
+        pulseData.forceMagnitude = MathHelper.clamp(Math.abs(force), 0., 1.);
+        markDirty();
+    }
+
+    public void setForceSign(double sign) {
+        pulseData.forceSign = Math.copySign(1.0, sign);
+        markDirty();
+    }
+
+    public void toggleForceSign() {
+        pulseData.forceSign = -pulseData.forceSign;
+        markDirty();
+    }
+
     public double getForce() {
-        return pulseData.force;
+        return pulseData.forceMagnitude * pulseData.forceSign;
+    }
+
+    public double getForceMagnitude() {
+        return pulseData.forceMagnitude;
+    }
+
+    public double getForceSign() {
+        return pulseData.forceSign;
     }
 
     public double setRadius(double radius) {
@@ -163,19 +188,23 @@ public class RepulsorDeviceState extends DeviceStateBase {
         switch (property) {
             case Force -> setForce(value);
             case Radius -> setRadius(value);
+            case ForceMagnitude -> setForceMagnitude(value);
+            case ForceSign -> setForceSign(value);
         }
     }
 
     public double getProperty(Property property) {
         return switch (property) {
             case Force -> getForce();
+            case ForceMagnitude -> getForceMagnitude();
+            case ForceSign -> getForceSign();
             case Radius -> getRadius();
         };
     }
 
     public void setPropertyNormal(Property property, double valueNorm) {
         setProperty(property, switch (property) {
-            case Force -> (valueNorm * 2.) - 1.;
+            case Force, ForceMagnitude, ForceSign -> valueNorm;
             case Radius -> valueNorm * getMaxRadius();
         });
     }
@@ -183,7 +212,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
     public double getPropertyNormal(Property property) {
         var prop = getProperty(property);
         return switch (property) {
-            case Force -> (prop + 1.) / 2.;
+            case Force, ForceMagnitude, ForceSign -> prop;
             case Radius -> prop / getMaxRadius();
         };
     }
@@ -230,6 +259,8 @@ public class RepulsorDeviceState extends DeviceStateBase {
 
     public enum Property {
         Force,
+        ForceMagnitude,
+        ForceSign,
         Radius
     }
 }

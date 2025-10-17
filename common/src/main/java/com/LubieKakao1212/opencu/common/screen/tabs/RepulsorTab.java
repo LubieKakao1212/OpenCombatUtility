@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.common.screen.tabs;
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SToggleForceSign;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketC2SUpdateRepulsorProperty;
 import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -30,12 +32,14 @@ public class RepulsorTab extends DeviceContainerScreenTab {
     @Override
     public void init(DeviceContainerScreen screen) {
         var handler = screen.getScreenHandler();
-        addPropertySlider(screen, handler, 42, 26, RepulsorDeviceState.Property.Force);
+        addPropertySlider(screen, handler, 42, 26, RepulsorDeviceState.Property.ForceMagnitude);
         addPropertySlider(screen, handler, 42, 46, RepulsorDeviceState.Property.Radius);
 
         addTypeToggle(screen, handler, 112, 36, 178, CUPulse.REPULSOR_ID);
         addTypeToggle(screen, handler, 124, 36, 201, CUPulse.VECTOR_ID);
         addTypeToggle(screen, handler, 136, 36, 224, CUPulse.STASIS_ID);
+
+        addDirectionToggle(screen, handler, 58, 60);
     }
 
     @Override
@@ -67,7 +71,7 @@ public class RepulsorTab extends DeviceContainerScreenTab {
                 });
     }
 
-    private void addTypeToggle(DeviceContainerScreen screen, DeviceContainerScreenHandler handler, int x, int y, int u, Identifier pulseType) {
+    private void addTypeToggle(DeviceContainerScreen screen, DeviceContainerScreenHandler handler, int x, int y, int u, @NotNull Identifier pulseType) {
         x += screen.getX();
         y += screen.getY();
 
@@ -83,6 +87,25 @@ public class RepulsorTab extends DeviceContainerScreenTab {
                     sendTypeChange(handler, pulseType);
                 },
                 Text.translatable("info.opencu.gui.repulsor.pulse."+pulseType.toString())
+        ));
+    }
+
+    private void addDirectionToggle(DeviceContainerScreen screen, DeviceContainerScreenHandler handler, int x, int y) {
+        x += screen.getX();
+        y += screen.getY();
+
+        screen.addDrawableChild(ResponsiveToggleWidget.dualState(
+                DeviceContainerScreen.mainTexture,
+                x, y,
+                17, 7,
+                220, 117,
+                18, 8,
+                () -> forRepulsorState(handler, RepulsorDeviceState::getForceSign, null) > 0,
+                aBoolean -> {
+                    forRepulsorState(handler, RepulsorDeviceState::toggleForceSign);
+                    sendForceToggle(handler);
+                },
+                "info.opencu.gui.repulsor.force.sign"
         ));
     }
 
@@ -106,6 +129,11 @@ public class RepulsorTab extends DeviceContainerScreenTab {
     private void sendTypeChange(DeviceContainerScreenHandler handler, Identifier value) {
         var bp = handler.targetPosition();
         NetworkUtil.sendToServer(new PacketC2SUpdatePulseType(bp, value));
+    }
+
+    private void sendForceToggle(DeviceContainerScreenHandler handler) {
+        var bp = handler.targetPosition();
+        NetworkUtil.sendToServer(new PacketC2SToggleForceSign(bp));
     }
 
     //endregion
