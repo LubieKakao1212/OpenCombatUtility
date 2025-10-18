@@ -33,6 +33,10 @@
   "info.opencu.gui.repulsor.force.sign.active": "Direction: §l+",
   "info.opencu.gui.repulsor.force.sign.inactive": "Direction: §l-",
   "info.opencu.gui.repulsor.energy.usage": "Energy per pulse: %s/%s",
+  "info.opencu.gui.repulsor.slider.power.opencu:repulsor": "Velocity Impulse: %.2fm/s",
+  "info.opencu.gui.repulsor.slider.power.opencu:vector": "Velocity Impulse: %.2fm/s",
+  "info.opencu.gui.repulsor.slider.power.opencu:stasis": "Velocity Loss: %.0f%%",
+  "info.opencu.gui.repulsor.slider.radius": "Radius %.1fm",
 
   "info.opencu.gui.frame.lock.active": "Shoot only when aligned: §aOn",
   "info.opencu.gui.frame.lock.inactive": "Shoot only when aligned: §cOff",

@@ -16,6 +16,8 @@ public class Pulses {
     private static final float epsilonSqr = epsilon * epsilon;
 
     public static void repulsorPulse(World world, Vector3d pos, Vector3d direction, double radius, double force) {
+        force = EntityUtil.perSecond2perTick(force);
+
         List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
@@ -48,6 +50,8 @@ public class Pulses {
     }
 
     public static void vectorPulse(World world, Vector3d pos, Vector3d direction, double radius, double force) {
+        force = EntityUtil.perSecond2perTick(force);
+
         List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
         Vector3d directionForce = direction.mul(PulseUtil.getScaledForce(force));
 

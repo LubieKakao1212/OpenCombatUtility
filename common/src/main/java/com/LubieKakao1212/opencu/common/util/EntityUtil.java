@@ -56,6 +56,10 @@ public class EntityUtil {
         e.velocityModified = true;
     }
 
+    public static double perSecond2perTick(double perSecond) {
+        return perSecond / 20.0;
+    }
+
     private static Vector3m blockFaceToNormal(Vector3m surfacePos) {
         var abs = surfacePos.absolute(new Vector3d());
         var sign = new Vector3d(

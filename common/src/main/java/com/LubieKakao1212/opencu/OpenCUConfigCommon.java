@@ -127,7 +127,7 @@ public class OpenCUConfigCommon {
         public static final OpenCUConfigCommon.IEnergyToggle ENERGY_TOGGLE_ENABLED = new EnergyToggleConfig(true, GENERAL);
 
         public static final OpenCUConfigCommon.ModularFrameConfig MODULAR_FRAME = new ModularFrameConfig(CAPACITOR);
-        public static final OpenCUConfigCommon.RepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(5.0, 5.0, 1.0, 20000, 1000, CAPACITOR);
+        public static final OpenCUConfigCommon.RepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(5.0, 5.0, 25.0, 20000, 1000, CAPACITOR);
 
         public static final OpenCUConfigCommon.DispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.0, 500, 1.0, ENERGY_TOGGLE_ENABLED);
         public static final OpenCUConfigCommon.DispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 10.0, 360.0, 1.0, 300, 1.0, ENERGY_TOGGLE_ENABLED);

@@ -164,7 +164,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
         return flag || super.mouseReleased(mouseX, mouseY, button);
     }
 
-    public void addSlider(int x, int y, int length, int resolution, SliderWidget.Axis axis, Supplier<Double> valueProvider, Consumer<Double> valueReceiver) {
+    public SliderWidget addSlider(int x, int y, int length, int resolution, SliderWidget.Axis axis, Supplier<Double> valueProvider, Consumer<Double> valueReceiver) {
         var xOffset = 0;
         var yOffset = 0;
 
@@ -203,7 +203,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
                         1, 1, 1,  1
                 )
         );
-        addDrawableChild(
+        return addDrawableChild(
                 new SliderWidget(
                         axis,
                         DeviceContainerScreen.mainTexture,
