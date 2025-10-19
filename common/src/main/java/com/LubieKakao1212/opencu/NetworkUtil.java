@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu;
 
+import com.LubieKakao1212.opencu.common.network.Sender;
 import com.LubieKakao1212.opencu.common.util.counting.CounterList;
 import com.LubieKakao1212.opencu.common.util.counting.ICounter;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -28,7 +29,7 @@ public class NetworkUtil {
     }
 
     @ExpectPlatform
-    public static <T extends Record> void sendToAllTracking(T message, Entity target) {
+    public static <T extends Record> void sendToAllTracking(T packet, Entity target) {
 
     }
 
@@ -40,6 +41,36 @@ public class NetworkUtil {
         messages.tick();
     }
 
+    public static Sender toPlayerSender(ServerPlayerEntity player) {
+        return new Sender() {
+            @Override
+            public <T extends Record> void send(T packet) {
+                sendToPlayer(packet, player);
+            }
+        };
+    }
+
+    public static Sender toAllTrackingSender(ServerWorld world, BlockPos pos) {
+        return new Sender() {
+            @Override
+            public <T extends Record> void send(T packet) {
+                sendToAllTracking(packet, world, pos);
+            }
+        };
+    }
+
+    public static Sender toAllTrackingSender(Entity target) {
+        return new Sender() {
+            @Override
+            public <T extends Record> void send(T packet) {
+                sendToAllTracking(packet, target);
+            }
+        };
+    }
+
+    public static Sender toServerSender() {
+        return NetworkUtil::sendToServer;
+    }
 
     private static abstract class DelayedMessage<T extends Record> implements ICounter {
 

@@ -24,13 +24,13 @@ public class EntityPulseType {
     }
 
     public void executePulse(World level, Vector3d pos, PulseData.Directional pulseData) {
-        executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.directionBlend, pulseData.radius, pulseData.force);
+        executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.radius, pulseData.getForce());
     }
 
-    public void executePulse(World level, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force) {
+    public void executePulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {
         for(IPulse pulsePass : pulsePasses)
         {
-            pulsePass.doPulse(level, pos, direction, directionBlend, radius, force);
+            pulsePass.doPulse(level, pos, direction, radius, force);
         }
     }
 

@@ -127,7 +127,7 @@ public class OpenCUConfigCommon {
         public static final OpenCUConfigCommon.IEnergyToggle ENERGY_TOGGLE_ENABLED = new EnergyToggleConfig(true, GENERAL);
 
         public static final OpenCUConfigCommon.ModularFrameConfig MODULAR_FRAME = new ModularFrameConfig(CAPACITOR);
-        public static final OpenCUConfigCommon.RepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(5.0, 5.0, 1.0, 20000, 1000, CAPACITOR);
+        public static final OpenCUConfigCommon.RepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(5.0, 5.0, 25.0, 20000, 1000, CAPACITOR);
 
         public static final OpenCUConfigCommon.DispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.0, 500, 1.0, ENERGY_TOGGLE_ENABLED);
         public static final OpenCUConfigCommon.DispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 10.0, 360.0, 1.0, 300, 1.0, ENERGY_TOGGLE_ENABLED);
@@ -205,10 +205,10 @@ public class OpenCUConfigCommon {
                 builder.pop();
 
                 repulsorMaxRadius = builder.comment("Max radius of a single pulse")
-                        .define("Max Radius", defaultMaxRadius, (value) -> value != null && (Double) value > 0);
+                        .define("Max Radius", defaultMaxRadius, (type) -> type != null && (Double) type > 0);
 
                 repulsorMaxOffset = builder.comment("Max offset of the pulse center from the repulsor")
-                        .define("Max Offset", defaultMaxOffset, (value) -> value != null && (Double) value > 0);
+                        .define("Max Offset", defaultMaxOffset, (type) -> type != null && (Double) type > 0);
 
                 repulsorForceScale = builder.comment("Pulse Force Multiplier")
                         .define("Force Mult", defaultForceScale);

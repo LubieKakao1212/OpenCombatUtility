@@ -1,9 +1,14 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.common.network.packet.device.*;
 import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
-import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
-import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.*;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.*;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
+import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.screen.PacketC2SRequestAmmoSlotToggle;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import io.wispforest.owo.network.OwoNetChannel;
 import net.minecraft.entity.Entity;
@@ -18,28 +23,42 @@ public class NetworkUtilImpl {
     private static final OwoNetChannel CHANNEL = OwoNetChannel.create(CUIds.MAIN);
 
     public static void init() {
-        CHANNEL.registerClientboundDeferred(PacketClientUpdateFireball.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateFireball.class);
 
-        CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenser.class);
-        CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenserAim.class);
-        CHANNEL.registerClientboundDeferred(PacketClientUpdateRepulsorBlend.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateEnergy.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateRequiresLock.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateRedstoneControl.class);
 
-        CHANNEL.registerClientboundDeferred(PacketClientRepulsorActivationTimestamp.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateDevice.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateFrameAim.class);
 
-        CHANNEL.registerServerbound(PacketServerRequestDispenserUpdate.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
-        CHANNEL.registerServerbound(PacketServerToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
-        CHANNEL.registerServerbound(PacketServerCycleRedstoneControl.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdateRepulsorProperty.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CRepulsorActivationTimestamp.class);
+        CHANNEL.registerClientboundDeferred(PacketS2CUpdatePulseType.class);
+
+        CHANNEL.registerServerbound(PacketC2SRequestDeviceUpdate.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SCycleRedstoneControl.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SRequestDCState.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SRequestAmmoSlotToggle.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SUpdateRepulsorProperty.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SUpdatePulseType.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketC2SToggleForceSign.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
     }
 
     public static void clientInit() {
-        CHANNEL.registerClientbound(PacketClientUpdateFireball.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateFireball.class, (pkt, acc) -> handle(pkt));
 
-        CHANNEL.registerClientbound(PacketClientUpdateDispenser.class, (pkt, acc) -> handle(pkt));
-        CHANNEL.registerClientbound(PacketClientUpdateDispenserAim.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateEnergy.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateRequiresLock.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateRedstoneControl.class, (pkt, acc) -> handle(pkt));
 
-        CHANNEL.registerClientbound(PacketClientRepulsorActivationTimestamp.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateDevice.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateFrameAim.class, (pkt, acc) -> handle(pkt));
 
-        CHANNEL.registerClientbound(PacketClientUpdateRepulsorBlend.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CRepulsorActivationTimestamp.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdateRepulsorProperty.class, (pkt, acc) -> handle(pkt));
+        CHANNEL.registerClientbound(PacketS2CUpdatePulseType.class, (pkt, acc) -> handle(pkt));
     }
 
     public static <T extends Record> void sendToAllTracking(T packet, ServerWorld world, BlockPos pos) {

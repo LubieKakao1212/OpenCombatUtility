@@ -3,6 +3,8 @@ package com.LubieKakao1212.opencu.common.device;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
+import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
+import com.LubieKakao1212.opencu.common.screen.tabs.DispenserTab;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
@@ -13,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public abstract class ShooterBase implements IFramedDevice {
@@ -89,6 +92,14 @@ public abstract class ShooterBase implements IFramedDevice {
     @Override
     public boolean ammoEnabled() {
         return true;
+    }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public @Nullable DeviceContainerScreenTab getScreenTab() {
+        return new DispenserTab();
     }
 }
 

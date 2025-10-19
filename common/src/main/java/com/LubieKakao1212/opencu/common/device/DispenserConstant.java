@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.common.device;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
+import org.jetbrains.annotations.NotNull;
 
 public class DispenserConstant extends ShooterBase {
 
@@ -32,8 +33,8 @@ public class DispenserConstant extends ShooterBase {
 
 
     @Override
-    public IDeviceState getNewState() {
-        return new ShooterDeviceState(constantForce, constantSpread, baseEnergy, basePower);
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
+        return new ShooterDeviceState(constantForce, constantSpread, baseEnergy, basePower, markDirtyDelegate);
     }
 
     @Override

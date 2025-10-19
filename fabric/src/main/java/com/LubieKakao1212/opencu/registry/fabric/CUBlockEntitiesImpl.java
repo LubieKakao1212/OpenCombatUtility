@@ -17,7 +17,7 @@ public class CUBlockEntitiesImpl implements BlockEntityRegistryContainer {
 
     //region Placed Devices
     public static final BlockEntityType<BlockEntityDeviceContainer6Dir> REPULSOR = FabricBlockEntityTypeBuilder.create(
-            BlockEntityDeviceContainer6DirImpl.factory(CUBlockEntities::repulsor, () -> null, () -> CUFramedDevices.REPULSOR)
+            BlockEntityDeviceContainer6DirImpl.factory(CUBlockEntities::repulsor, () -> new ItemStack(CUBlocksImpl.REPULSOR), () -> CUFramedDevices.REPULSOR)
     ).addBlock(CUBlocksImpl.REPULSOR).build();
 
     //region Dispensers

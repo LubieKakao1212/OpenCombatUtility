@@ -36,7 +36,7 @@ public class ScopedContext implements IScopedContext, ITransactionAccess {
 
         transactions.peek().close();
         transactions.clear();/*
-        ItemScatterer.spawn(world, pos, scatterInventory);*/
+        ItemScatterer.spawn(world, position, scatterInventory);*/
     }
 
     @Override

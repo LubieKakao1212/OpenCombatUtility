@@ -1,8 +1,10 @@
 package com.LubieKakao1212.opencu.common.device.state;
 
+import com.LubieKakao1212.opencu.common.network.Sender;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.common.util.Pulser;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 
 public class TrackerDeviceState extends DeviceStateBase {
 
@@ -14,7 +16,8 @@ public class TrackerDeviceState extends DeviceStateBase {
     public double energyLeftover;
     public boolean noEnergy;
 
-    public TrackerDeviceState(double trackingRange, double energyPerTick, double energyPerActiveConnectionPerTick) {
+    public TrackerDeviceState(double trackingRange, double energyPerTick, double energyPerActiveConnectionPerTick, Runnable markDirtyDelegate) {
+        super(markDirtyDelegate);
         this.trackingRange = trackingRange;
         this.energyPerTick = energyPerTick;
         this.energyPerActiveConnectionPerTick = energyPerActiveConnectionPerTick;
@@ -44,6 +47,11 @@ public class TrackerDeviceState extends DeviceStateBase {
     @Override
     public void deserialize(NbtCompound nbt) {
 
+    }
+
+    @Override
+    public void forceSync(Sender packetSender, BlockPos pos) {
+        //TODO
     }
 
     public double getTrackingRange() {

@@ -1,24 +1,28 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
+import com.LubieKakao1212.opencu.registry.CUMenu;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceContainer {
 
-    @Nullable
-    private final ItemStack displayModel;
+    @NotNull
+    private final ItemStack deviceItem;
 
-    public BlockEntityDeviceContainer6Dir(BlockEntityType<?> type, @Nullable ItemStack displayModel, BlockPos pos, BlockState state) {
+    public BlockEntityDeviceContainer6Dir(BlockEntityType<?> type, @NotNull ItemStack deviceItem, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        this.displayModel = displayModel;
+        this.deviceItem = deviceItem;
     }
 
     @Override
@@ -53,14 +57,29 @@ public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceCo
         }
     }
 
+    /**
+     * Returns the title of this screen handler; will be a part of the open
+     * screen packet sent to the client.
+     */
     @Override
-    public @Nullable ItemStack getDeviceItem() {
-        return displayModel;
+    public Text getDisplayName() {
+        return deviceItem.getName();
+    }
+
+    @Override
+    public ScreenHandlerType<?> getScreenHandlerType() {
+        return CUMenu.deviceContainer();
+    }
+
+    @Override
+    public @NotNull ItemStack getDeviceItem() {
+        return deviceItem;
     }
 
     public static <T extends BlockEntity> void tick(World world, BlockPos blockPos, BlockState blockState, T be) {
         var be6Dir = (BlockEntityDeviceContainer6Dir) be;
         if(!world.isClient) {
+            be6Dir.energyObserver.update();
             be6Dir.tickDeviceServer();
         }
     }

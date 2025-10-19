@@ -67,6 +67,9 @@ allprojects {
             name = "Terraformers"
             url = "https://maven.terraformersmc.com/"
         }
+        maven {
+            url = "https://modmaven.dev/"
+        }
     }
 
     tasks.withType(JavaCompile) {

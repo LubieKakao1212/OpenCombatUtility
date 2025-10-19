@@ -2,7 +2,10 @@ package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.fabric.OpenCUConfigFabric;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class OpenCUConfigCommonImpl {
 

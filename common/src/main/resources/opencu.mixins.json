@@ -1,0 +1,6 @@
+{
+  "client": [
+    "SlotDrawCMixin"
+  ],
+  "package": "com.LubieKakao1212.opencu.common.mixin"
+}

@@ -27,10 +27,24 @@
   "info.opencu.dispenser.spread.constant": "Constant Spread: %.0f°",
   "info.opencu.dispenser.spread.configurable": "Configurable Spread: %.0f°-%.0f°",
 
-  "info.opencu.frame.gui.lock.active": "Shoot only when aligned: §aOn",
-  "info.opencu.frame.gui.lock.inactive": "Shoot only when aligned: §cOff",
+  "info.opencu.gui.repulsor.pulse.opencu:repulsor": "Point Pulse",
+  "info.opencu.gui.repulsor.pulse.opencu:vector": "Vector Pulse",
+  "info.opencu.gui.repulsor.pulse.opencu:stasis": "Stasis Pulse",
+  "info.opencu.gui.repulsor.force.sign.active": "Direction: §l+",
+  "info.opencu.gui.repulsor.force.sign.inactive": "Direction: §l-",
+  "info.opencu.gui.repulsor.energy.usage": "Energy per pulse: %s/%s",
+  "info.opencu.gui.repulsor.slider.power.opencu:repulsor": "Velocity Change: %.2fm/s",
+  "info.opencu.gui.repulsor.slider.power.opencu:vector": "Velocity Change: %.2fm/s",
+  "info.opencu.gui.repulsor.slider.power.opencu:stasis": "Velocity Loss: %.0f%%",
+  "info.opencu.gui.repulsor.slider.radius": "Radius %.1fm",
 
-  "info.opencu.frame.gui.energy": "%s/%s",
+  "info.opencu.gui.frame.lock.active": "Shoot only when aligned: §aOn",
+  "info.opencu.gui.frame.lock.inactive": "Shoot only when aligned: §cOff",
+
+  "info.opencu.gui.dc.energy": "%s/%s",
+  "info.opencu.gui.dc.tab.inventory": "Inventory",
+  "info.opencu.gui.dc.tab.dispenser": "Dispenser Settings",
+  "info.opencu.gui.dc.tab.repulsor": "Repulsor Settings",
 
   "info.opencu.tool.pos": "§8Bound to §7[%s§7]",
 

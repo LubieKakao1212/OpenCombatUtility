@@ -15,8 +15,9 @@ public class Pulses {
     private static final float epsilon = 0.0001f;
     private static final float epsilonSqr = epsilon * epsilon;
 
-    @Deprecated
-    public static void repulsorPulse(World world, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force) {
+    public static void repulsorPulse(World world, Vector3d pos, Vector3d direction, double radius, double force) {
+        force = EntityUtil.perSecond2perTick(force);
+
         List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
@@ -48,8 +49,9 @@ public class Pulses {
         }
     }
 
-    @Deprecated
-    public static void vectorPulse(World world, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force) {
+    public static void vectorPulse(World world, Vector3d pos, Vector3d direction, double radius, double force) {
+        force = EntityUtil.perSecond2perTick(force);
+
         List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
         Vector3d directionForce = direction.mul(PulseUtil.getScaledForce(force));
 
@@ -67,35 +69,35 @@ public class Pulses {
         }
     }
 
-    public static void generalPulse(World world, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force) {
-        List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
-
-        force = PulseUtil.getScaledForce(force);
-
-        for(Entity e : entityList) {
-            var delta = new Vector3m(e.getBoundingBox().getCenter())
-                    .sub(pos);
-
-            var dstSq = delta.lengthSquared();
-
-            //if we have a very small delta we consider it to have an up direction to avoid floating point precision errors
-            if (dstSq < epsilonSqr) {
-                EntityUtil.addVelocity(e, 0, force, 0);
-                continue;
-            }
-
-            double distance = Math.sqrt(dstSq);
-
-            var deltaV = delta.div(distance);
-            deltaV.lerp(direction, directionBlend);
-
-            deltaV.mul(force);
-            EntityUtil.addVelocity(e, deltaV);
-        }
-    }
+//    public static void generalPulse(World world, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force) {
+//        List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
+//
+//        force = PulseUtil.getScaledForce(force);
+//
+//        for(Entity e : entityList) {
+//            var delta = new Vector3m(e.getBoundingBox().getCenter())
+//                    .sub(pos);
+//
+//            var dstSq = delta.lengthSquared();
+//
+//            //if we have a very small delta we consider it to have an up direction to avoid floating point precision errors
+//            if (dstSq < epsilonSqr) {
+//                EntityUtil.addVelocity(e, 0, force, 0);
+//                continue;
+//            }
+//
+//            double distance = Math.sqrt(dstSq);
+//
+//            var deltaV = delta.div(distance);
+//            deltaV.lerp(direction, directionBlend);
+//
+//            deltaV.mul(force);
+//            EntityUtil.addVelocity(e, deltaV);
+//        }
+//    }
 
     //TODO Refine logic to take direction into account
-    public static void stasisPulse(World world, Vector3d pos, Vector3d direction, double directionBlend, double radius, double force) {
+    public static void stasisPulse(World world, Vector3d pos, Vector3d direction, double radius, double force) {
         List<Entity> entityList = PulseUtil.getAffectedEntities(world, pos, radius);
 
         double stasisFactor = min(1.0, abs(force));

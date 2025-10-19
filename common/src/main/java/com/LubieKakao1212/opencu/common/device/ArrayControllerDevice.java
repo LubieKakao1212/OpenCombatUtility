@@ -5,11 +5,14 @@ import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.state.ArrayControllerDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
+import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.random.RandomEx;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public class ArrayControllerDevice implements IFramedDevice {
@@ -49,8 +52,8 @@ public class ArrayControllerDevice implements IFramedDevice {
     }
 
     @Override
-    public IDeviceState getNewState() {
-        return new ArrayControllerDeviceState();
+    public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
+        return new ArrayControllerDeviceState(markDirtyDelegate);
     }
 
     @Override
@@ -66,5 +69,13 @@ public class ArrayControllerDevice implements IFramedDevice {
     @Override
     public boolean energyEnabled() {
         return true;
+    }
+
+    /**
+     * Client Method
+     */
+    @Override
+    public @Nullable DeviceContainerScreenTab getScreenTab() {
+        return null;
     }
 }
