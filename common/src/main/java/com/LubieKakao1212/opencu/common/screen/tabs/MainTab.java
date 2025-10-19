@@ -36,12 +36,6 @@ public class MainTab extends DeviceContainerScreenTab {
         ));
     }
 
-
-    @Override
-    public ItemStack icon(DeviceContainerScreen screen) {
-        return ItemStack.EMPTY;
-    }
-
     @Override
     public Text getTabName() {
         return null; // this name is fixed in DeviceContainerScreen

@@ -21,6 +21,7 @@ public class SliderWidget extends ClickableWidget {
     private final Supplier<Double> valueSupplier;
 
     private final Consumer<Double> syncDelegate;
+    private final Consumer<Double> localSyncDelegate;
 
     private final int knobWidth;
     private final int knobHeight;
@@ -29,17 +30,19 @@ public class SliderWidget extends ClickableWidget {
 
     private Identifier texture;
 
-    public SliderWidget(Axis axis, Identifier texture, int x, int y, int width, int height, int knobWidth, int knobHeight, int u, int v, Supplier<Double> valueSupplier, Consumer<Double> syncDelegate, int resolution) {
+    public SliderWidget(Axis axis, Identifier texture, int x, int y, int width, int height, int knobWidth, int knobHeight, int u, int v, Supplier<Double> valueSupplier, Consumer<Double> syncDelegate, Consumer<Double> localSyncDelegate, int resolution) {
         super(x, y, width, height, null);
         this.u = u;
         this.v = v;
         this.texture = texture;
         this.valueSupplier = valueSupplier;
         this.syncDelegate = syncDelegate;
+        this.localSyncDelegate = localSyncDelegate;
         this.resolution = resolution;
         this.knobWidth = knobWidth;
         this.knobHeight = knobHeight;
         this.movementAxis = axis;
+
     }
 
     @Override
@@ -90,6 +93,9 @@ public class SliderWidget extends ClickableWidget {
         var value = (mouseV - posV) / size;
         value = MathHelper.clamp(value, 0, 1);
         this.value = quantise(value, resolution);
+        if(localSyncDelegate != null) {
+            localSyncDelegate.accept(this.value);
+        }
     }
 
     private static double quantise(double value, int resolution) {

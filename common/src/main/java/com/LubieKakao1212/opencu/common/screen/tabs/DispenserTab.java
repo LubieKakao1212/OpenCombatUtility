@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.joml.Vector2i;
 
 public class DispenserTab extends DeviceContainerScreenTab {
 
@@ -18,11 +19,6 @@ public class DispenserTab extends DeviceContainerScreenTab {
     @Override
     public Identifier getDefaultBackgroundTexture() {
         return backgroundTexture;
-    }
-
-    @Override
-    public ItemStack icon(DeviceContainerScreen screen) {
-        return new ItemStack(Items.DISPENSER);
     }
 
     @Override

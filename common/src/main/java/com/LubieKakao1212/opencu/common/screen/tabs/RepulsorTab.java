@@ -23,6 +23,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2i;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -60,11 +61,6 @@ public class RepulsorTab extends DeviceContainerScreenTab {
     @Override
     public Identifier getDefaultBackgroundTexture() {
         return backgroundTexture;
-    }
-
-    @Override
-    public ItemStack icon(DeviceContainerScreen screen) {
-        return new ItemStack(Items.DISPENSER);
     }
 
     @Override
@@ -110,6 +106,10 @@ public class RepulsorTab extends DeviceContainerScreenTab {
                 value -> {
                     forRepulsorState(handler, state -> { state.setPropertyNormal(property, value); });
                     sendPropertyChange(handler, property, value);
+                },
+                value -> {
+                    //Set property client side only for gui updates
+                    forRepulsorState(handler, state -> { state.setPropertyNormal(property, value); });
                 });
     }
 
@@ -161,7 +161,7 @@ public class RepulsorTab extends DeviceContainerScreenTab {
                         x, y,
                         13, 16,
                         236, 58,
-                        FillableBarWidget.FillDirection.RIGHT,
+                        FillableBarWidget.FillDirection.DOWN,
                         () -> forRepulsorState(handler, state -> {
                             var energy = state.getEnergyUsage();
                             var maxEnergy = handler.getProperty(BlockEntityDeviceContainer::getMaxEnergy, 0L);

@@ -84,7 +84,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
         var mainTabButton = ResponsiveToggleWidget.dualState(
                 mainTexture,
                 x+173, y+6,
-                21, 21,
+                21, 19,
                 176, 138,
                 22, 0,
                 () -> currentTab == mainTab,
@@ -97,8 +97,8 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
             var deviceTabButton = ResponsiveToggleWidget.dualState(
                     mainTexture,
                     x+173, y+27,
-                    21, 21,
-                    176, 117,
+                    21, 19,
+                    176, 157,
                     22, 0,
                     () -> currentTab != mainTab,
                     aBoolean -> switchToTab(deviceTab),
@@ -134,9 +134,6 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
 
         //this.drawBackground(poseStack, partialTick, mouseX, mouseY);
         super.render(context, mouseX, mouseY, partialTick);
-        if(deviceTab != null) {
-            deviceTab.drawIcon(this, context, x+176, y+29, partialTick);
-        }
         this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
 
@@ -164,7 +161,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
         return flag || super.mouseReleased(mouseX, mouseY, button);
     }
 
-    public SliderWidget addSlider(int x, int y, int length, int resolution, SliderWidget.Axis axis, Supplier<Double> valueProvider, Consumer<Double> valueReceiver) {
+    public SliderWidget addSlider(int x, int y, int length, int resolution, SliderWidget.Axis axis, @NotNull Supplier<Double> valueProvider, @NotNull Consumer<Double> valueReceiver, @Nullable Consumer<Double> localValueReceiver) {
         var xOffset = 0;
         var yOffset = 0;
 
@@ -213,6 +210,7 @@ public class DeviceContainerScreen extends HandledScreen<DeviceContainerScreenHa
                         u, v,
                         valueProvider,
                         valueReceiver,
+                        localValueReceiver,
                         resolution
                 ));
     }

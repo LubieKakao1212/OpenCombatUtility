@@ -6,6 +6,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.joml.Vector2f;
+import org.joml.Vector2i;
 
 public abstract class DeviceContainerScreenTab {
 
@@ -18,13 +20,6 @@ public abstract class DeviceContainerScreenTab {
     }
 
     public Identifier getDefaultBackgroundTexture() { return DeviceContainerScreen.mainTexture; }
-
-    public void drawIcon(DeviceContainerScreen screen, DrawContext context, int x, int y, float partialTick) {
-        RenderSystem.disableDepthTest();
-        context.drawItem(icon(screen), x, y);
-    }
-
-    public abstract ItemStack icon(DeviceContainerScreen screen);
 
     public abstract Text getTabName();
 
