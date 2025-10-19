@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "tpt",
+    " i ",
+    " r "
+  ],
+  "key":
+  {
+    "p":
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    "i":
+    {
+      "item": "minecraft:polished_deepslate"
+    },
+    "r":
+    {
+      "item": "minecraft:redstone"
+    },
+    "t":
+    {
+      "item": "minecraft:redstone_torch"
+    }
+  },
+  "result":
+  {
+    "item": "opencu:aim_tool",
+    "count": 1
+  }
+}

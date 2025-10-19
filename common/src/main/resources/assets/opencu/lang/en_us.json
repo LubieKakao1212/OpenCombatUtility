@@ -43,8 +43,8 @@
 
   "info.opencu.gui.dc.energy": "%s/%s",
   "info.opencu.gui.dc.tab.inventory": "Inventory",
-  "info.opencu.gui.dc.tab.dispenser": "Dispenser Settings",
-  "info.opencu.gui.dc.tab.repulsor": "Repulsor Settings",
+  "info.opencu.gui.dc.tab.dispenser": "Settings",
+  "info.opencu.gui.dc.tab.repulsor": "Settings",
 
   "info.opencu.tool.pos": "§8Bound to §7[%s§7]",
 

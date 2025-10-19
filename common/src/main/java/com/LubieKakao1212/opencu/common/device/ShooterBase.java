@@ -99,7 +99,7 @@ public abstract class ShooterBase implements IFramedDevice {
      */
     @Override
     public @Nullable DeviceContainerScreenTab getScreenTab() {
-        return new DispenserTab();
+        return null;
     }
 }
 
