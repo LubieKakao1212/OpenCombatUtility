@@ -73,7 +73,7 @@ public class RepulsorDevice implements IFramedDevice {
 
     @Override
     public boolean ammoEnabled() {
-        return false;
+        return true;
     }
 
     @Override
