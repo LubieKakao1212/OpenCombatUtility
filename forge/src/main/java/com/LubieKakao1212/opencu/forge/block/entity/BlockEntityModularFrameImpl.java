@@ -1,7 +1,10 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.PlatformUtil;
+import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -12,6 +15,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EmptyEnergyStorage;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -23,7 +29,9 @@ import javax.annotation.Nullable;
 public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     private final LazyOptional<IItemHandler> inventoryCapability;
+    private final LazyOptional<IEnergyStorage> energyCapabilty;
     private final ItemStackHandler inventory;
+    private final InternalEnergyStorage energy;
 
     public BlockEntityModularFrameImpl(BlockPos pos, BlockState blockState) {
         super(pos, blockState);
@@ -62,10 +70,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         this.inventory = new ItemStackHandler(10) {
             @Override
             protected void onContentsChanged(int slot) {
-                if(slot == 0) {
-                    updateDispenser();
-                }
-                markDirty();
+                BlockEntityModularFrameImpl.this.markDirty();
             }
 
             @Override
@@ -88,21 +93,32 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             }
         };
         this.inventoryCapability = LazyOptional.of(() -> this.inventory);
+
+        //region energy
+        var useEnergy = OpenCUConfigCommon.general().energyEnabled();
+        if(useEnergy) {
+            var capacity = OpenCUConfigCommon.modularFrame().energy().energyCapacity();
+            energy = new InternalEnergyStorage(capacity, capacity, capacity);
+            energyCapabilty = LazyOptional.of(() -> energy);
+        } else {
+            energy = null;
+            energyCapabilty = LazyOptional.of(() -> EmptyEnergyStorage.INSTANCE);
+        }
+        setupEnergyObserver(() -> {
+            return (long)energy.getEnergyStored();
+        });
+        //endregion
     }
 
     @Override
-    protected IModularFrameContext getNewContext() {
-        return new ActionContextImpl();
-    }
-
-    @Override
-    protected ItemStack useAmmo(IModularFrameContext ctx) {
+    protected DeviceActivationContext getNewContext() {
+        //TODO
         return null;
     }
 
     @Override
-    protected ItemStack handleLeftover(IModularFrameContext ctx, ItemStack leftover) {
-        return ItemStack.EMPTY;
+    public void scatterInventory() {
+        //TODO
     }
 
     /**
@@ -115,6 +131,11 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         return new SlotItemHandler(inventory, idx, x, y);
     }
 
+    @Override
+    public long getMaxEnergy() {
+        return energy.getMaxEnergyStored();
+    }
+
     public boolean isUsableBy(PlayerEntity player) {
         assert world != null;
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
@@ -122,6 +143,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
+        //TODO
 //        //Energy
 //        energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
         super.writeNbt(compound);
@@ -130,6 +152,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     @Override
     public void readNbt(@NotNull NbtCompound compound) {
         super.readNbt(compound);
+        //TODO
 //        //Energy
 //        NbtElement energyTag = compound.get("energy");
 //        if(energyTag != null) {
@@ -143,13 +166,18 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
+    protected int getCurrentEnergy() {
+        return energy.getEnergyStored();
+    }
+
+    @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
         if(capability == ForgeCapabilities.ITEM_HANDLER) {
             return (LazyOptional<T>)inventoryCapability;
         }
-        /*if(capability == ForgeCapabilities.ENERGY) {
-            return (LazyOptional<T>)energyCap;
-        }*/
+        if(capability == ForgeCapabilities.ENERGY) {
+            return (LazyOptional<T>)energyCapabilty;
+        }
         return super.getCapability(capability, facing);
     }
 
@@ -159,46 +187,46 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         inventoryCapability.invalidate();
     }
 
-    protected class ActionContextImpl implements IModularFrameContext {
-
-        public int slot;
-        private boolean commited = false;
-
-        @Override
-        public void close() {
-            if(!commited) {
-
-            }
-        }
-
-        @Override
-        public void push() {
-
-        }
-
-        @Override
-        public void pop() {
-
-        }
-
-        @Override
-        public void commit() {
-            commited = true;
-        }
-
-        @Override
-        public ItemStack useAmmoFirst() {
-            return null;
-        }
-
-        @Override
-        public ItemStack useAmmoRandom() {
-            return null;
-        }
-
-        @Override
-        public void handleLeftover(ItemStack stack) {
-
-        }
-    }
+//    protected class ActionContextImpl implements IModularFrameContext {
+//
+//        public int slot;
+//        private boolean commited = false;
+//
+//        @Override
+//        public void close() {
+//            if(!commited) {
+//
+//            }
+//        }
+//
+//        @Override
+//        public void push() {
+//
+//        }
+//
+//        @Override
+//        public void pop() {
+//
+//        }
+//
+//        @Override
+//        public void commit() {
+//            commited = true;
+//        }
+//
+//        @Override
+//        public ItemStack useAmmoFirst() {
+//            return null;
+//        }
+//
+//        @Override
+//        public ItemStack useAmmoRandom() {
+//            return null;
+//        }
+//
+//        @Override
+//        public void handleLeftover(ItemStack stack) {
+//
+//        }
+//    }
 }

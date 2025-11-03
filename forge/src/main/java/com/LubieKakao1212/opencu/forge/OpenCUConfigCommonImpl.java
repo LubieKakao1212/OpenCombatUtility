@@ -38,6 +38,7 @@ public class OpenCUConfigCommonImpl {
     }
 
     public static OpenCUConfigCommon.@NotNull TrackerDeviceConfig trackerDevice() {
+        return OpenCUConfigCommon.Defaults.TRACKER_DEVICE;
     }
 
 }

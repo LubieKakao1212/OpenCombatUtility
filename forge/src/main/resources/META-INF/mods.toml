@@ -30,6 +30,6 @@ side = "BOTH"
 [[dependencies.opencu]]
 modId = "qulib"
 mandatory = true
-versionRange = "[2.1.2,2.2)"
+versionRange = "${qulib_version}"
 ordering = "NONE"
 side = "BOTH"

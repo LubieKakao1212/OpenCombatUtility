@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.registry.forge;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.screen.handler.DeviceContainerScreenHandler;
+import com.LubieKakao1212.opencu.common.screen.slot.SlotProvider;
 import com.LubieKakao1212.opencu.forge.proxy.Proxy;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import net.minecraft.screen.ScreenHandlerType;
@@ -16,7 +17,12 @@ public class CUMenuImpl {
     private static final DeferredRegister<ScreenHandlerType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, OpenCUModCommon.MODID);
 
     static {
-        MODULAR_FRAME = MENUS.register(CUIds.MODULAR_FRAME.getPath(), () -> IForgeMenuType.create((id, inv, data) -> new DeviceContainerScreenHandler(id, inv, Proxy.getLevel(), data.readBlockPos())));
+        MODULAR_FRAME = MENUS.register(CUIds.MODULAR_FRAME.getPath(), () -> IForgeMenuType.create((id, inv, data) ->
+                new DeviceContainerScreenHandler(
+                        MODULAR_FRAME.get(), id, inv,
+                        SlotProvider.dummy(10),
+            3
+                )));
     }
 
     public static void init() {

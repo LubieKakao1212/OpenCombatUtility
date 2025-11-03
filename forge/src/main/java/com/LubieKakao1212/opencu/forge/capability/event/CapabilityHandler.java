@@ -2,7 +2,6 @@ package com.LubieKakao1212.opencu.forge.capability.event;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.peripheral.ModularFramePeripheral;
-import com.LubieKakao1212.opencu.common.peripheral.RepulsorPeripheral;
 import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.forge.capability.provider.PeripheralCapabilityProvider;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -15,6 +14,8 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityHandler {
+
+    //TODO
 
     public static final Capability<IPeripheral> PERIPHERAL = CapabilityManager.get(new CapabilityToken<>(){});
 

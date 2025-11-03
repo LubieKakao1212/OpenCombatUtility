@@ -1,10 +1,9 @@
 package com.LubieKakao1212.opencu.registry.forge;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.forge.block.BlockModularFrame;
+import com.LubieKakao1212.opencu.common.block.BlockModularFrame;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -22,7 +21,7 @@ public class CUBlocksImpl {
     static
     {
         //REPULSOR = blockItem(BLOCKS.register(ID.REPULSOR, () -> new BlockRepulsor(AbstractBlock.Settings.of(Material.METAL).strength(3f).nonOpaque())));
-        OMNI_DISPENSER = blockItem(BLOCKS.register(ID.OMNI_DISPENSER, () -> new BlockModularFrame(AbstractBlock.Settings.of(Material.METAL).strength(3f).nonOpaque())));
+        OMNI_DISPENSER = blockItem(BLOCKS.register(ID.OMNI_DISPENSER, () -> new BlockModularFrame(AbstractBlock.Settings.create().strength(3f).nonOpaque())));
 
         //TODO check if this works
         CURegister.register(BLOCKS);

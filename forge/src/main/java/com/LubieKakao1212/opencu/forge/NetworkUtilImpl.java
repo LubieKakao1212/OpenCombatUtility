@@ -40,19 +40,6 @@ public class NetworkUtilImpl {
                 .simpleChannel();
 
         int id = 0;
-        CHANNEL.messageBuilder(PacketClientPlayerAddVelocity.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ClientPlayerAddVelocity::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();
-
-        CHANNEL.messageBuilder(PacketClientPlayerScaleVelocity.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ClientPlayerScaleVelocity::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();
-
-
         CHANNEL.messageBuilder(PacketS2CUpdateFireball.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ClientUpdateFireball::fromBytes)
@@ -76,26 +63,8 @@ public class NetworkUtilImpl {
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ClientUpdateDispenser::fromBytes)
                 .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();
-
-        //Repulsor pulse animation trigger
-        CHANNEL.messageBuilder(PacketClientRepulsorPulse.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ClientRepulsorPulse::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();
-
-//        //client to server request packet
-//        CHANNEL.messageBuilder(com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket.FromClient.class, id++, NetworkDirection.PLAY_TO_SERVER)
-//                .encoder(PacketSerialize::toBytes)
-//                .decoder(PacketSerialize.ClientPlayerAddVelocity::fromBytes)
-//                .consumerMainThread((msg, ctx) -> PacketClientPlayerAddVelocity.execute(msg))
-//                .add();
+                .add();;
     }
-
-//    public static <T extends Record> void enqueueEntityUpdate(T message, Entity target, int delay) {
-//        messages.add(new EntityMessage<>(message, delay, target));
-//    }
 
     public static <T extends Record> void sendToAllTracking(T message, ServerWorld world, BlockPos pos) {
         sendToAllTracking(message, world.getWorldChunk(pos));
