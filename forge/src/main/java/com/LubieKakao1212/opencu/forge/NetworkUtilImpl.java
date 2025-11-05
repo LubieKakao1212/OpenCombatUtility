@@ -3,12 +3,17 @@ package com.LubieKakao1212.opencu.forge;
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.network.packet.*;
-import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateDevice;
-import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketS2CUpdateFrameAim;
-import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.PacketC2SRequestDeviceUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.*;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketC2SRequestDCState;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.PacketS2CUpdateEnergy;
+import com.LubieKakao1212.opencu.common.network.packet.devicecontainer.frame.*;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketC2SCycleRedstoneControl;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketS2CUpdateRedstoneControl;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketS2CUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.screen.PacketC2SRequestAmmoSlotToggle;
 import com.LubieKakao1212.opencu.forge.packet.PacketSerialize;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -23,6 +28,9 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Mod.EventBusSubscriber
 public class NetworkUtilImpl {
@@ -40,30 +48,30 @@ public class NetworkUtilImpl {
                 .simpleChannel();
 
         int id = 0;
-        CHANNEL.messageBuilder(PacketS2CUpdateFireball.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ClientUpdateFireball::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();
+        //region Server to Client
+        registerServer2Client(id++, PacketS2CUpdateFireball.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateFireball, PacketHandlersClient::handle);
+        registerServer2Client(id++, PacketS2CUpdateEnergy.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateEnergy, PacketHandlersClient::handle);
+        registerServer2Client(id++, PacketS2CUpdateRequiresLock.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateRequiresLock, PacketHandlersClient::handle);
+        registerServer2Client(id++, PacketS2CUpdateRedstoneControl.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateRedstoneControl, PacketHandlersClient::handle);
 
-        CHANNEL.messageBuilder(PacketC2SRequestDeviceUpdate.class, id++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ServerRequestDispenserUpdate::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersServer.handle(msg, Objects.requireNonNull(ctx.get().getSender())))
-                .add();
+        registerServer2Client(id++, PacketS2CUpdateDevice.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateDevice, PacketHandlersClient::handle);
+        registerServer2Client(id++, PacketS2CUpdateFrameAim.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateFrameAim, PacketHandlersClient::handle);
 
-        CHANNEL.messageBuilder(PacketS2CUpdateFrameAim.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ClientUpdateDispenserAim::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();
+        registerServer2Client(id++, PacketS2CUpdateRepulsorProperty.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdateRepulsorProperty, PacketHandlersClient::handle);
+        registerServer2Client(id++, PacketS2CRepulsorActivationTimestamp.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CRepulsorActivationTimestamp, PacketHandlersClient::handle);
+        registerServer2Client(id++, PacketS2CUpdatePulseType.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_S2CUpdatePulseType, PacketHandlersClient::handle);
+        //endregion
 
-        //main dispenser update packet
-        CHANNEL.messageBuilder(PacketS2CUpdateDevice.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(PacketSerialize::toBytes)
-                .decoder(PacketSerialize.ClientUpdateDispenser::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
-                .add();;
+        //region Client to Server
+        registerClient2Server(id++, PacketC2SRequestDeviceUpdate.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SRequestDeviceUpdate, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SToggleRequiresLock.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SToggleRequiresLock, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SCycleRedstoneControl.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SCycleRedstoneControl, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SRequestDCState.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SRequestDCState, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SRequestAmmoSlotToggle.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SRequestAmmoSlotToggle, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SUpdateRepulsorProperty.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SUpdateRepulsorProperty, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SUpdatePulseType.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SUpdatePulseType, PacketHandlersServer::handle);
+        registerClient2Server(id++, PacketC2SToggleForceSign.class, PacketSerialize::toBytes, PacketSerialize::fromBytes_C2SToggleForceSign, PacketHandlersServer::handle);
+        //endregion
     }
 
     public static <T extends Record> void sendToAllTracking(T message, ServerWorld world, BlockPos pos) {
@@ -90,5 +98,21 @@ public class NetworkUtilImpl {
     @SuppressWarnings("unused")
     public static void serverTick(TickEvent.ServerTickEvent event) {
         NetworkUtil.tick();
+    }
+
+    private static <MSG extends Record> void registerServer2Client(int idx, Class<MSG> clazz, BiConsumer<MSG, PacketByteBuf> encoder, Function<PacketByteBuf, MSG> decoder, Consumer<MSG> handler) {
+        CHANNEL.messageBuilder(clazz, idx, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(encoder)
+                .decoder(decoder)
+                .consumerMainThread((msg, contextSupplier) -> handler.accept(msg))
+                .add();
+    }
+
+    private static <MSG> void registerClient2Server(int idx, Class<MSG> clazz, BiConsumer<MSG, PacketByteBuf> encoder, Function<PacketByteBuf, MSG> decoder, BiConsumer<MSG, ServerPlayerEntity> handler) {
+        CHANNEL.messageBuilder(clazz, idx, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(encoder)
+                .decoder(decoder)
+                .consumerMainThread((msg, contextSupplier) -> handler.accept(msg, contextSupplier.get().getSender()))
+                .add();
     }
 }
