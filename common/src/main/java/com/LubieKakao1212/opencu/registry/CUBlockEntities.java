@@ -10,12 +10,6 @@ public class CUBlockEntities {
 
     @NotNull
     @ExpectPlatform
-    public static BlockEntityType<BlockEntityDeviceContainer6Dir> repulsor() {
-        return null;
-    }
-
-    @NotNull
-    @ExpectPlatform
     public static BlockEntityType<BlockEntityModularFrame> modularFrame() {
         return null;
     }

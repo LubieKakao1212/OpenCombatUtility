@@ -26,7 +26,7 @@ public class OpenCUClient implements ClientModInitializer {
     private void registerRenderers() {
         BlockEntityRendererFactories.register(CUBlockEntities.modularFrame(), RendererModularFrame::new);
 
-        BlockEntityRendererFactories.register(CUBlockEntities.repulsor(), RendererDeviceContainer6Dir::new);
+        BlockEntityRendererFactories.register(CUBlockEntitiesImpl.REPULSOR, RendererDeviceContainer6Dir::new);
         BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_GOLD, RendererDeviceContainer6Dir::new);
         BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_DIAMOND, RendererDeviceContainer6Dir::new);
         BlockEntityRendererFactories.register(CUBlockEntitiesImpl.DISPENSER_NETHERITE, RendererDeviceContainer6Dir::new);

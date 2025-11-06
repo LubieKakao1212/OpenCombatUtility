@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.registry.forge;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.item.ItemAimTool;
+import com.LubieKakao1212.opencu.common.item.ItemLinkTool;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -12,18 +14,15 @@ import java.util.function.Supplier;
 
 public class CUItems {
 
-    public static final RegistryObject<Item> DISPENSER_T2;
+    public static final RegistryObject<Item> AIM_TOOL;
 
-    public static final RegistryObject<Item> DISPENSER_T3;
+    public static final RegistryObject<Item> LINK_TOOL;
 
-    public static final RegistryObject<Item> VECTOR_MESH;
-
-    private static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OpenCUModCommon.MODID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OpenCUModCommon.MODID);
 
     static {
-        VECTOR_MESH = ITEMS.register(ID.VECTOR_MESH, () -> new Item(new Item.Settings()));
-        DISPENSER_T2 = ITEMS.register(ID.DISPENSER_T2, () -> new Item(new Item.Settings()));
-        DISPENSER_T3 = ITEMS.register(ID.DISPENSER_T3, () -> new Item(new Item.Settings()));
+        AIM_TOOL = ITEMS.register(ID.AIM_TOOL, () -> new ItemAimTool(new Item.Settings().maxCount(1)));
+        LINK_TOOL = ITEMS.register(ID.LINK_TOOL, () -> new ItemLinkTool(new Item.Settings().maxCount(1)));
     }
 
     public static void init() {
@@ -37,9 +36,7 @@ public class CUItems {
 
 
     public static class ID {
-        public static final String VECTOR_MESH = "vector_mesh";
-
-        public static final String DISPENSER_T2 = "dispenser_tier2";
-        public static final String DISPENSER_T3 = "dispenser_tier3";
+        public static final String AIM_TOOL = "aim_tool";
+        public static final String LINK_TOOL = "link_tool";
     }
 }

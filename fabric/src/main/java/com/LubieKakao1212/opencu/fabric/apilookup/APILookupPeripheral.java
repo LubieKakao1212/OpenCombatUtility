@@ -12,7 +12,7 @@ public class APILookupPeripheral {
     public static void register() {
         PeripheralLookup.get().registerForBlockEntity((be, dir) -> new ModularFramePeripheral(be), CUBlockEntities.modularFrame());
 
-        PeripheralLookup.get().registerForBlockEntity((be, dir) -> new DeviceContainerPeripheral(be, CUIds.REPULSOR.toString()), CUBlockEntities.repulsor());
+        PeripheralLookup.get().registerForBlockEntity((be, dir) -> new DeviceContainerPeripheral(be, CUIds.REPULSOR.toString()), CUBlockEntitiesImpl.REPULSOR);
 
         PeripheralLookup.get().registerForBlockEntity((be, dir) -> new DeviceContainerPeripheral(be, CUIds.SHOOTER.toString()), CUBlockEntitiesImpl.DISPENSER_GOLD);
         PeripheralLookup.get().registerForBlockEntity((be, dir) -> new DeviceContainerPeripheral(be, CUIds.SHOOTER.toString()), CUBlockEntitiesImpl.DISPENSER_DIAMOND);

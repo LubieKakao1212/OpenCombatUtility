@@ -1,9 +1,8 @@
 package com.LubieKakao1212.opencu.fabric.apilookup;
 
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
-import com.LubieKakao1212.opencu.registry.CUBlocks;
 import com.LubieKakao1212.opencu.registry.CUIds;
-import com.LubieKakao1212.opencu.registry.fabric.CUBlocksImpl;
+import com.LubieKakao1212.opencu.registry.fabric.CUBlocks;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Items;
@@ -17,11 +16,11 @@ public class APILookupIFramedDevice {
     public static void init() {
         FRAMED_DEVICES.registerForItems((stack, ctx) -> VANILLA_DROPPER, Items.DROPPER);
         FRAMED_DEVICES.registerForItems((stack, ctx) -> VANILLA_DISPENSER, Items.DISPENSER);
-        FRAMED_DEVICES.registerForItems((stack, ctx) -> GOLD_DISPENSER, BlockItem.BLOCK_ITEMS.get(CUBlocksImpl.DISPENSER_GOLD));
-        FRAMED_DEVICES.registerForItems((stack, ctx) -> DIAMOND_DISPENSER, BlockItem.BLOCK_ITEMS.get(CUBlocksImpl.DISPENSER_DIAMOND));
-        FRAMED_DEVICES.registerForItems((stack, ctx) -> NETHERITE_DISPENSER, BlockItem.BLOCK_ITEMS.get(CUBlocksImpl.DISPENSER_NETHERITE));
+        FRAMED_DEVICES.registerForItems((stack, ctx) -> GOLD_DISPENSER, BlockItem.BLOCK_ITEMS.get(CUBlocks.DISPENSER_GOLD));
+        FRAMED_DEVICES.registerForItems((stack, ctx) -> DIAMOND_DISPENSER, BlockItem.BLOCK_ITEMS.get(CUBlocks.DISPENSER_DIAMOND));
+        FRAMED_DEVICES.registerForItems((stack, ctx) -> NETHERITE_DISPENSER, BlockItem.BLOCK_ITEMS.get(CUBlocks.DISPENSER_NETHERITE));
 
-        FRAMED_DEVICES.registerForItems((stack, ctx) -> REPULSOR, CUBlocks.repulsor());
+        FRAMED_DEVICES.registerForItems((stack, ctx) -> REPULSOR, CUBlocks.REPULSOR);
 
         FRAMED_DEVICES.registerForItems((stack, ctx) -> SIMPLE_TRACKER, Items.ENDER_EYE);
         //Broken

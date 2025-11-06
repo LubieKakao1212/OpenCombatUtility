@@ -1,13 +1,5 @@
 package com.LubieKakao1212.opencu.forge;
 
-import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.registry.forge.CUBlocksImpl;
-import com.LubieKakao1212.opencu.registry.forge.CUItems;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

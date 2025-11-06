@@ -9,7 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import org.jetbrains.annotations.NotNull;
 
-public class CUBlocksImpl implements BlockRegistryContainer {
+public class CUBlocks implements BlockRegistryContainer {
 
     public static Block MODULAR_FRAME = new BlockModularFrame(FabricBlockSettings.create().strength(3f).nonOpaque());
 
@@ -20,16 +20,6 @@ public class CUBlocksImpl implements BlockRegistryContainer {
     public static Block DISPENSER_DIAMOND = new BlockDevice6Dir(FabricBlockSettings.create().strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.DISPENSER_DIAMOND);
     public static Block DISPENSER_NETHERITE = new BlockDevice6Dir(FabricBlockSettings.create().strength(3f).nonOpaque(), () -> CUBlockEntitiesImpl.DISPENSER_NETHERITE);
     //endregion
-
-    @NotNull
-    public static Block repulsor() {
-        return REPULSOR;
-    }
-
-    @NotNull
-    public static Block modularFrame() {
-        return MODULAR_FRAME;
-    }
 
     @Override
     public BlockItem createBlockItem(Block block, String identifier) {

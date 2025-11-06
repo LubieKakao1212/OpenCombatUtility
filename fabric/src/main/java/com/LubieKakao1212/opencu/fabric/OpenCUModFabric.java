@@ -1,12 +1,10 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupItemStorage;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIFramedDevice;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupRebornEnergy;
-import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
 import com.LubieKakao1212.opencu.fabric.event.UseHandler;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.fabric.*;
@@ -26,7 +24,7 @@ public class OpenCUModFabric implements ModInitializer {
 
         OpenCUConfigCommonImpl.init();
 
-        FieldRegistrationHandler.register(CUBlocksImpl.class, OpenCUModCommon.MODID, false);
+        FieldRegistrationHandler.register(CUBlocks.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUPulseImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUBlockEntitiesImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUMenuImpl.class, OpenCUModCommon.MODID, false);

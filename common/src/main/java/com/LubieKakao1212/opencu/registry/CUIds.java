@@ -31,8 +31,11 @@ public class CUIds {
         public static final String SHOOTER = "shooter";
 
         public static final String DISPENSER = "dispenser";
-        public static final String FRAMED_DEVICE_API = "framed_device";
         public static final String DROPPER = "dropper";
+        public static final String DISPENSER_GOLD = "dispenser_gold";
+        public static final String DISPENSER_DIAMOND = "dispenser_diamond";
+        public static final String DISPENSER_NETHERITE = "dispenser_netherite";
+        public static final String FRAMED_DEVICE_API = "framed_device";
 
         public static final String VECTOR = "vector";
         public static final String STASIS = "stasis";
