@@ -16,7 +16,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EmptyEnergyStorage;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -28,6 +27,13 @@ import javax.annotation.Nullable;
 
 public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
+    public static final int slotCount = 10;
+    public static final int ammoSlotCount = 9;
+    public static final int ammoSlotsStart = 1;
+    public static final int ammoSlotsEnd = 10;
+
+    private static final int deviceSlotIdx = 0;
+
     private final LazyOptional<IItemHandler> inventoryCapability;
     private final LazyOptional<IEnergyStorage> energyCapabilty;
     private final ItemStackHandler inventory;
@@ -35,39 +41,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     public BlockEntityModularFrameImpl(BlockPos pos, BlockState blockState) {
         super(pos, blockState);
-        /*(be) -> {
-            var inv = new ItemStackHandler(10) {
-                @Override
-                protected void onContentsChanged(int slot) {
-                    if(slot == 0) {
-                        be.updateDispenser();
-                    }
-                    be.markDirty();
-                }
-
-                @Override
-                public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                    if(slot == 0)
-                    {
-                        return PlatformUtil.getDispenser(stack) != null;
-                    }
-                    return true;
-                }
-
-                @Override
-                public int getSlotLimit(int slot) {
-                    if(slot == 0)
-                    {
-                        return 1;
-                    }else {
-                        return 64;
-                    }
-                }
-            };
-            ((BlockEntityModularFrameImpl)be).inventoryCapability = LazyOptional.of(() -> inv);
-            return new ItemStorageHandler(inv);
-        }*/
-        this.inventory = new ItemStackHandler(10) {
+        this.inventory = new ItemStackHandler(slotCount) {
             @Override
             protected void onContentsChanged(int slot) {
                 BlockEntityModularFrameImpl.this.markDirty();
@@ -75,7 +49,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(slot == 0)
+                if(slot == deviceSlotIdx)
                 {
                     return PlatformUtil.getDeviceFrom(stack) != null;
                 }
@@ -101,12 +75,10 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             energy = new InternalEnergyStorage(capacity, capacity, capacity);
             energyCapabilty = LazyOptional.of(() -> energy);
         } else {
-            energy = null;
+            energy = new InternalEnergyStorage(0,0,0,0);
             energyCapabilty = LazyOptional.of(() -> EmptyEnergyStorage.INSTANCE);
         }
-        setupEnergyObserver(() -> {
-            return (long)energy.getEnergyStored();
-        });
+        setupEnergyObserver(() -> (long)energy.getEnergyStored());
         //endregion
     }
 
@@ -144,8 +116,6 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
         //TODO
-//        //Energy
-//        energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
         super.writeNbt(compound);
     }
 
@@ -153,16 +123,11 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     public void readNbt(@NotNull NbtCompound compound) {
         super.readNbt(compound);
         //TODO
-//        //Energy
-//        NbtElement energyTag = compound.get("energy");
-//        if(energyTag != null) {
-//            energyCap.ifPresent((energy) -> energy.deserializeNBT(energyTag));
-//        }
     }
 
     @Override
-    protected ItemStack getCurrentDeviceItemServer() {
-        return null;
+    protected @NotNull ItemStack getCurrentDeviceItemServer() {
+        return inventory.getStackInSlot(deviceSlotIdx);
     }
 
     @Override
@@ -186,47 +151,4 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         super.invalidateCaps();
         inventoryCapability.invalidate();
     }
-
-//    protected class ActionContextImpl implements IModularFrameContext {
-//
-//        public int slot;
-//        private boolean commited = false;
-//
-//        @Override
-//        public void close() {
-//            if(!commited) {
-//
-//            }
-//        }
-//
-//        @Override
-//        public void push() {
-//
-//        }
-//
-//        @Override
-//        public void pop() {
-//
-//        }
-//
-//        @Override
-//        public void commit() {
-//            commited = true;
-//        }
-//
-//        @Override
-//        public ItemStack useAmmoFirst() {
-//            return null;
-//        }
-//
-//        @Override
-//        public ItemStack useAmmoRandom() {
-//            return null;
-//        }
-//
-//        @Override
-//        public void handleLeftover(ItemStack stack) {
-//
-//        }
-//    }
 }

@@ -349,6 +349,7 @@ public abstract class BlockEntityModularFrame extends BlockEntityDeviceContainer
         return getCurrentDeviceItemServer();
     }
 
+    @NotNull
     protected abstract ItemStack getCurrentDeviceItemServer();
 
     protected abstract int getCurrentEnergy();

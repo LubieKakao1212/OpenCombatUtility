@@ -8,14 +8,11 @@ import com.LubieKakao1212.opencu.fabric.transaction.AmmoContext;
 import com.LubieKakao1212.opencu.fabric.transaction.RebornEnergyContext;
 import com.LubieKakao1212.opencu.fabric.transaction.ScopedContext;
 import com.LubieKakao1212.opencu.fabric.transaction.SimpleLeftoverContext;
-import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -23,15 +20,13 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.InfiniteEnergyStorage;
 import team.reborn.energy.api.base.LimitingEnergyStorage;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
 
-import java.util.Stack;
 
-
+@SuppressWarnings("UnstableApiUsage")
 public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     public static final int slotCount = 10;
@@ -39,9 +34,9 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     public static final int ammoSlotsStart = 1;
     public static final int ammoSlotsEnd = 10;
 
-    private static final int dispenserSotCount = 1;
-    private static final int dispenserSlotsStart = 0;
-    private static final int dispenserSlotsEnd = 1;
+    private static final int deviceSotCount = 1;
+    private static final int deviceSlotsStart = 0;
+    private static final int deviceSlotsEnd = 1;
 
     private final InventoryStorage inventoryStorage;
 
@@ -63,7 +58,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         };
         inventoryStorage = InventoryStorage.of(inventory, null);
         var slots = inventoryStorage.getSlots();
-        dispenserStorage = new CombinedStorage<>(slots.subList(dispenserSlotsStart, dispenserSlotsEnd));
+        dispenserStorage = new CombinedStorage<>(slots.subList(deviceSlotsStart, deviceSlotsEnd));
         ammoStorage = new CombinedStorage<>(slots.subList(ammoSlotsStart, ammoSlotsEnd));
 
         //region energy
@@ -122,8 +117,8 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
-    protected ItemStack getCurrentDeviceItemServer() {
-        return inventory.getStack(0);
+    protected @NotNull ItemStack getCurrentDeviceItemServer() {
+        return inventory.getStack(deviceSlotsStart);
     }
 
     @Override

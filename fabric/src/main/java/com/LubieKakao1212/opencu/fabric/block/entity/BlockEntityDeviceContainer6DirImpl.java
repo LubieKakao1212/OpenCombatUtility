@@ -29,6 +29,7 @@ import team.reborn.energy.api.base.SimpleEnergyStorage;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+@SuppressWarnings("UnstableApiUsage")
 public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContainer6Dir {
 
     private final EnergyStorage energyStorage;
