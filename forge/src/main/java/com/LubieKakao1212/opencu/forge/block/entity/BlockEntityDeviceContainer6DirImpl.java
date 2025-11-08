@@ -2,13 +2,14 @@ package com.LubieKakao1212.opencu.forge.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
-import com.LubieKakao1212.opencu.PlatformUtil;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
+import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
+import com.LubieKakao1212.opencu.common.device.IFramedDevice;
+import com.LubieKakao1212.opencu.common.screen.slot.ConstSlot;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -24,54 +25,44 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
-public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
+public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContainer6Dir {
 
-    public static final int slotCount = 10;
+    public static final int slotCount = 9;
     public static final int ammoSlotCount = 9;
-    public static final int ammoSlotsStart = 1;
-    public static final int ammoSlotsEnd = 10;
-
-    private static final int deviceSlotIdx = 0;
+    public static final int ammoSlotsStart = 0;
+    public static final int ammoSlotsEnd = 9;
 
     private final LazyOptional<IItemHandler> inventoryCapability;
     private final LazyOptional<IEnergyStorage> energyCapabilty;
-    private final ItemStackHandler inventory;
+    private final ItemStackHandler ammoInventory;
     private final InternalEnergyStorage energy;
 
-    public BlockEntityModularFrameImpl(BlockPos pos, BlockState blockState) {
-        super(pos, blockState);
-        this.inventory = new ItemStackHandler(slotCount) {
+    public static BlockEntityType.BlockEntityFactory<BlockEntityDeviceContainer6Dir> factory(Supplier<BlockEntityType<BlockEntityDeviceContainer6Dir>> type, Supplier<ItemStack> model, Supplier<IFramedDevice> device) {
+        return (pos, blockState) -> new BlockEntityDeviceContainer6DirImpl(type.get(), model.get(), pos, blockState, device.get());
+    }
+
+    public BlockEntityDeviceContainer6DirImpl(BlockEntityType<BlockEntityDeviceContainer6Dir> type, @NotNull ItemStack model, BlockPos pos, BlockState blockState, IFramedDevice device) {
+        super(type, model, pos, blockState);
+
+        this.ammoInventory = new ItemStackHandler(slotCount) {
             @Override
             protected void onContentsChanged(int slot) {
-                BlockEntityModularFrameImpl.this.markDirty();
+                BlockEntityDeviceContainer6DirImpl.this.markDirty();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(slot == deviceSlotIdx)
-                {
-                    return PlatformUtil.getDeviceFrom(stack) != null;
-                }
                 return true;
             }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                if(slot == 0)
-                {
-                    return 1;
-                }else {
-                    return 64;
-                }
-            }
         };
-        this.inventoryCapability = LazyOptional.of(() -> this.inventory);
+        this.inventoryCapability = LazyOptional.of(() -> this.ammoInventory);
 
         //region energy
-        var useEnergy = OpenCUConfigCommon.general().energyEnabled();
+        var useEnergy = device.energyEnabled();
         if(useEnergy) {
-            var capacity = OpenCUConfigCommon.modularFrame().energy().energyCapacity();
+            var capacity = OpenCUConfigCommon.repulsorDevice().energy().energyCapacity();
             energy = new InternalEnergyStorage(capacity, capacity, capacity);
             energyCapabilty = LazyOptional.of(() -> energy);
         } else {
@@ -84,7 +75,6 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     @Override
     protected DeviceActivationContext getNewContext() {
-        //TODO
         return null;
     }
 
@@ -93,46 +83,22 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         //TODO
     }
 
-    /**
-     * Creates a slot for gui
-     *
-     * @param idx slot index 0 => device; 1-9 => ammo
-     */
     @Override
     public Slot createSlot(int idx, int x, int y) {
-        return new SlotItemHandler(inventory, idx, x, y);
+        if(idx == 0) {
+            return new ConstSlot(getDeviceItem(), x, y);
+        }
+        return new SlotItemHandler(ammoInventory, idx - 1, x, y);
     }
 
     @Override
     public long getMaxEnergy() {
-        return energy.getMaxEnergyStored();
-    }
-
-    public boolean isUsableBy(PlayerEntity player) {
-        assert world != null;
-        return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
+        return 0;
     }
 
     @Override
-    public void writeNbt(@NotNull NbtCompound compound) {
-        //TODO
-        super.writeNbt(compound);
-    }
-
-    @Override
-    public void readNbt(@NotNull NbtCompound compound) {
-        super.readNbt(compound);
-        //TODO
-    }
-
-    @Override
-    protected @NotNull ItemStack getCurrentDeviceItemServer() {
-        return inventory.getStackInSlot(deviceSlotIdx);
-    }
-
-    @Override
-    protected int getCurrentEnergy() {
-        return energy.getEnergyStored();
+    public boolean isSameAs(IDeviceContainer deviceContainer) {
+        return deviceContainer instanceof BlockEntityDeviceContainer6Dir be && be.getType().equals(getType()) && be.getPos().equals(getPos());
     }
 
     @Override
