@@ -26,7 +26,5 @@ public class CURegister {
         for(DeferredRegister<?> register : registers) {
             register.register(bus);
         }
-
     }
-
 }
