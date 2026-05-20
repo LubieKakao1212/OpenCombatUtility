@@ -24,17 +24,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public class BlockDevice6Dir extends FacingBlock implements BlockEntityProvider {
+public class BlockDevice6Dir extends BlockAbstractDeviceContainer {
 
-    private final Supplier<BlockEntityType<BlockEntityDeviceContainer6Dir>> beType;
-
-    public BlockDevice6Dir(Settings settings, Supplier<BlockEntityType<BlockEntityDeviceContainer6Dir>> beType) {
-        super(settings);
-        this.beType = beType;
+    public BlockDevice6Dir(Settings settings, Supplier<BlockEntityType<? extends BlockEntityDeviceContainer>> beType) {
+        super(settings, beType);
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(Properties.FACING);
     }
 
@@ -57,76 +55,15 @@ public class BlockDevice6Dir extends FacingBlock implements BlockEntityProvider 
         if(player != null) {
             var dir = PlacementUtil.getLookDirectionForPlacement(player);
             if(player.isSneaking()) {
-                return getDefaultState().with(FACING, dir);
+                return getDefaultState().with(Properties.FACING, dir);
             }
-            return getDefaultState().with(FACING, dir.getOpposite());
+            return getDefaultState().with(Properties.FACING, dir.getOpposite());
         }
-        return getDefaultState().with(FACING, ctx.getPlayerLookDirection().getOpposite());
-    }
-
-    @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return beType.get().instantiate(pos, state);
+        return getDefaultState().with(Properties.FACING, ctx.getPlayerLookDirection().getOpposite());
     }
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         return BlockEntityDeviceContainer6Dir::tick;
-    }
-
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if(!world.isClient) {
-            NamedScreenHandlerFactory factory = state.createScreenHandlerFactory(world, pos);
-
-            if(factory != null) {
-                player.openHandledScreen(factory);
-            }
-        }
-        return ActionResult.SUCCESS;
-    }
-
-    @Nullable
-    @Override
-    public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        return blockEntity instanceof NamedScreenHandlerFactory ? (NamedScreenHandlerFactory)blockEntity : null;
-    }
-
-    @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-
-        //OpenCUModCommon.LOGGER.info("State Update: " + position.toShortString());
-
-        if(!state.isOf(newState.getBlock())) {
-            var blockEntity = (BlockEntityDeviceContainer) beType.get().get(world, pos);
-            if(blockEntity != null) {
-                blockEntity.scatterInventory();
-            }
-        }
-        super.onStateReplaced(state, world, pos, newState, moved);
-    }
-
-
-
-    @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        if(world.isClient) {
-            return;
-        }
-
-        var be6 = beType.get().get(world, pos);
-
-        if(be6 == null) {
-            OpenCUModCommon.LOGGER.warn("wrong BlockEntity at: " + pos);
-            return;
-        }
-
-        var delta = sourcePos.subtract(pos);
-        var dir = Direction.fromVector(delta.getX(), delta.getY(), delta.getZ());
-
-        var power = world.isEmittingRedstonePower(sourcePos, dir);
-
-        be6.pulseActivate(dir, power);
     }
 }

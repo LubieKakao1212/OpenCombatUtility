@@ -51,7 +51,8 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
 
     private RedstoneControlType redstoneControlType;
     private long redstoneActivationTimer = 0;
-    private final Set<Direction> rsState = EnumSet.noneOf(Direction.class);
+    //TODO Write to nbt
+    private boolean rsState;
 
     private @Nullable IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
@@ -104,7 +105,7 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         }
 
         if(++redstoneActivationTimer % autoShootInterval == 0) {
-            var power = world.isReceivingRedstonePower(pos);
+            var power= getRsState();
             var rsct = getRedstoneControlType();
             if(power && rsct == RedstoneControlType.HIGH) {
                 actionsToPerform.getAndIncrement();
@@ -127,19 +128,17 @@ public abstract class BlockEntityDeviceContainer extends BlockEntity implements 
         markDirty();
     }
 
-    public void pulseActivate(Direction direction, boolean state) {
-        var lastState = rsState.contains(direction);
+    public void pulseActivate(boolean newState) {
+        if(newState != rsState) {
+            rsState = newState;
+            if(newState && getRedstoneControlType() == RedstoneControlType.PULSE) {
+                scheduleActivation();
+            }
+        }
+    }
 
-        if(state) {
-            rsState.add(direction);
-        }
-        else {
-            rsState.remove(direction);
-        }
-
-        if(getRedstoneControlType() == RedstoneControlType.PULSE && !lastState && state) {
-            scheduleActivation();
-        }
+    public boolean getRsState() {
+        return rsState;
     }
 
     @Override

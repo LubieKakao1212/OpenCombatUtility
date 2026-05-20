@@ -40,6 +40,7 @@ dependencies {
 //    modRuntimeOnly('RebornCore:RebornCore-1.20.1:5.8.11') { transitive = false }
     //ModMenu
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modRuntimeOnly "maven.modrinth:alternate-current:${alternate_current_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

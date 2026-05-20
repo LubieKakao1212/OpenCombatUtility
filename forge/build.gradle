@@ -45,6 +45,7 @@ dependencies {
     forgeRuntimeLibrary "io.netty:netty-handler-proxy:4.1.82.Final"
 
     modRuntimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-${project.loader}:${cctVersion}")
+    modRuntimeOnly "maven.modrinth:alternate-current:${alternate_current_version}"
 
     implementation 'thedarkcolour:kotlinforforge:4.10.0'
 
