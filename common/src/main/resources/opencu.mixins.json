@@ -2,5 +2,6 @@
   "client": [
     "SlotDrawCMixin"
   ],
-  "package": "com.LubieKakao1212.opencu.common.mixin"
+  "package": "com.LubieKakao1212.opencu.common.mixin",
+  "minVersion": "0.8.5"
 }

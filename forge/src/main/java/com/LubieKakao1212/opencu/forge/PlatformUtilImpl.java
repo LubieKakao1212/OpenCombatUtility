@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlatformUtilImpl {
 
     public static IFramedDevice getDeviceFrom(@NotNull ItemStack stack) {
-        return stack.getCapability(CUCapabilities.DISPENSER, null).resolve().orElse(null);
+        return stack.getCapability(CUCapabilities.FRAMED_DEVICE, null).resolve().orElse(null);
     }
 
 }

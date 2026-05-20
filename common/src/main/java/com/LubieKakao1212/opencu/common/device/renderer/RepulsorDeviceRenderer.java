@@ -82,15 +82,6 @@ public class RepulsorDeviceRenderer implements IDeviceRenderer {
                                    int packedLight, int packedOverlay) {
         BasicBakedModel model = (BasicBakedModel) MinecraftClient.getInstance().getBakedModelManager().getModel(frameLocation);
         RenderingUtil.renderModel(model, vertexConsumer, matrixStack, new Color(1f, 1f,1f, 1f), packedLight, packedOverlay);
-
-//        var offsetRatio = (float) state.getDirectionBlend();
-//
-        var offsetRatio = 0;
-        for(int i=0; i<back_models.length; i++) {
-            renderBackPart(world, renderer, pos, matrixStack, back_models[i], vertexConsumer, back_offsets[i], offsetRatio, packedLight, packedOverlay);
-        }
-
-        //renderBackPart(matrixStack, frameLocation_back_bl, vertexConsumer, new Vector3f(v, v, 0), 1f, packedLight, packedOverlay);
     }
 
     private static void renderBackPart(@NotNull ClientWorld world, @NotNull BlockModelRenderer renderer, @NotNull BlockPos pos,

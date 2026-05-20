@@ -5,6 +5,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
+//TODO Implement new config
 public class OpenCUConfigForge {
 
     public static final ForgeConfigSpec SPEC;

@@ -45,6 +45,9 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             @Override
             protected void onContentsChanged(int slot) {
                 BlockEntityModularFrameImpl.this.markDirty();
+                if(slot == deviceSlotIdx) {
+                    updateDispenser();
+                }
             }
 
             @Override

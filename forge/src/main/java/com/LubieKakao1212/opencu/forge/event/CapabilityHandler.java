@@ -1,132 +1,69 @@
 package com.LubieKakao1212.opencu.forge.event;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.common.device.DispenserConfigurable;
-import com.LubieKakao1212.opencu.common.device.DispenserConstant;
-import com.LubieKakao1212.opencu.common.device.ShotMappings;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
-import com.LubieKakao1212.opencu.forge.capability.provider.DispenserProvider;
-import com.LubieKakao1212.opencu.registry.CUDispensers;
-import com.LubieKakao1212.opencu.registry.forge.CUItems;
+import com.LubieKakao1212.opencu.forge.registry.CUCapabilities;
+import com.LubieKakao1212.opencu.registry.CUFramedDevices;
+import com.LubieKakao1212.opencu.registry.forge.CUBlocks;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Mod.EventBusSubscriber()
 public class CapabilityHandler {
-
-//    public static final Supplier<ICapabilityProvider> VANILLA_DISPENSER = () -> new DispenserProvider(new DispenserConstant(
-//            CUDispensers.VANILLA_DISPENSER,
-//            (float) OpenCUConfigCommon.vanillaDispenserDevice().rotationSpeed() / 20.f,
-//            OpenCUConfigCommon.vanillaDispenserDevice().spread(),
-//            OpenCUConfigCommon.vanillaDispenserDevice().force(),
-//            OpenCUConfigCommon.vanillaDispenserDevice().baseEnergy()
-//    ));
-//
-//    public static final Supplier<ICapabilityProvider> VANILLA_DROPPER = () -> new DispenserProvider(new DispenserConstant(
-//            CUDispensers.VANILLA_DROPPER,
-//            (float) OpenCUConfigCommon.vanillaDispenserDevice().rotationSpeed() / 20.f,
-//            OpenCUConfigCommon.vanillaDispenserDevice().spread(),
-//            OpenCUConfigCommon.vanillaDispenserDevice().force(),
-//            OpenCUConfigCommon.vanillaDispenserDevice().baseEnergy()
-//    ));
-//
-//    public static final Supplier<ICapabilityProvider> TIER2_DISPENSER = () -> new DispenserProvider(new DispenserConfigurable(
-//            CUDispensers.VANILLA_DISPENSER,
-//            (float) OpenCUConfigCommon.goldenDispenserDevice().rotationSpeed() / 20.f,
-//            OpenCUConfigCommon.goldenDispenserDevice().spread(),
-//            OpenCUConfigCommon.goldenDispenserDevice().maxSpread(),
-//            OpenCUConfigCommon.goldenDispenserDevice().force(),
-//            OpenCUConfigCommon.goldenDispenserDevice().baseEnergy()
-//    ));
-//
-//    public static final Supplier<ICapabilityProvider> TIER3_DISPENSER = () -> new DispenserProvider(new DispenserConfigurable(
-//            CUDispensers.VANILLA_DISPENSER,
-//            (float) OpenCUConfigCommon.diamondDispenserDevice().rotationSpeed() / 20.f,
-//            OpenCUConfigCommon.diamondDispenserDevice().spread(),
-//            OpenCUConfigCommon.diamondDispenserDevice().maxSpread(),
-//            OpenCUConfigCommon.diamondDispenserDevice().force(),
-//            OpenCUConfigCommon.diamondDispenserDevice().baseEnergy()
-//    ));
 
     @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
 
-//        NbtCompound tag = stack.getNbt();
+        IFramedDevice device = null;
+        Item item = stack.getItem();
+        if (item == Items.ENDER_EYE) {
+            device = CUFramedDevices.SIMPLE_TRACKER;
+        } else if (item == Items.DISPENSER) {
+            device = CUFramedDevices.VANILLA_DISPENSER;
+        } else if (item == Items.DROPPER) {
+            device = CUFramedDevices.VANILLA_DROPPER;
+        } else if (item instanceof BlockItem blockItem) {
+            var block = blockItem.getBlock();
+            if(block == CUBlocks.DISPENSER_GOLD.get()) {
+                device = CUFramedDevices.GOLD_DISPENSER;
+            } else if (block == CUBlocks.DISPENSER_DIAMOND.get()) {
+                device = CUFramedDevices.DIAMOND_DISPENSER;
+            } else if (block == CUBlocks.DISPENSER_NETHERITE.get()) {
+                device = CUFramedDevices.NETHERITE_DISPENSER;
+            } else if (block == CUBlocks.REPULSOR.get()) {
+                device = CUFramedDevices.REPULSOR;
+            }
+        }
 
-//        if(tag != null) {
-//            NbtCompound dispenserTag =  tag.getCompound("Dispenser");
-//
-//            Identifier mappingLocation = new Identifier(dispenserTag.getString("Mapping"));
-//
-//            ShotMappings mappings = CUDispensers.getDispenser(mappingLocation);//CUDispensers.getRegistry().getValue(mappingLocation);
-//
-//            if(mappings != null) {
-//                boolean configurable = false;
-//                double minSpread = OpenCUConfigCommon.vanillaDispenserDevice().spread();
-//                double maxSpread = minSpread;
-//                double force = OpenCUConfigCommon.vanillaDispenserDevice().force();
-//
-//                double alignmentSpeed = OpenCUConfigCommon.vanillaDispenserDevice().rotationSpeed();
-//
-//                if(dispenserTag.contains("Spread", NbtElement.NUMBER_TYPE)) {
-//                    minSpread = dispenserTag.getDouble("Spread");
-//                    maxSpread = minSpread;
-//                }
-//                else {
-//                    NbtList list = dispenserTag.getList("Spread", NbtElement.NUMBER_TYPE);
-//
-//                    if(list.size() == 2) {
-//                        minSpread = list.getDouble(0);
-//                        maxSpread = list.getDouble(1);
-//                        configurable = true;
-//                    }
-//                }
-//
-//                if(dispenserTag.contains("Force", NbtElement.NUMBER_TYPE)) {
-//                    force = dispenserTag.getDouble("Force");
-//                }
-//
-//                if(dispenserTag.contains("Speed", NbtElement.NUMBER_TYPE)) {
-//                    alignmentSpeed = dispenserTag.getDouble("Speed");
-//                }
-//
-//                IFramedDevice dispenser;
-//
-//                //TODO Energy
-//                if(configurable) {
-//                    dispenser = new DispenserConfigurable(mappings, (float)alignmentSpeed / 20.f, minSpread, maxSpread, force, 1.);
-//                }else {
-//                    dispenser = new DispenserConstant(mappings, (float)alignmentSpeed / 20.f, minSpread, force, 1.);
-//                }
-//
-//                event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), new DispenserProvider(dispenser));
-//                return;
-//            }
-//        }
+        if(device != null) {
+            event.addCapability(Identifier.of(OpenCUModCommon.MODID, "device"), deviceCapability(device));
+        }
+    }
 
-//        if(stack.getItem() == Items.DISPENSER) {
-//            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), VANILLA_DISPENSER.get());
-//        }
-//        else if(stack.getItem() == Items.DROPPER) {
-//            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), VANILLA_DROPPER.get());
-//        }
-//        else if(stack.getItem() == CUItems.DISPENSER_T2.get()) {
-//            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), TIER2_DISPENSER.get());
-//        }
-//        else if(stack.getItem() == CUItems.DISPENSER_T3.get()) {
-//            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), TIER3_DISPENSER.get());
-//        }
+    private static ICapabilityProvider deviceCapability(IFramedDevice device) {
+        var cap = LazyOptional.of(() -> device);
+        return new ICapabilityProvider() {
+            @Override
+            public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
+                if(capability == CUCapabilities.FRAMED_DEVICE) {
+                    return (LazyOptional<T>) cap;
+                }
+                return LazyOptional.empty();
+            }
+
+        };
     }
 }

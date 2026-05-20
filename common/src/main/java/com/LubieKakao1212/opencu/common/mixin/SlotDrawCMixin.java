@@ -16,9 +16,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(HandledScreen.class)
 public class SlotDrawCMixin {
 
-    @Unique
-    private static final Identifier openCU$Texture = DeviceContainerScreen.mainTexture;
-
     @Redirect(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V",
                 at = @At(
                         value = "INVOKE",
@@ -29,7 +26,7 @@ public class SlotDrawCMixin {
             context.getMatrices().push();
             context.getMatrices().translate(0,0,210f); //Translate in front of the items
 
-            context.drawTexture(openCU$Texture, x, y, 197, 2, 16, 16);
+            context.drawTexture(DeviceContainerScreen.mainTexture, x, y, 197, 2, 16, 16);
             context.getMatrices().pop();
         }
     }

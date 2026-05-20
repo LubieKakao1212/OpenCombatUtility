@@ -27,3 +27,4 @@
 > ## 2.0.0
 > - ### Issues
 >   - [ ] Energy, RedstoneControlType, RequitesLock may not be synced when loading chunks
+>   - [ ] Fabric, Modular Frame does not update correctly on automation interaction? Slot is not accessible to automation

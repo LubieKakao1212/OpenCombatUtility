@@ -46,6 +46,8 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
     public BlockEntityDeviceContainer6DirImpl(BlockEntityType<BlockEntityDeviceContainer6Dir> type, @NotNull ItemStack model, BlockPos pos, BlockState blockState, IFramedDevice device) {
         super(type, model, pos, blockState);
 
+        this.setCurrentDevice(device);
+
         this.ammoInventory = new ItemStackHandler(slotCount) {
             @Override
             protected void onContentsChanged(int slot) {

@@ -10,6 +10,7 @@ public class CUIds {
 
 
     public static final Identifier MODULAR_FRAME = new Identifier(OpenCUModCommon.MODID, Str.MODULAR_FRAME);
+    public static final Identifier DEVICE_CONTAINER = new Identifier(OpenCUModCommon.MODID, Str.DEVICE_CONTAINER);
     public static final Identifier REPULSOR = new Identifier(OpenCUModCommon.MODID, Str.REPULSOR);
     public static final Identifier SHOOTER = new Identifier(OpenCUModCommon.MODID, Str.REPULSOR);
 
@@ -27,6 +28,7 @@ public class CUIds {
         public static final String PULSE_TYPE = "pulse_type";
 
         public static final String MODULAR_FRAME = "modular_frame";
+        public static final String DEVICE_CONTAINER = "device_container";
         public static final String REPULSOR = "repulsor";
         public static final String SHOOTER = "shooter";
 
