@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.config;
 
-import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;

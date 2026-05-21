@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.capability.energy;
+package com.LubieKakao1212.opencu.capability;
 
 import net.minecraftforge.energy.EnergyStorage;
 
@@ -32,6 +32,10 @@ public class InternalEnergyStorage extends EnergyStorage {
         if (!simulate)
             energy += energyReceived;
         return energyReceived;
+    }
+
+    public void setEnergyInternal(int energy) {
+        this.energy = energy;
     }
 
 }

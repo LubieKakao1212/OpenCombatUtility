@@ -1,10 +1,15 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.capability.OffsetItemHandler;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.PlatformUtil;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
+import com.LubieKakao1212.opencu.forge.util.ItemHandlerUtil;
+import com.LubieKakao1212.opencu.forge.util.transaction.AmmoLeftoverContext;
+import com.LubieKakao1212.opencu.forge.util.transaction.EnergyContext;
+import com.LubieKakao1212.opencu.forge.util.transaction.ScopedContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,6 +23,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EmptyEnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +42,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     private final LazyOptional<IItemHandler> inventoryCapability;
     private final LazyOptional<IEnergyStorage> energyCapabilty;
+    private final IItemHandlerModifiable ammo;
     private final ItemStackHandler inventory;
     private final InternalEnergyStorage energy;
 
@@ -71,6 +78,8 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         };
         this.inventoryCapability = LazyOptional.of(() -> this.inventory);
 
+        ammo = new OffsetItemHandler(inventory, ammoSlotsStart);
+
         //region energy
         var useEnergy = OpenCUConfigCommon.general().energyEnabled();
         if(useEnergy) {
@@ -87,13 +96,21 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     @Override
     protected DeviceActivationContext getNewContext() {
-        //TODO
-        return null;
+        var scopeCtx = new ScopedContext();
+        var energyCtx = new EnergyContext(scopeCtx, energy);
+        var ammoLeftoverCtx = new AmmoLeftoverContext(scopeCtx, ammo, world, pos);
+        return new DeviceActivationContext(
+                scopeCtx,
+                energyCtx,
+                ammoLeftoverCtx,
+                ammoLeftoverCtx
+        );
     }
 
     @Override
     public void scatterInventory() {
-        //TODO
+        assert world != null;
+        ItemHandlerUtil.scatterAndEmpty(inventory, world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     /**

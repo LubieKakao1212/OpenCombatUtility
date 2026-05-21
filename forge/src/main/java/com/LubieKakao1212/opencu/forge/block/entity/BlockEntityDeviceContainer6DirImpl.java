@@ -1,12 +1,16 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.screen.slot.ConstSlot;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
+import com.LubieKakao1212.opencu.forge.util.ItemHandlerUtil;
+import com.LubieKakao1212.opencu.forge.util.transaction.AmmoLeftoverContext;
+import com.LubieKakao1212.opencu.forge.util.transaction.EnergyContext;
+import com.LubieKakao1212.opencu.forge.util.transaction.ScopedContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -77,12 +81,21 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
 
     @Override
     protected DeviceActivationContext getNewContext() {
-        return null;
+        var scopeCtx = new ScopedContext();
+        var energyCtx = new EnergyContext(scopeCtx, energy);
+        var ammoLeftoverCtx = new AmmoLeftoverContext(scopeCtx, ammoInventory, world, pos);
+        return new DeviceActivationContext(
+                scopeCtx,
+                energyCtx,
+                ammoLeftoverCtx,
+                ammoLeftoverCtx
+        );
     }
 
     @Override
     public void scatterInventory() {
-        //TODO
+        assert world != null;
+        ItemHandlerUtil.scatterAndEmpty(ammoInventory, world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
