@@ -131,6 +131,12 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         super.writeNbt(compound);
 
         compound.put("inventory", inventory.writeNbt());
+        if(energyStorage instanceof SimpleEnergyStorage) {
+            compound.putLong("energy", energyStorage.getAmount());
+        }
+        else {
+            assert energyStorage instanceof InfiniteEnergyStorage;
+        }
     }
 
     @Override
@@ -140,6 +146,13 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         var invTag = compound.getList("inventory", NbtElement.COMPOUND_TYPE);
         if(!invTag.isEmpty()) {
             inventory.readNbt(invTag);
+        }
+
+        if(energyStorage instanceof SimpleEnergyStorage simpleEnergyStorage) {
+            simpleEnergyStorage.amount = compound.getLong("energy");
+        }
+        else {
+            assert energyStorage instanceof InfiniteEnergyStorage;
         }
     }
 

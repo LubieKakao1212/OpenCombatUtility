@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.capability.IInternalEnergyStorage;
+import com.LubieKakao1212.opencu.capability.InfiniteEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
@@ -14,6 +16,8 @@ import com.LubieKakao1212.opencu.forge.util.transaction.ScopedContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtInt;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -41,7 +45,7 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
     private final LazyOptional<IItemHandler> inventoryCapability;
     private final LazyOptional<IEnergyStorage> energyCapabilty;
     private final ItemStackHandler ammoInventory;
-    private final InternalEnergyStorage energy;
+    private final IInternalEnergyStorage energy;
 
     public static BlockEntityType.BlockEntityFactory<BlockEntityDeviceContainer6Dir> factory(Supplier<BlockEntityType<BlockEntityDeviceContainer6Dir>> type, Supplier<ItemStack> model, Supplier<IFramedDevice> device) {
         return (pos, blockState) -> new BlockEntityDeviceContainer6DirImpl(type.get(), model.get(), pos, blockState, device.get());
@@ -133,4 +137,37 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
         inventoryCapability.invalidate();
         energyCapabilty.invalidate();
     }
+
+    @Override
+    public void writeNbt(@NotNull NbtCompound compound) {
+        super.writeNbt(compound);
+
+        compound.put("inventory", ammoInventory.serializeNBT());
+        if(energy instanceof InternalEnergyStorage ies) {
+            compound.put("energy", ies.serializeNBT());
+        }
+        else {
+            assert energy instanceof InfiniteEnergyStorage;
+        }
+    }
+
+    @Override
+    public void readNbt(@NotNull NbtCompound compound) {
+        super.readNbt(compound);
+
+        var inventoryNbt = compound.getCompound("inventory");
+        if(inventoryNbt != null) {
+            ammoInventory.deserializeNBT(inventoryNbt);
+        }
+
+        var energyNbt = compound.get("energy");
+        if(energyNbt instanceof NbtInt && energy instanceof InternalEnergyStorage ies) {
+            ies.deserializeNBT(energyNbt);
+        }
+        else {
+            assert energy instanceof InfiniteEnergyStorage;
+        }
+
+    }
+
 }

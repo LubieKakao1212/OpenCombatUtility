@@ -18,6 +18,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
@@ -114,6 +116,36 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
     @Override
     public boolean isSameAs(IDeviceContainer deviceContainer) {
         return deviceContainer instanceof BlockEntityDeviceContainer6Dir be && be.getType().equals(getType()) && be.getPos().equals(getPos());
+    }
+
+    @Override
+    public void writeNbt(@NotNull NbtCompound compound) {
+        super.writeNbt(compound);
+
+        compound.put("inventory", ammoInventory.writeNbt());
+        if(energyStorage instanceof SimpleEnergyStorage) {
+            compound.putLong("energy", energyStorage.getAmount());
+        }
+        else {
+            assert energyStorage instanceof InfiniteEnergyStorage;
+        }
+    }
+
+    @Override
+    public void readNbt(@NotNull NbtCompound compound) {
+        super.readNbt(compound);
+
+        var invTag = compound.getList("inventory", NbtElement.COMPOUND_TYPE);
+        if(!invTag.isEmpty()) {
+            ammoInventory.readNbt(invTag);
+        }
+
+        if(energyStorage instanceof SimpleEnergyStorage simpleEnergyStorage) {
+            simpleEnergyStorage.amount = compound.getLong("energy");
+        }
+        else {
+            assert energyStorage instanceof InfiniteEnergyStorage;
+        }
     }
 
     /**

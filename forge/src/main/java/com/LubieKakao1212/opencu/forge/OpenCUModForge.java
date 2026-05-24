@@ -6,7 +6,9 @@ import com.LubieKakao1212.opencu.forge.compat.CCInit;
 import com.LubieKakao1212.opencu.forge.proxy.ClientProxy;
 import com.LubieKakao1212.opencu.forge.proxy.Proxy;
 import com.LubieKakao1212.opencu.forge.proxy.ServerProxy;
+import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.forge.CURegister;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -16,8 +18,6 @@ import net.minecraftforge.fml.common.Mod;
 public class OpenCUModForge
 {
     public static final Proxy PROXY = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-
-    private static boolean hasValkyrienSkies;
 
     public OpenCUModForge() {
 
@@ -32,11 +32,7 @@ public class OpenCUModForge
             CCInit.init();
         }
 
-        hasValkyrienSkies = ModList.get().isLoaded("valkyrienskies");
-    }
-
-    public static boolean hasValkyrienSkies() {
-        return hasValkyrienSkies;
+        CUDispensers.init();
     }
 
 }

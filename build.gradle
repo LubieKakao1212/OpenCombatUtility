@@ -70,6 +70,9 @@ allprojects {
         maven {
             url = "https://modmaven.dev/"
         }
+        maven {
+            url = "https://maven.blamejared.com/"
+        }
         exclusiveContent {
             forRepository {
                 maven {

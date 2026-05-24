@@ -2,7 +2,7 @@ package com.LubieKakao1212.opencu.capability;
 
 import net.minecraftforge.energy.EnergyStorage;
 
-public class InternalEnergyStorage extends EnergyStorage {
+public class InternalEnergyStorage extends EnergyStorage implements IInternalEnergyStorage {
 
     public InternalEnergyStorage(int capacity) {
         super(capacity);

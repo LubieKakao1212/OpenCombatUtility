@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.capability.IInternalEnergyStorage;
+import com.LubieKakao1212.opencu.capability.InfiniteEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.capability.OffsetItemHandler;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
@@ -14,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtInt;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -44,7 +47,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     private final LazyOptional<IEnergyStorage> energyCapabilty;
     private final IItemHandlerModifiable ammo;
     private final ItemStackHandler inventory;
-    private final InternalEnergyStorage energy;
+    private final IInternalEnergyStorage energy;
 
     public BlockEntityModularFrameImpl(BlockPos pos, BlockState blockState) {
         super(pos, blockState);
@@ -78,16 +81,16 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         };
         this.inventoryCapability = LazyOptional.of(() -> this.inventory);
 
-        ammo = new OffsetItemHandler(inventory, ammoSlotsStart);
+            ammo = new OffsetItemHandler(inventory, ammoSlotsStart);
 
         //region energy
         var useEnergy = OpenCUConfigCommon.general().energyEnabled();
         if(useEnergy) {
             var capacity = OpenCUConfigCommon.modularFrame().energy().energyCapacity();
-            energy = new InternalEnergyStorage(capacity, capacity, capacity);
+            energy = new InternalEnergyStorage(capacity, capacity, 0);
             energyCapabilty = LazyOptional.of(() -> energy);
         } else {
-            energy = new InternalEnergyStorage(0,0,0,0);
+            energy = InfiniteEnergyStorage.DUAL;
             energyCapabilty = LazyOptional.of(() -> EmptyEnergyStorage.INSTANCE);
         }
         setupEnergyObserver(() -> (long)energy.getEnergyStored());
@@ -135,14 +138,34 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
-        //TODO
         super.writeNbt(compound);
+
+        compound.put("inventory", inventory.serializeNBT());
+        if(energy instanceof InternalEnergyStorage ies) {
+            compound.put("energy", ies.serializeNBT());
+        }
+        else {
+            assert energy instanceof InfiniteEnergyStorage;
+        }
     }
 
     @Override
     public void readNbt(@NotNull NbtCompound compound) {
         super.readNbt(compound);
-        //TODO
+
+        var inventoryNbt = compound.getCompound("inventory");
+        if(inventoryNbt != null) {
+            inventory.deserializeNBT(inventoryNbt);
+        }
+
+        var energyNbt = compound.get("energy");
+        if(energyNbt instanceof NbtInt && energy instanceof InternalEnergyStorage ies) {
+            ies.deserializeNBT(energyNbt);
+        }
+        else {
+            assert energy instanceof InfiniteEnergyStorage;
+        }
+
     }
 
     @Override

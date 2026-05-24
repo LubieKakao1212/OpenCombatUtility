@@ -47,6 +47,8 @@ dependencies {
     modRuntimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-${project.loader}:${cctVersion}")
     modRuntimeOnly "maven.modrinth:alternate-current:${alternate_current_version}"
 
+    modRuntimeOnly "blusunrize.immersiveengineering:ImmersiveEngineering:${immersive_engineering_version}"
+
     implementation 'thedarkcolour:kotlinforforge:4.10.0'
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }

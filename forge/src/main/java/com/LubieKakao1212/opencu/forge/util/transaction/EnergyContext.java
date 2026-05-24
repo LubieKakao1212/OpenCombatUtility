@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.forge.util.transaction;
 
+import com.LubieKakao1212.opencu.capability.IInternalEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.common.transaction.IContext;
 import com.LubieKakao1212.opencu.common.transaction.IEnergyContext;
@@ -7,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnergyContext extends ScopeClosableBase<Integer> implements IEnergyContext {
 
-    private final InternalEnergyStorage storage;
+    private final IInternalEnergyStorage storage;
 
-    public EnergyContext(ScopedContext ctx, InternalEnergyStorage storage) {
+    public EnergyContext(ScopedContext ctx, IInternalEnergyStorage storage) {
         super(ctx);
         this.storage = storage;
     }
