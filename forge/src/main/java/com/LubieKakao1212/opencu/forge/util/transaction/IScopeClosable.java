@@ -5,4 +5,6 @@ public interface IScopeClosable {
     void onPush();
     void onPop(boolean commited);
 
+    void takeSnapshot();
+
 }

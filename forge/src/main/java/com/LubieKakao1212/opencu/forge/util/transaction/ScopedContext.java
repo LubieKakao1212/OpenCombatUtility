@@ -21,6 +21,12 @@ public class ScopedContext implements IScopedContext {
         closables.add(closable);
     }
 
+    public void takeInitialSnapshots() {
+        for (var closable : closables) {
+            closable.takeSnapshot();
+        }
+    }
+
     @Override
     public void push() {
         resultStack.push(new AtomicBoolean(false));
@@ -33,7 +39,8 @@ public class ScopedContext implements IScopedContext {
         if(resultStack.size() <= 1) {
             throw new IllegalStateException("push < pop");
         }
-        closables.forEach(closable -> closable.onPop(resultStack.peek().get()));
+        var result = resultStack.pop().get();
+        closables.forEach(closable -> closable.onPop(result));
     }
 
     @Override
@@ -46,7 +53,8 @@ public class ScopedContext implements IScopedContext {
         if(resultStack.size() != 1){
             throw new IllegalStateException("push > pop");
         }
-        closables.forEach(closable -> closable.onPop(resultStack.peek().get()));
+        var result = resultStack.pop().get();
+        closables.forEach(closable -> closable.onPop(result));
         resultStack.clear();
     }
 }

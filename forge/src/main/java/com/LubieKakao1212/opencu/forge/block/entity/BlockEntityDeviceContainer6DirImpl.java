@@ -88,6 +88,7 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
         var scopeCtx = new ScopedContext();
         var energyCtx = new EnergyContext(scopeCtx, energy);
         var ammoLeftoverCtx = new AmmoLeftoverContext(scopeCtx, ammoInventory, world, pos);
+        scopeCtx.takeInitialSnapshots();
         return new DeviceActivationContext(
                 scopeCtx,
                 energyCtx,

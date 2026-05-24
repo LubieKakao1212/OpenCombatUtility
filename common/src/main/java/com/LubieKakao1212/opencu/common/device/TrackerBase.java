@@ -75,6 +75,9 @@ public class TrackerBase implements IFramedDevice {
                 }
                 ctx.ctx().pop();
 
+                //Commit the outer context
+                ctx.ctx().commit();
+
                 var ammo = ctx.ammo();
                 var filters = ammo.availableAmmo().stream().map(ItemStack::getName).map(Text::getString).collect(Collectors.toSet());
 
@@ -147,7 +150,7 @@ public class TrackerBase implements IFramedDevice {
                     }
                     ctx.ctx().pop();
 
-                    rsout.result = rsct == RedstoneControlType.PULSE ? rsPulser.shouldActivate() : true;
+                    rsout.result = rsct != RedstoneControlType.PULSE || rsPulser.shouldActivate();
                     pulse.result = true;
 
                     var target = new Vector3m(nearestEntity.getBoundingBox().getCenter().add(0, nearestEntity.getStandingEyeHeight()/2, 0));
@@ -156,9 +159,6 @@ public class TrackerBase implements IFramedDevice {
                     var lookAt = new LookAtEvent(target, true);
 
                     eventDistributor.handleEvent(lookAt);
-
-                    // Commit the outer context
-                    ctx.ctx().commit();
                 }
             }
         }

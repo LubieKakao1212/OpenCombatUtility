@@ -30,7 +30,7 @@ public abstract class ScopeClosableBase<TSnapshot> implements IScopeClosable {
         }
     }
 
-    protected void takeSnapshot() {
+    public final void takeSnapshot() {
         var current = snapshots.peek();
         if(current == null) {
             snapshots.pop();

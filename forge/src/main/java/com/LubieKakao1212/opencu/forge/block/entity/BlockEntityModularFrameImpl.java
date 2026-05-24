@@ -102,6 +102,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         var scopeCtx = new ScopedContext();
         var energyCtx = new EnergyContext(scopeCtx, energy);
         var ammoLeftoverCtx = new AmmoLeftoverContext(scopeCtx, ammo, world, pos);
+        scopeCtx.takeInitialSnapshots();
         return new DeviceActivationContext(
                 scopeCtx,
                 energyCtx,
