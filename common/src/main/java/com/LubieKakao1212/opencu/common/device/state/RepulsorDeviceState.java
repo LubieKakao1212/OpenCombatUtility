@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.common.device.state;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.config.api.IRepulsorDeviceConfig;
 import com.LubieKakao1212.opencu.common.network.Sender;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdatePulseType;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CUpdateRepulsorProperty;
@@ -24,7 +24,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
     @NotNull
     private EntityPulseType pulseType = CUPulse.defaultPulse();
     private final PulseData pulseData = new PulseData();
-    private final OpenCUConfigCommon.RepulsorDeviceConfig config;
+    private final IRepulsorDeviceConfig config;
     private final Observer<Identifier> typeObserver;
     private final Observer<Double> forceMagnitudeObserver;
     private final Observer<Double> forceSignObserver;
@@ -40,10 +40,9 @@ public class RepulsorDeviceState extends DeviceStateBase {
      * Client field
      */
     private long lastActivationTimestamp = 0;
-//    public int selectedType;
     //endregion
 
-    public RepulsorDeviceState(OpenCUConfigCommon.RepulsorDeviceConfig config, Runnable markDirtyDelegate) {
+    public RepulsorDeviceState(IRepulsorDeviceConfig config, Runnable markDirtyDelegate) {
         super(markDirtyDelegate);
         this.config = config;
         //TODO set from config

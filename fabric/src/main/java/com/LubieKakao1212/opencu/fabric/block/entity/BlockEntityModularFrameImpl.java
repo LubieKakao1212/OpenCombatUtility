@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.fabric.block.entity;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.fabric.inventory.SlottedInventory;
 import com.LubieKakao1212.opencu.fabric.transaction.AmmoContext;
@@ -62,10 +62,10 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         ammoStorage = new CombinedStorage<>(slots.subList(ammoSlotsStart, ammoSlotsEnd));
 
         //region energy
-        var useEnergy = OpenCUConfigCommon.general().energyEnabled();
+        var useEnergy = IOpenCUConfig.CONFIG.general().energy().isEnergyEnabled(); // TODO Make per device
 
         if(useEnergy) {
-            var capacity = OpenCUConfigCommon.modularFrame().energy().energyCapacity();
+            var capacity = IOpenCUConfig.CONFIG.modularFrame().energy().energyCapacity();
             energyStorage = new SimpleEnergyStorage(capacity, capacity, capacity);
             exposedEnegyStorage = new LimitingEnergyStorage(energyStorage, capacity, 0);
         } else {

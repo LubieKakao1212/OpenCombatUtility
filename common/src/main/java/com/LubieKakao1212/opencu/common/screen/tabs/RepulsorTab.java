@@ -1,7 +1,6 @@
 package com.LubieKakao1212.opencu.common.screen.tabs;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
@@ -17,13 +16,10 @@ import com.LubieKakao1212.opencu.common.util.ConfigUtil;
 import com.LubieKakao1212.opencu.registry.CUPulse;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector2i;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

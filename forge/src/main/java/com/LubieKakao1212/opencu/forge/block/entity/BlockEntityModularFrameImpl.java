@@ -1,12 +1,12 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.PlatformUtil;
 import com.LubieKakao1212.opencu.capability.IInternalEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InfiniteEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.capability.OffsetItemHandler;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
-import com.LubieKakao1212.opencu.PlatformUtil;
+import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.forge.util.ItemHandlerUtil;
 import com.LubieKakao1212.opencu.forge.util.transaction.AmmoLeftoverContext;
@@ -84,9 +84,9 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
             ammo = new OffsetItemHandler(inventory, ammoSlotsStart);
 
         //region energy
-        var useEnergy = OpenCUConfigCommon.general().energyEnabled();
+        var useEnergy = IOpenCUConfig.CONFIG.general().energy().isEnergyEnabled();
         if(useEnergy) {
-            var capacity = OpenCUConfigCommon.modularFrame().energy().energyCapacity();
+            var capacity = IOpenCUConfig.CONFIG.modularFrame().energy().energyCapacity(); //TODO Make separate from repulsor
             energy = new InternalEnergyStorage(capacity, capacity, 0);
             energyCapabilty = LazyOptional.of(() -> energy);
         } else {

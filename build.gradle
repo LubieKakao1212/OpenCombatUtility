@@ -33,6 +33,8 @@ subprojects {
 
         modImplementation "com.LubieKakao1212.qulib:qulib-kt-${project.loader}:${qulib_version}"
 
+        modImplementation "me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}${project.fzzySuffix}"
+
         modCompileOnly "cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cctVersion}"
         modCompileOnly "cc.tweaked:cc-tweaked-${minecraft_version}-${project.loader}-api:${cctVersion}"
     }
@@ -83,6 +85,10 @@ allprojects {
             filter {
                 includeGroup "maven.modrinth"
             }
+        }
+        maven {
+            name = "FzzyMaven"
+            url = uri("https://maven.fzzyhmstrs.me/")
         }
     }
 

@@ -1,16 +1,15 @@
 package com.LubieKakao1212.opencu.common.pulse;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
-import org.jetbrains.annotations.ApiStatus;
-import org.joml.Vector3d;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.ApiStatus;
+import org.joml.Vector3d;
+
+import java.util.List;
 
 
 public class PulseUtil {
@@ -29,7 +28,7 @@ public class PulseUtil {
     }
 
     public static double getScaledForce(double baseForce) {
-        return baseForce * OpenCUConfigCommon.repulsorDevice().forceScale();
+        return baseForce * IOpenCUConfig.CONFIG.repulsorDevice().forceScale();
     }
 
     @ApiStatus.Experimental

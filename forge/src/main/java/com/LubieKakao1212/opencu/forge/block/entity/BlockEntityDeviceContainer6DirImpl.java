@@ -1,10 +1,10 @@
 package com.LubieKakao1212.opencu.forge.block.entity;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.capability.IInternalEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InfiniteEnergyStorage;
 import com.LubieKakao1212.opencu.capability.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
+import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.screen.slot.ConstSlot;
@@ -72,7 +72,7 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
         //region energy
         var useEnergy = device.energyEnabled();
         if(useEnergy) {
-            var capacity = OpenCUConfigCommon.repulsorDevice().energy().energyCapacity();
+            var capacity = IOpenCUConfig.CONFIG.repulsorDevice().energy().energyCapacity(); //TODO Make separate from repulsor
             energy = new InternalEnergyStorage(capacity, capacity, capacity);
             energyCapabilty = LazyOptional.of(() -> energy);
         } else {

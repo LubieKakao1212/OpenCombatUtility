@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.common.device;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.config.api.ITrackerDeviceConfig;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.TrackerDeviceState;
@@ -9,7 +9,6 @@ import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.LubieKakao1212.opencu.common.util.EndBoolean;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
-import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -36,7 +35,7 @@ public class TrackerBase implements IFramedDevice {
     private final double defaultEnergyPerTick;
     private final double defaultEnergyPerActiveConnectionPerTick;
 
-    public TrackerBase(OpenCUConfigCommon.TrackerDeviceConfig config) {
+    public TrackerBase(ITrackerDeviceConfig config) {
         this(config.range(), config.energyPerTick(), config.energyPerActiveConnectionPerTick());
     }
 

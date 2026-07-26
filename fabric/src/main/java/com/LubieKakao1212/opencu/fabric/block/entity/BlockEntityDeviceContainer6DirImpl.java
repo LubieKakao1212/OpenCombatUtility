@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.fabric.block.entity;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityDeviceContainer6Dir;
+import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
 import com.LubieKakao1212.opencu.common.device.IDeviceContainer;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.screen.slot.ConstSlot;
@@ -29,7 +29,6 @@ import team.reborn.energy.api.base.InfiniteEnergyStorage;
 import team.reborn.energy.api.base.LimitingEnergyStorage;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -53,7 +52,7 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
 //        var useEnergy = OpenCUConfigCommon.repulsorDevice().energy().isEnergyEnabled();
 
         if (device.energyEnabled()) {
-            var capacity = OpenCUConfigCommon.repulsorDevice().energy().energyCapacity();
+            var capacity = IOpenCUConfig.CONFIG.repulsorDevice().energy().energyCapacity(); //TODO Make separate from repulsor
             energyStorage = new SimpleEnergyStorage(capacity, capacity, capacity);
             exposedEnergyStorage = new LimitingEnergyStorage(energyStorage, capacity, 0);
         } else {

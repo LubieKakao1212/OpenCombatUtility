@@ -22,7 +22,7 @@ public class OpenCUModFabric implements ModInitializer {
     public void onInitialize() {
         NetworkUtilImpl.init();
 
-        OpenCUConfigCommonImpl.init();
+        //OpenCUConfigCommonImpl.init();
 
         FieldRegistrationHandler.register(CUBlocks.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUPulseImpl.class, OpenCUModCommon.MODID, false);

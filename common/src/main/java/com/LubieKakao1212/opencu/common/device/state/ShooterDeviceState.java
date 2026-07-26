@@ -11,10 +11,10 @@ public class ShooterDeviceState extends DeviceStateBase {
 
     private final Lazy<ShooterDeviceApi> api;
 
-    private double force;
-    private double spread;
-    private double power;
-    private double baseEnergyUsage;
+    private final double force;
+    private final double spread;
+    private final double power;
+    private final double baseEnergyUsage;
 
     public ShooterDeviceState(double force, double spread, double baseEnergyUsage, double power, Runnable markDirtyDelegate) {
         super(markDirtyDelegate);
