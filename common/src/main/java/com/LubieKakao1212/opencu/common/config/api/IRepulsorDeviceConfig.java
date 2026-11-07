@@ -7,6 +7,5 @@ public interface IRepulsorDeviceConfig extends IDeviceConfig {
     double maxRadius();
     double forceScale();
     double powerCost();
-    double distanceCost();
 
 }

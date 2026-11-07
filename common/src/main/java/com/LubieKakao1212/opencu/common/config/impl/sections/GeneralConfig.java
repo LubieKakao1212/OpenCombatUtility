@@ -7,20 +7,15 @@ import me.fzzyhmstrs.fzzy_config.config.ConfigSection;
 
 public class GeneralConfig extends ConfigSection implements IGeneralConfig {
 
-    public boolean enableEnergy;
-
     public GeneralConfig(IGeneralConfig defaults) {
-        enableEnergy = defaults.energy().energyEnabledInternal();
+        energy = new MasterEnergyToggle();
+        energy.enabled = defaults.energy().energyEnabledInternal();
     }
 
-    private MasterEnergyToggle cached = null;
+    public MasterEnergyToggle energy;
 
     @Override
     public IEnergyToggle energy() {
-        if(cached == null) {
-            cached = new MasterEnergyToggle();
-            cached.enabled = enableEnergy;
-        }
-        return cached;
+        return energy;
     }
 }

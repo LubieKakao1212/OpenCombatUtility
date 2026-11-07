@@ -1,6 +1,6 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
+    id "architectury-plugin" version "3.5-SNAPSHOT"
+    id "dev.architectury.loom-remap" version "1.17-SNAPSHOT" apply false
 }
 
 //Load Access Properties (ghReadPAT, ghUsr)
@@ -13,6 +13,7 @@ if(propsFile.exists()) {
 }
 architectury {
     minecraft = rootProject.minecraft_version
+
 }
 
 subprojects {
