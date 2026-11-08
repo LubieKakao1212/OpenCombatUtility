@@ -70,9 +70,9 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
         this.inventoryCapability = LazyOptional.of(() -> this.ammoInventory);
 
         //region energy
-        var useEnergy = device.energyEnabled();
-        if(useEnergy) {
-            var capacity = IOpenCUConfig.CONFIG.repulsorDevice().energy().energyCapacity(); //TODO Make separate from repulsor
+        var energyConfig = device.getConfig().energy();
+        if(energyConfig.isEnergyEnabled()) {
+            var capacity = energyConfig.energyCapacity();
             energy = new InternalEnergyStorage(capacity, capacity, capacity);
             energyCapabilty = LazyOptional.of(() -> energy);
         } else {

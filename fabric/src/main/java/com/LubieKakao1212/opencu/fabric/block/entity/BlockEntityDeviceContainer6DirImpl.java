@@ -49,10 +49,10 @@ public class BlockEntityDeviceContainer6DirImpl extends BlockEntityDeviceContain
         this.setCurrentDevice(device);
 
         //region energy
-//        var useEnergy = OpenCUConfigCommon.repulsorDevice().energy().isEnergyEnabled();
+        var energyConfig = device.getConfig().energy();
 
-        if (device.energyEnabled()) {
-            var capacity = IOpenCUConfig.CONFIG.repulsorDevice().energy().energyCapacity(); //TODO Make separate from repulsor
+        if (energyConfig.isEnergyEnabled()) {
+            var capacity = energyConfig.energyCapacity(); //TODO Make separate from repulsor
             energyStorage = new SimpleEnergyStorage(capacity, capacity, capacity);
             exposedEnergyStorage = new LimitingEnergyStorage(energyStorage, capacity, 0);
         } else {

@@ -29,20 +29,17 @@ import org.joml.Vector3d;
 
 import java.util.stream.Collectors;
 
-public class TrackerBase implements IFramedDevice {
+public class TrackerBase extends DeviceBase<ITrackerDeviceConfig> implements IFramedDevice {
 
     private final double defaultTrackingRange;
     private final double defaultEnergyPerTick;
     private final double defaultEnergyPerActiveConnectionPerTick;
 
     public TrackerBase(ITrackerDeviceConfig config) {
-        this(config.range(), config.energyPerTick(), config.energyPerActiveConnectionPerTick());
-    }
-
-    public TrackerBase(double defaultTrackingRange, double defaultEnergyPerTick, double defaultEnergyPerActiveConnectionPerTick) {
-        this.defaultTrackingRange = defaultTrackingRange;
-        this.defaultEnergyPerTick = defaultEnergyPerTick;
-        this.defaultEnergyPerActiveConnectionPerTick = defaultEnergyPerActiveConnectionPerTick;
+        super(config); //No config, this is not a standalone device
+        this.defaultTrackingRange = config.range();
+        this.defaultEnergyPerTick = config.energyPerTick();
+        this.defaultEnergyPerActiveConnectionPerTick = config.energyPerActiveConnectionPerTick();
     }
 
     @Override
@@ -180,12 +177,6 @@ public class TrackerBase implements IFramedDevice {
 
     @Override
     public boolean ammoEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean energyEnabled() {
-        //Temporary
         return true;
     }
 

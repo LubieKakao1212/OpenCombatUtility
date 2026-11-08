@@ -12,6 +12,7 @@ description = '''
 TODO
 '''
 logoFile= "../../../../../common/src/main/resources/icon.png"
+modproperties={fzzy_config="opencu"}
 
 [[dependencies.opencu]]
 modId = "forge"

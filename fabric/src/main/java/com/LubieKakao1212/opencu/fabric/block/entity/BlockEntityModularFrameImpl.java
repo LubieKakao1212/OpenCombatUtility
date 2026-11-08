@@ -62,7 +62,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         ammoStorage = new CombinedStorage<>(slots.subList(ammoSlotsStart, ammoSlotsEnd));
 
         //region energy
-        var useEnergy = IOpenCUConfig.CONFIG.general().energy().isEnergyEnabled(); // TODO Make per device
+        var useEnergy = IOpenCUConfig.CONFIG.modularFrame().energy().isEnergyEnabled(); // TODO Make per device
 
         if(useEnergy) {
             var capacity = IOpenCUConfig.CONFIG.modularFrame().energy().energyCapacity();

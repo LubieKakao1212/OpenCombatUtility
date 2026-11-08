@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.common.device;
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
 import com.LubieKakao1212.opencu.common.config.api.IRepulsorDeviceConfig;
+import com.LubieKakao1212.opencu.common.config.api.base.IDeviceConfig;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CRepulsorActivationTimestamp;
@@ -18,8 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
-public class RepulsorDevice implements IFramedDevice {
+public class RepulsorDevice extends DeviceBase<IRepulsorDeviceConfig> implements IFramedDevice {
 
+    public RepulsorDevice(IRepulsorDeviceConfig config) {
+        super(config);
+    }
 
     /**
      * @param ctx used to fetch ammo, use energy, and add leftovers
@@ -56,29 +60,14 @@ public class RepulsorDevice implements IFramedDevice {
     }
 
     @Override
-    public double getPitchAlignmentSpeed() {
-        return 15;
-    }
-
-    @Override
-    public double getYawAlignmentSpeed() {
-        return 15;
-    }
-
-    @Override
     public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
         //TODO fetch config
-        return new RepulsorDeviceState(IOpenCUConfig.CONFIG.repulsorDevice(), markDirtyDelegate);
+        return new RepulsorDeviceState(config, markDirtyDelegate);
     }
 
     @Override
     public boolean ammoEnabled() {
         return true;
-    }
-
-    @Override
-    public boolean energyEnabled() {
-        return IOpenCUConfig.CONFIG.repulsorDevice().energy().isEnergyEnabled();
     }
 
     /**

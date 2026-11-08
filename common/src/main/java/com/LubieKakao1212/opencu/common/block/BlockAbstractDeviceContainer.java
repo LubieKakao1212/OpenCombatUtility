@@ -46,7 +46,7 @@ public abstract class BlockAbstractDeviceContainer extends BlockWithEntity {
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if(!state.isOf(newState.getBlock())) {
-            var blockEntity = (BlockEntityDeviceContainer) CUBlockEntities.modularFrame().get(world, pos);
+            var blockEntity = (BlockEntityDeviceContainer) beType.get().get(world, pos);
             if(blockEntity != null) {
                 blockEntity.scatterInventory();
             }

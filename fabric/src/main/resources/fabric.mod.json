@@ -32,5 +32,10 @@
     "qulib": ">=${qulib_version}"
   },
   "suggests": {
+  },
+  "custom": {
+    "fzzy_config": [
+      "opencu"
+    ]
   }
 }

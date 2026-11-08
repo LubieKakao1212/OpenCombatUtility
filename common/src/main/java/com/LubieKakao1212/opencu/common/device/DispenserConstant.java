@@ -7,33 +7,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class DispenserConstant extends ShooterBase {
 
-    private final double constantSpread;
-    private final double constantForce;
-    private final double baseEnergy;
-    private final double basePower;
-
-    private final boolean energyEnabled;
-
-    public DispenserConstant(ShotMappings mappings, IDispenserDeviceConfig config) {
-        this(mappings, (float)config.rotationSpeed() / 20.0f, config.spread(), config.force(), config.baseEnergy(), config.power(), config.energy().isEnergyEnabled());
-    }
-
-    private DispenserConstant(ShotMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy, double power, boolean energyEnabled) {
-        super(mappings, alignmentSpeed);
-        this.constantForce = constantForce;
-        this.constantSpread = constantSpread;
-        this.baseEnergy = baseEnergy;
-        this.basePower = power;
-        this.energyEnabled = energyEnabled;
+    public DispenserConstant(IDispenserDeviceConfig config, ShotMappings mappings) {
+        super(config, mappings);
     }
 
     @Override
     public @NotNull IDeviceState getNewState(Runnable markDirtyDelegate) {
-        return new ShooterDeviceState(constantForce, constantSpread, baseEnergy, basePower, markDirtyDelegate);
-    }
-
-    @Override
-    public boolean energyEnabled() {
-        return energyEnabled;
+        return new ShooterDeviceState(config.force(), config.spread(), config.baseEnergy(), config.power(), markDirtyDelegate);
     }
 }

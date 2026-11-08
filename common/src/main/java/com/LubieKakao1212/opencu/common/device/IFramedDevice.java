@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.config.api.base.IDeviceConfig;
 import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
@@ -33,7 +34,8 @@ public interface IFramedDevice {
 
     boolean ammoEnabled();
 
-    boolean energyEnabled();
+    @NotNull
+    IDeviceConfig getConfig();
 
     //region Client Methods
 

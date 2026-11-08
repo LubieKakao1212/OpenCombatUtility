@@ -4,6 +4,7 @@ import com.LubieKakao1212.opencu.common.config.api.base.ICapacitorConfig;
 import com.LubieKakao1212.opencu.common.config.api.base.IDeviceConfig;
 import me.fzzyhmstrs.fzzy_config.config.ConfigSection;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 
 public class DeviceConfig extends ConfigSection implements IDeviceConfig {
 
@@ -12,7 +13,7 @@ public class DeviceConfig extends ConfigSection implements IDeviceConfig {
 
     public DeviceConfig(IDeviceConfig defaults) {
         energy = new CapacitorConfig(defaults.energy());
-        rotationSpeed = new ValidatedDouble(defaults.rotationSpeed(), 180 * 20, 0.0);
+        rotationSpeed = ValidatedNumber.withIncrement(new ValidatedDouble(defaults.rotationSpeed(), 180 * 20, 0.0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS), 1.0);
     }
 
     @Override

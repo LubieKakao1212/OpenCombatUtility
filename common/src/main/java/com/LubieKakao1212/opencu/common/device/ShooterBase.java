@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.device;
 
+import com.LubieKakao1212.opencu.common.config.api.IDispenserDeviceConfig;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
 import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
@@ -13,16 +14,15 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
-public abstract class ShooterBase implements IFramedDevice {
+public abstract class ShooterBase extends DeviceBase<IDispenserDeviceConfig> implements IFramedDevice {
 
     private static final RandomEx random = new RandomEx();
 
     private final ShotMappings mappings;
-    private final double alignmentSpeed;
 
-    public ShooterBase(ShotMappings mappings, double alignmentSpeed) {
+    public ShooterBase(IDispenserDeviceConfig config, ShotMappings mappings) {
+        super(config);
         this.mappings = mappings;
-        this.alignmentSpeed = alignmentSpeed;
     }
 
     @Override
@@ -68,16 +68,6 @@ public abstract class ShooterBase implements IFramedDevice {
     @Override
     public void tick(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
 
-    }
-
-    @Override
-    public double getPitchAlignmentSpeed() {
-        return alignmentSpeed;
-    }
-
-    @Override
-    public double getYawAlignmentSpeed() {
-        return alignmentSpeed;
     }
 
     protected ShotMappings getMappings() {
