@@ -25,6 +25,10 @@
 [//]: # (>   - [ ] CC API for new functionality)
 
 > ## 2.0.0
-> - ### Issues
+> - ### TODOs
+>   - [ ] Move repulsor pulse execution to late tick, to make it position independent relative to dispenser
+>   - [ ] Add Dispenser configuration UI
+>   - [ ] Make Forge implementation in line with fabric
+> - ### Possible Issues
 >   - [ ] Energy, RedstoneControlType, RequitesLock may not be synced when loading chunks
 >   - [ ] Fabric, Modular Frame does not update correctly on automation interaction? Slot is not accessible to automation

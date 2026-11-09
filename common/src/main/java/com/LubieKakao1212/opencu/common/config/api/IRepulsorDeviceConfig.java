@@ -5,7 +5,11 @@ import com.LubieKakao1212.opencu.common.config.api.base.IDeviceConfig;
 public interface IRepulsorDeviceConfig extends IDeviceConfig {
 
     double maxRadius();
+
+    //Global "motion" pulse force
     double forceScale();
+
+
     double powerCost();
 
 }

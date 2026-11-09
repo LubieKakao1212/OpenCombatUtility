@@ -29,10 +29,9 @@ public abstract class BlockEntityDeviceContainer6Dir extends BlockEntityDeviceCo
     protected Vector3d currentAim() {
         assert world != null;
 
-        //TODO replace with vector
-        var direciton = world.getBlockState(pos).get(FacingBlock.FACING);
+        var direction = world.getBlockState(pos).get(FacingBlock.FACING);
 
-        switch (direciton) {
+        switch (direction) {
             case DOWN -> {
                 return Vector3dExtensions.INSTANCE.getDOWN();
             }

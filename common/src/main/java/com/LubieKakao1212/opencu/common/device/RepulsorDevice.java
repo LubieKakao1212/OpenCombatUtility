@@ -30,10 +30,6 @@ public class RepulsorDevice extends DeviceBase<IRepulsorDeviceConfig> implements
      */
     @Override
     public void activate(IDeviceContainer container, IDeviceState state, World world, BlockPos pos, Vector3d aimForward, DeviceActivationContext ctx) {
-        IRepulsorDeviceConfig config = IOpenCUConfig.CONFIG.repulsorDevice();
-
-        //TODO remove distance cost from config and registry
-
         Vector3d pulseOrigin = new Vector3m(pos.toCenterPos());
 
         var repState = (RepulsorDeviceState)state;

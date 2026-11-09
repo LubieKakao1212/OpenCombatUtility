@@ -46,7 +46,7 @@ public class RepulsorDeviceState extends DeviceStateBase {
         super(markDirtyDelegate);
         this.config = config;
         //TODO set from config
-        pulseData.radius = 3.0;
+        pulseData.radius = config.maxRadius();
         pulseData.forceMagnitude = 0.5;
         api = new Lazy<>(() -> new RepulsorDeviceApi(this));
         typeObserver = Observer.generic(() -> pulseType.getRegistryKey());

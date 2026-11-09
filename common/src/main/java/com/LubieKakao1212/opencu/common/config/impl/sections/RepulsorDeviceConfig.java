@@ -12,7 +12,7 @@ public class RepulsorDeviceConfig extends DeviceConfig implements IRepulsorDevic
     @Desc("Maximum pulse radius")
     public ValidatedDouble range;
 
-    @Desc("Maximum pulse force")
+    @Desc("Global multiplier for pulse strength applied to \"motion\" type pulses")
     public ValidatedDouble force;
 
     @Desc("Energy usage at maximum range and maximum force")
