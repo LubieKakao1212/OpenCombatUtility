@@ -8,10 +8,12 @@ import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.RepulsorDeviceState;
 import com.LubieKakao1212.opencu.common.network.packet.device.repulsor.PacketS2CRepulsorActivationTimestamp;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
+import com.LubieKakao1212.opencu.common.pulse.PulseScheduler;
 import com.LubieKakao1212.opencu.common.screen.tabs.DeviceContainerScreenTab;
 import com.LubieKakao1212.opencu.common.screen.tabs.RepulsorTab;
 import com.LubieKakao1212.opencu.common.transaction.DeviceActivationContext;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,8 +41,7 @@ public class RepulsorDevice extends DeviceBase<IRepulsorDeviceConfig> implements
         var energyUsage = repState.getEnergyUsage();
 
         if(ctx.energy().useEnergy(energyUsage, ctx.ctx()) == energyUsage) {
-            var dir = aimForward;
-            pulseType.executePulse(world, pulseOrigin, new PulseData.Directional(pulseData, dir));
+            PulseScheduler.schedulePulse(pulseType, world, pulseOrigin, new PulseData.Directional(pulseData, aimForward));
 
             //Update visuals
             NetworkUtil.sendToAllTracking(new PacketS2CRepulsorActivationTimestamp(pos, world.getTime()), (ServerWorld) world, pos);

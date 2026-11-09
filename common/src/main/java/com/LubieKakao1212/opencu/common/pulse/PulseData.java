@@ -42,7 +42,7 @@ public class PulseData {
 
         public Directional(PulseData source, Vector3d direction) {
             super(source);
-            this.direction = direction;
+            this.direction = new Vector3d(direction);
         }
 
         @Override

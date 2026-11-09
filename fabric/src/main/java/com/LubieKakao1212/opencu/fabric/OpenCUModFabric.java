@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.fabric;
 
 import com.LubieKakao1212.opencu.common.config.api.IOpenCUConfig;
+import com.LubieKakao1212.opencu.common.pulse.PulseScheduler;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupItemStorage;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
@@ -12,6 +13,7 @@ import com.LubieKakao1212.opencu.registry.fabric.*;
 import io.wispforest.owo.registration.reflect.FieldRegistrationHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class OpenCUModFabric implements ModInitializer {
@@ -44,7 +46,7 @@ public class OpenCUModFabric implements ModInitializer {
 
         UseHandler.init();
 
-
         ServerLifecycleEvents.SERVER_STARTING.register((server) -> CUDispensers.init());
+        ServerTickEvents.END_WORLD_TICK.register(PulseScheduler::onEndOfTick);
     }
 }
