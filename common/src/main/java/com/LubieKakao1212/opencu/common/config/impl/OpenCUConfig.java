@@ -110,13 +110,13 @@ public class OpenCUConfig extends Config implements IOpenCUConfig {
         public static final IEnergyToggle ENERGY_TOGGLE_ENABLED = new EnergyToggleConfig(true, GENERAL.energy());
 
         public static final IModularFrameConfig MODULAR_FRAME = new ModularFrameConfig(CAPACITOR);
-        public static final IRepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(90, 5.0, 5.0, 25.0, 20000, 1000, CAPACITOR);
+        public static final IRepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(90, 5.0, 5.0, 25.0, 15000, 1000, CAPACITOR);
 
         public static final IDispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.5, 500, 1.0, CAPACITOR);
         public static final IDispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 10.0, 360.0, 1.5, 200, 1.0, CAPACITOR);
         public static final IDispenserDeviceConfig DIAMOND_DISPENSER_DEVICE = new DispenserDeviceConfig(120, 2.5, 360.0, 2.0, 750, 1.5, CAPACITOR);
         public static final IDispenserDeviceConfig NETHERITE_DISPENSER_DEVICE = new DispenserDeviceConfig(15, 1.5, 10.0, 3.0, 1500, 3.0, CAPACITOR);
-        public static final ITrackerDeviceConfig TRACKER_DEVICE = new TrackerDeviceConfig(8.0, 0.75, 5.0, 3600);
+        public static final ITrackerDeviceConfig TRACKER_DEVICE = new TrackerDeviceConfig(8.0, 0.75, 3.0, 3600);
 
         public record GeneralConfig(IEnergyToggle energy) implements IGeneralConfig { }
 

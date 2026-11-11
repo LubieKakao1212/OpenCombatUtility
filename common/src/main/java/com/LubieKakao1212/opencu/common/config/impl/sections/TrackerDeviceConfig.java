@@ -23,8 +23,8 @@ public class TrackerDeviceConfig extends ConfigSection implements ITrackerDevice
 
     public TrackerDeviceConfig(ITrackerDeviceConfig defaults) {
         range = new ValidatedDouble(defaults.range(), Double.MAX_VALUE, 0);
-        energyPerTick = new ValidatedDouble(defaults.range(), Double.MAX_VALUE, 0);
-        energyPerConnection = new ValidatedDouble(defaults.range(), Double.MAX_VALUE, 0);
+        energyPerTick = new ValidatedDouble(defaults.energyPerTick(), Double.MAX_VALUE, 0);
+        energyPerConnection = new ValidatedDouble(defaults.energyPerActiveConnectionPerTick(), Double.MAX_VALUE, 0);
 
         rotationSpeed = ValidatedNumber.withIncrement(new ValidatedDouble(defaults.rotationSpeed(), 180 * 20, 0.0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS), 1.0);
     }
